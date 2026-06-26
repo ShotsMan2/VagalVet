@@ -136,7 +136,7 @@ const AdminDashboard = () => {
               </div>
 
               <div className="glass-panel" style={{ padding: '2rem', minHeight: '400px' }}>
-                <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>Holografik Tarama Akışı</h3>
+                <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>Hasta Durum Akışı</h3>
                 
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                   <thead>
@@ -149,9 +149,9 @@ const AdminDashboard = () => {
                   </thead>
                   <tbody>
                     {[
-                      { id: '#NX-31-A', type: 'Siber-Kedi (Bengal)', status: 'Optimizasyon', action: 'Tarama Sürüyor' },
-                      { id: '#NX-31-B', type: 'Biyo-Köpek (Golden)', status: 'Kritik', action: 'Acil Müdahale' },
-                      { id: '#NX-31-C', type: 'Avian-Drone', status: 'Stabil', action: 'Taburcu' },
+                      { id: '#P-001', type: 'Kedi (Tekir)', status: 'Tedavi', action: 'Gözlem Altında' },
+                      { id: '#P-002', type: 'Köpek (Golden)', status: 'Acil', action: 'Müdahale Sürüyor' },
+                      { id: '#P-003', type: 'Kuş (Muhabbet)', status: 'Stabil', action: 'Taburcu Bekliyor' },
                     ].map((row, i) => (
                       <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                         <td style={{ padding: '1rem', fontFamily: 'monospace', color: 'var(--color-primary)' }}>{row.id}</td>
@@ -161,8 +161,8 @@ const AdminDashboard = () => {
                             padding: '0.25rem 0.75rem', 
                             borderRadius: '1rem', 
                             fontSize: '0.8rem',
-                            background: row.status === 'Kritik' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-                            color: row.status === 'Kritik' ? '#ef4444' : '#10b981'
+                            background: row.status === 'Acil' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
+                            color: row.status === 'Acil' ? '#ef4444' : '#10b981'
                           }}>
                             {row.status}
                           </span>
