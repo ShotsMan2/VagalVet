@@ -90,9 +90,14 @@ const Home = () => {
                 zIndex: 2,
                 border: '2px solid var(--color-primary)'
               }}>
-                <Activity size={120} color="var(--color-primary)" style={{
-                  filter: 'drop-shadow(0 0 20px var(--color-primary))'
-                }}/>
+                <span style={{ 
+                  fontFamily: 'var(--font-heading)', 
+                  fontSize: '3.5rem', 
+                  fontWeight: 800,
+                  filter: 'drop-shadow(0 0 10px var(--color-primary))'
+                }}>
+                  <span style={{ color: 'var(--color-primary)' }}>Vagal</span><span style={{ color: 'var(--color-secondary)' }}>Vet</span>
+                </span>
               </div>
             </div>
           </div>

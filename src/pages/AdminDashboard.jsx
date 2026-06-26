@@ -29,17 +29,9 @@ const AdminDashboard = () => {
         flexDirection: 'column',
         padding: '2rem 0'
       }}>
-        <div style={{ padding: '0 2rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ 
-            width: '32px', height: '32px', 
-            background: 'var(--color-primary)', 
-            borderRadius: '8px',
-            display: 'flex', justifyContent: 'center', alignItems: 'center'
-          }}>
-            <Activity color="var(--bg-dark)" size={20} />
-          </div>
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 800 }}>
-            Vagal<span style={{ color: 'var(--color-secondary)' }}>Vet</span> Admin
+        <div style={{ padding: '0 2rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 800, letterSpacing: '1px' }}>
+            <span style={{ color: 'var(--color-primary)' }}>Vagal</span><span style={{ color: 'var(--color-secondary)' }}>Vet</span> Admin
           </span>
         </div>
 
