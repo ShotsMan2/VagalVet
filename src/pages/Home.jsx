@@ -33,7 +33,7 @@ const Home = () => {
       }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
           <div style={{ flex: '1 1 500px' }}>
-            <h1 className="glitch-text" data-text="MODERN VETERİNER KLİNİĞİ" style={{ 
+            <h1 style={{ 
               fontSize: '4rem', 
               lineHeight: 1.1,
               marginBottom: '1.5rem',
@@ -207,13 +207,16 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
             {/* These images will be replaced by the user with the actual instagram photos */}
             <div className="glass-panel" style={{ overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
-              <img src="/images/patient1.png" alt="Sevimli Hastamız 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = 'https://via.placeholder.com/500x500/040706/eebd5f?text=Foto%C4%9Fraf+Bekleniyor'; }} />
+              <img src="/images/1.png" alt="Sevimli Hastamız 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="glass-panel" style={{ overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
-              <img src="/images/patient2.png" alt="Sevimli Hastamız 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = 'https://via.placeholder.com/500x500/040706/eebd5f?text=Foto%C4%9Fraf+Bekleniyor'; }} />
+              <img src="/images/2.png" alt="Sevimli Hastamız 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="glass-panel" style={{ overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
-              <img src="/images/patient3.png" alt="Sevimli Hastamız 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = 'https://via.placeholder.com/500x500/040706/eebd5f?text=Foto%C4%9Fraf+Bekleniyor'; }} />
+              <img src="/images/3.png" alt="Sevimli Hastamız 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div className="glass-panel" style={{ overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
+              <img src="/images/4.jpg" alt="Sevimli Hastamız 4" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </div>
