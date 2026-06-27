@@ -159,36 +159,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Neden VagalVet */}
-      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Neden VagalVet?</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', maxWidth: '550px', margin: '0 auto' }}>
-              Bizi tercih etmeniz için birçok neden var.
-            </p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-            {values.map((v, i) => (
-              <div key={i} className="surface-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
-                <div style={{
-                  width: '64px', height: '64px',
-                  backgroundColor: 'var(--bg-soft)',
-                  borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 1.5rem'
-                }}>
-                  {v.icon}
-                </div>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: 'var(--text-main)' }}>{v.title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>{v.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Team & Hours Section */}
       <section id="hekimler" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-main)' }}>
         <div className="container">
@@ -253,6 +223,37 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Neden VagalVet */}
+      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Neden VagalVet?</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', maxWidth: '550px', margin: '0 auto' }}>
+              Bizi tercih etmeniz için birçok neden var.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+            {values.map((v, i) => (
+              <div key={i} className="surface-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
+                <div style={{
+                  width: '64px', height: '64px',
+                  backgroundColor: 'var(--bg-soft)',
+                  borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 1.5rem'
+                }}>
+                  {v.icon}
+                </div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: 'var(--text-main)' }}>{v.title}</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* Galeri Section */}
       <section id="galeri" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-surface)' }}>
