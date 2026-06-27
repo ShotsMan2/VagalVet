@@ -55,7 +55,9 @@ const workingHours = [
 ];
 
 export default function Iletisim() {
-  const [form, setForm] = useState({ name: '', phone: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -63,7 +65,33 @@ export default function Iletisim() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Display-only form – no backend wired
+    if (!form.name || !form.email || !form.message) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate network request
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      
+      // Save message to localStorage for Admin Panel
+      const newMessage = {
+        id: Date.now(),
+        date: new Date().toLocaleString('tr-TR'),
+        name: form.name,
+        email: form.email,
+        message: form.message
+      };
+      const existingMessages = JSON.parse(localStorage.getItem('vagalvet_messages') || '[]');
+      localStorage.setItem('vagalvet_messages', JSON.stringify([newMessage, ...existingMessages]));
+
+      setForm({ name: '', email: '', message: '' });
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 5000);
+    }, 1500);
   };
 
   return (
@@ -460,6 +488,7 @@ export default function Iletisim() {
                   placeholder="Adınız ve soyadınız"
                   value={form.name}
                   onChange={handleChange}
+                  required
                   style={{
                     width: '100%',
                     padding: '12px 16px',
@@ -478,10 +507,10 @@ export default function Iletisim() {
                 />
               </div>
 
-              {/* Telefon */}
+              {/* E-Posta */}
               <div>
                 <label
-                  htmlFor="phone"
+                  htmlFor="email"
                   style={{
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.82rem',
@@ -491,15 +520,16 @@ export default function Iletisim() {
                     marginBottom: 6,
                   }}
                 >
-                  Telefon
+                  E-Posta Adresiniz
                 </label>
                 <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="0 (5XX) XXX XX XX"
-                  value={form.phone}
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="ornek@mail.com"
+                  value={form.email}
                   onChange={handleChange}
+                  required
                   style={{
                     width: '100%',
                     padding: '12px 16px',
@@ -540,6 +570,7 @@ export default function Iletisim() {
                   placeholder="Mesajınızı buraya yazın..."
                   value={form.message}
                   onChange={handleChange}
+                  required
                   style={{
                     width: '100%',
                     padding: '12px 16px',
@@ -562,6 +593,7 @@ export default function Iletisim() {
               {/* Submit */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="btn btn-primary"
                 style={{
                   display: 'inline-flex',
@@ -573,13 +605,31 @@ export default function Iletisim() {
                   fontWeight: 600,
                   fontFamily: 'var(--font-sans)',
                   marginTop: 4,
-                  cursor: 'pointer',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
                   width: '100%',
+                  opacity: isSubmitting ? 0.7 : 1,
+                  transition: 'opacity 0.3s ease',
                 }}
               >
                 <Send size={18} strokeWidth={2} />
-                Mesajı Gönder
+                {isSubmitting ? 'Gönderiliyor...' : 'Mesajı Gönder'}
               </button>
+              
+              {isSuccess && (
+                <div style={{
+                  marginTop: '1rem',
+                  padding: '1rem',
+                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                  border: '1px solid rgba(76, 175, 80, 0.3)',
+                  borderRadius: 'var(--radius-md)',
+                  color: '#2e7d32',
+                  textAlign: 'center',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                }}>
+                  Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.
+                </div>
+              )}
             </form>
           </div>
         </div>

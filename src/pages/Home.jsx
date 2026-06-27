@@ -48,8 +48,8 @@ const Home = () => {
         <div style={{
           position: 'absolute',
           top: '-10%',
-          right: '-5%',
-          width: '60%',
+          right: '0',
+          width: '51.5%',
           height: '110%',
           backgroundColor: 'var(--bg-soft)',
           borderRadius: '100px 0 0 100px',
