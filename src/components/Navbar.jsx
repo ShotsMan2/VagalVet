@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
+const navLinks = [
+  { to: '/hizmetler', label: 'Hizmetlerimiz' },
+  { to: '/ekibimiz', label: 'Ekibimiz' },
+  { to: '/galeri', label: 'Galeri' },
+  { to: '/iletisim', label: 'İletişim' },
+];
+
 const Navbar = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
@@ -16,60 +23,147 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (isAdmin) return null; // Admin has its own layout
+  // Close mobile menu on navigation
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  if (isAdmin) return null;
 
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '80px',
-      backgroundColor: isScrolled ? 'var(--bg-surface)' : 'transparent',
-      boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none',
-      transition: 'all var(--transition-normal)',
-      zIndex: 1000,
-      display: 'flex',
-      alignItems: 'center',
-      borderBottom: isScrolled ? '1px solid var(--border-color)' : 'none'
-    }}>
-      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        
-        {/* Logo */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-          <span style={{ 
-            fontFamily: 'var(--font-heading)', 
-            fontSize: '1.75rem', 
-            fontWeight: 800,
-            letterSpacing: '-0.02em'
-          }}>
-            <span style={{ color: 'var(--color-primary)' }}>Vagal</span>
-            <span style={{ color: 'var(--color-secondary)' }}>Vet</span>
-          </span>
-        </Link>
+    <>
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '80px',
+        backgroundColor: isScrolled ? 'var(--bg-surface)' : 'var(--bg-main)',
+        boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none',
+        transition: 'all var(--transition-normal)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        borderBottom: isScrolled ? '1px solid var(--border-color)' : 'none'
+      }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          
+          {/* Logo */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+            <span style={{ 
+              fontFamily: 'var(--font-heading)', 
+              fontSize: '1.75rem', 
+              fontWeight: 800,
+              letterSpacing: '-0.02em'
+            }}>
+              <span style={{ color: 'var(--color-primary)' }}>Vagal</span>
+              <span style={{ color: 'var(--color-secondary)' }}>Vet</span>
+            </span>
+          </Link>
 
-        {/* Desktop Links */}
-        <div style={{ display: 'none', gap: '2.5rem', alignItems: 'center', '@media(min-width: 768px)': { display: 'flex' } }} className="desktop-nav">
-          <a href="/#hizmetler" style={{ color: 'var(--text-main)', fontWeight: 500 }}>Hizmetlerimiz</a>
-          <a href="/#hekimler" style={{ color: 'var(--text-main)', fontWeight: 500 }}>Ekibimiz</a>
-          <a href="/#galeri" style={{ color: 'var(--text-main)', fontWeight: 500 }}>Galeri</a>
-          <a href="/#iletisim" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.95rem' }}>İletişim</a>
+          {/* Desktop Links */}
+          <div className="desktop-nav" style={{ display: 'none', gap: '2rem', alignItems: 'center' }}>
+            {navLinks.map((link) => (
+              <Link 
+                key={link.to} 
+                to={link.to} 
+                style={{ 
+                  color: location.pathname === link.to ? 'var(--color-primary)' : 'var(--text-main)', 
+                  fontWeight: location.pathname === link.to ? 700 : 500,
+                  textDecoration: 'none',
+                  fontSize: '0.95rem',
+                  transition: 'color var(--transition-fast)',
+                  position: 'relative',
+                  paddingBottom: '4px'
+                }}
+              >
+                {link.label}
+                {location.pathname === link.to && (
+                  <span style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    backgroundColor: 'var(--color-primary)',
+                    borderRadius: '1px'
+                  }}></span>
+                )}
+              </Link>
+            ))}
+            <Link to="/iletisim" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>
+              Randevu Al
+            </Link>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div 
+            className="mobile-toggle" 
+            style={{ display: 'block', cursor: 'pointer', padding: '0.5rem' }} 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={28} color="var(--color-secondary)" /> : <Menu size={28} color="var(--color-secondary)" />}
+          </div>
         </div>
+      </nav>
 
-        {/* Mobile Toggle (Simple implementation for now) */}
-        <div className="mobile-toggle" style={{ display: 'block', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X size={28} color="var(--color-secondary)" /> : <Menu size={28} color="var(--color-secondary)" />}
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'var(--bg-surface)',
+          zIndex: 999,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '2rem',
+          gap: '0.5rem',
+          animation: 'fadeIn 0.2s ease'
+        }}>
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                color: location.pathname === link.to ? 'var(--color-primary)' : 'var(--text-main)',
+                textDecoration: 'none',
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                fontFamily: 'var(--font-heading)',
+                padding: '1rem 0',
+                borderBottom: '1px solid var(--border-color)',
+                transition: 'color var(--transition-fast)'
+              }}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link 
+            to="/iletisim" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="btn btn-primary" 
+            style={{ marginTop: '1.5rem', textAlign: 'center', textDecoration: 'none', fontSize: '1.1rem', padding: '1rem' }}
+          >
+            Randevu Al
+          </Link>
         </div>
-      </div>
+      )}
 
-      {/* Internal CSS for simple mobile responsive hiding */}
       <style>{`
         @media (min-width: 768px) {
           .desktop-nav { display: flex !important; }
           .mobile-toggle { display: none !important; }
         }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
-    </nav>
+    </>
   );
 };
 

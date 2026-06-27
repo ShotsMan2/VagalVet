@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Activity, ShieldPlus, Dna, Syringe, ChevronRight, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
@@ -76,9 +77,9 @@ const Home = () => {
                 <Phone size={20} style={{ marginRight: '0.5rem' }}/>
                 Randevu Alın
               </a>
-              <a href="#hizmetler" className="btn btn-outline">
+              <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>
                 Hizmetleri İncele
-              </a>
+              </Link>
             </div>
             <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', maxWidth: '400px' }}>
               <div style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
@@ -126,22 +127,27 @@ const Home = () => {
             gap: '2rem' 
           }}>
             {services.map(s => (
-              <div key={s.id} className="surface-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ 
-                  width: '60px', height: '60px', 
-                  backgroundColor: 'var(--bg-soft)', 
-                  borderRadius: '1rem', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center' 
-                }}>
-                  {s.icon}
+              <Link key={s.id} to="/hizmetler" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="surface-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', height: '100%' }}>
+                  <div style={{ 
+                    width: '60px', height: '60px', 
+                    backgroundColor: 'var(--bg-soft)', 
+                    borderRadius: '1rem', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center' 
+                  }}>
+                    {s.icon}
+                  </div>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '0.5rem' }}>{s.title}</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.5 }}>{s.desc}</p>
+                  <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                    <ArrowRight size={20} color="var(--color-primary)" />
+                  </div>
                 </div>
-                <h3 style={{ fontSize: '1.25rem', marginTop: '0.5rem' }}>{s.title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.5 }}>{s.desc}</p>
-                <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
-                  <ArrowRight size={20} color="var(--color-primary)" />
-                </div>
-              </div>
+              </Link>
             ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+            <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>Tüm Hizmetlerimizi Gör</Link>
           </div>
         </div>
       </section>
@@ -219,9 +225,9 @@ const Home = () => {
               <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Kliniğimizden Kareler</h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>Minik dostlarımızın sağlıklı ve mutlu anları</p>
             </div>
-            <a href="https://www.instagram.com/vagalvet.veterinerklinigi/" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              Instagram'da Gör <ArrowRight size={18} />
-            </a>
+            <Link to="/galeri" className="btn btn-outline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', textDecoration: 'none' }}>
+              Tüm Galeri <ArrowRight size={18} />
+            </Link>
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
@@ -248,7 +254,10 @@ const Home = () => {
             
             <div style={{ flex: '1 1 500px', padding: '4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-main)' }}>Bize Ulaşın</h2>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '3rem', fontSize: '1.1rem' }}>Sorularınız ve randevu talepleriniz için bizimle iletişime geçebilirsiniz.</p>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1.1rem' }}>Sorularınız ve randevu talepleriniz için bizimle iletişime geçebilirsiniz.</p>
+              <Link to="/iletisim" className="btn btn-accent" style={{ textDecoration: 'none', alignSelf: 'flex-start', marginBottom: '2rem' }}>
+                Detaylı İletişim Sayfası <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
+              </Link>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
@@ -284,12 +293,16 @@ const Home = () => {
               </div>
             </div>
             
-            <div style={{ flex: '1 1 400px', backgroundColor: 'var(--bg-soft)' }}>
-              {/* Optional: Add a map iframe or a nice image here. Using a clean image for now to match aesthetic */}
-              <img 
-                src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&h=800&fit=crop" 
-                alt="İletişim" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            <div style={{ flex: '1 1 400px', minHeight: '400px' }}>
+              <iframe 
+                title="VagalVet Konum"
+                src="https://maps.google.com/maps?q=VagalVet+Veteriner+Klini%C4%9Fi+Konya&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0, display: 'block', minHeight: '400px' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
             
