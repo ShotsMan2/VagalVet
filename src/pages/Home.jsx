@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   Activity, ShieldPlus, Dna, Syringe, ChevronRight, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
-  ArrowRight
+  ArrowRight, Award, Heart, Shield
 } from 'lucide-react';
 
 const Home = () => {
@@ -22,6 +22,13 @@ const Home = () => {
     { id: 6, title: 'Evde Sağlık', icon: <Truck size={28} color="var(--color-secondary)" />, desc: 'Gezici sağlık ve evde bakım hizmeti' },
     { id: 7, title: 'Pet Kuaför', icon: <Scissors size={28} color="var(--color-secondary)" />, desc: 'Profesyonel pet kuaför hizmetleri' },
     { id: 8, title: 'Pet Shop', icon: <ShoppingBag size={28} color="var(--color-secondary)" />, desc: 'Besleme ve danışmanlık hizmetleri' },
+  ];
+
+  const values = [
+    { icon: <Award size={28} color="var(--color-secondary)" />, title: 'Deneyim & Uzmanlık', desc: 'Yılların verdiği bilgi birikimi ve sürekli eğitimle en güncel veterinerlik uygulamalarını sunuyoruz.' },
+    { icon: <Shield size={28} color="var(--color-secondary)" />, title: 'Modern Ekipman', desc: 'Son teknoloji tıbbi cihazlar ve donanımla doğru teşhis ve etkili tedavi sağlıyoruz.' },
+    { icon: <Heart size={28} color="var(--color-secondary)" />, title: 'Sevgi & Şefkat', desc: 'Her hastamıza özel, sevgi dolu yaklaşım. Dostlarınızı kendi ailemizin bir ferdi gibi görüyoruz.' },
+    { icon: <Clock size={28} color="var(--color-secondary)" />, title: '7/24 Erişim', desc: 'Acil durumlarda gece gündüz ulaşılabilir veteriner hizmeti. Tek bir telefon uzağınızdayız.' },
   ];
 
   return (
@@ -148,6 +155,36 @@ const Home = () => {
           </div>
           <div style={{ textAlign: 'center', marginTop: '3rem' }}>
             <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>Tüm Hizmetlerimizi Gör</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Neden VagalVet */}
+      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Neden VagalVet?</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', maxWidth: '550px', margin: '0 auto' }}>
+              Bizi tercih etmeniz için birçok neden var.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+            {values.map((v, i) => (
+              <div key={i} className="surface-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
+                <div style={{
+                  width: '64px', height: '64px',
+                  backgroundColor: 'var(--bg-soft)',
+                  borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 1.5rem'
+                }}>
+                  {v.icon}
+                </div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: 'var(--text-main)' }}>{v.title}</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>{v.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
