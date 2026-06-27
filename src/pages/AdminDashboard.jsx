@@ -13,11 +13,19 @@ const AdminDashboard = () => {
   
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
-  const notifications = [
-    { id: 1, text: 'Sistem güncellemesi tamamlandı.', time: '10 dk önce' },
-    { id: 2, text: 'Yeni hasta kaydı: #P-004', time: '1 saat önce' },
-    { id: 3, text: 'Haftalık yedekleme alındı.', time: '3 saat önce' }
-  ];
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'Yeni aşılama stok uyarısı: Parvo', time: '10 dk önce', read: false },
+    { id: 2, text: 'Yeni online randevu düştü.', time: '1 saat önce', read: false },
+    { id: 3, text: 'Haftalık ciro raporu hazır.', time: '3 saat önce', read: false }
+  ]);
+
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   // Reply state
   const [replyingTo, setReplyingTo] = useState(null);
@@ -28,15 +36,48 @@ const AdminDashboard = () => {
   // New Patient State
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [newPatient, setNewPatient] = useState({ name: '', type: '', ownerName: '', ownerPhone: '', nextVaccine: '', vaccineName: '', status: 'Sağlıklı' });
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [patientTab, setPatientTab] = useState('genel');
+
+  // New Tabs State
+  const inventoryData = [
+    { id: 'INV-01', name: 'Karma Aşı (Kedi)', category: 'Aşı', stock: 12, critical: 15 },
+    { id: 'INV-02', name: 'Kuduz Aşısı', category: 'Aşı', stock: 45, critical: 10 },
+    { id: 'INV-03', name: 'Geniş Spektrumlu Antibiyotik', category: 'İlaç', stock: 8, critical: 20 },
+    { id: 'INV-04', name: 'Premium Kedi Maması 15kg', category: 'Mama', stock: 4, critical: 5 }
+  ];
+  const staffData = [
+    { id: 1, name: 'Vet. Hekim Mürüvvet Eraslan', status: 'Muayenede', shift: '09:00 - 18:00' },
+    { id: 2, name: 'Vet. Hekim Mehmet Ali Eraslan', status: 'Ameliyatta', shift: '10:00 - 19:00' },
+    { id: 3, name: 'Vet. Tek. Ayşe Yılmaz', status: 'Müsait', shift: '08:00 - 17:00' }
+  ];
 
   // Settings State
   const [settings, setSettings] = useState({ maintenanceMode: false, onlineBooking: true, emailNotifications: true });
+  const [contactSettings, setContactSettings] = useState({ phone: '', email: '', instagram: '', facebook: '' });
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const handleSaveContactSettings = (e) => {
+    e.preventDefault();
+    localStorage.setItem('vagalvet_contact_settings', JSON.stringify(contactSettings));
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
+  };
 
   useEffect(() => {
     // Load Data
     setMessages(JSON.parse(localStorage.getItem('vagalvet_messages') || '[]'));
     setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
     setNewsletter(JSON.parse(localStorage.getItem('vagalvet_newsletter') || '[]'));
+    
+    // Load Contact Settings
+    const defaultContactSettings = {
+      phone: '0553 384 14 60',
+      email: 'info@vagalvet.com',
+      instagram: 'https://instagram.com/vagalvet',
+      facebook: 'https://facebook.com/vagalvet'
+    };
+    setContactSettings(JSON.parse(localStorage.getItem('vagalvet_contact_settings') || JSON.stringify(defaultContactSettings)));
     
     // Default dummy patients if empty
     let pts = JSON.parse(localStorage.getItem('vagalvet_patients') || '[]');
@@ -87,6 +128,9 @@ const AdminDashboard = () => {
     { id: 'dashboard', label: 'Genel Bakış', icon: <LayoutDashboard size={20} /> },
     { id: 'appointments', label: 'Akıllı Randevular', icon: <Calendar size={20} /> },
     { id: 'patients', label: 'Biyo-Kayıtlar (CRM)', icon: <Users size={20} /> },
+    { id: 'inventory', label: 'Stok & Depo', icon: <Activity size={20} /> },
+    { id: 'finance', label: 'Finans & Fatura', icon: <CheckCircle2 size={20} /> },
+    { id: 'staff', label: 'Personel', icon: <Users size={20} /> },
     { id: 'messages', label: 'Gelen Mesajlar', icon: <MessageSquare size={20} /> },
     { id: 'newsletter', label: 'Bülten Aboneleri', icon: <Mail size={20} /> },
     { id: 'settings', label: 'Sistem Ayarları', icon: <Settings size={20} /> },
@@ -117,9 +161,9 @@ const AdminDashboard = () => {
         display: 'flex', flexDirection: 'column', padding: '2rem 0'
       }}>
         <div style={{ padding: '0 2rem', marginBottom: '3rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 800, letterSpacing: '1px' }}>
-            <span style={{ color: 'var(--color-primary)' }}>Vagal</span><span style={{ color: 'var(--color-secondary)' }}>Vet</span> Admin
-          </span>
+          <div onClick={() => setActiveTab('dashboard')} style={{ cursor: 'pointer' }}>
+            <img src="/logo.png" alt="VagalVet Logo" style={{ height: '36px', objectFit: 'contain' }} />
+          </div>
         </div>
 
         <nav style={{ flex: 1 }}>
@@ -162,7 +206,9 @@ const AdminDashboard = () => {
             <div style={{ position: 'relative' }}>
               <button onClick={() => setShowNotifications(!showNotifications)} style={{ color: 'var(--text-main)', background: 'transparent', border: 'none', cursor: 'pointer' }}>
                 <Bell size={24} />
-                <span style={{ position: 'absolute', top: -2, right: -2, width: 10, height: 10, background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 10px #ef4444' }}></span>
+                {unreadCount > 0 && (
+                  <span style={{ position: 'absolute', top: -2, right: -2, width: 10, height: 10, background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 10px #ef4444' }}></span>
+                )}
               </button>
 
               {showNotifications && (
@@ -171,15 +217,18 @@ const AdminDashboard = () => {
                   background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)',
                   boxShadow: '0 10px 25px rgba(0,0,0,0.5)', zIndex: 50
                 }}>
-                  <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between' }}>
-                    <h4 style={{ margin: 0 }}>Bildirimler</h4>
+                  <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ margin: 0 }}>Bildirimler {unreadCount > 0 && `(${unreadCount})`}</h4>
+                    {unreadCount > 0 && <button onClick={markAllAsRead} style={{ background: 'transparent', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>Tümünü Okundu İşaretle</button>}
                   </div>
                   <div>
-                    {notifications.map((notif) => (
-                      <div key={notif.id} style={{ padding: '1rem', borderBottom: '1px solid var(--border-glass)', display: 'flex', gap: '1rem' }}>
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)', marginTop: 6 }}></div>
+                    {notifications.length === 0 ? (
+                       <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Bildirim yok.</div>
+                    ) : notifications.map((notif) => (
+                      <div key={notif.id} onClick={() => markAsRead(notif.id)} style={{ padding: '1rem', borderBottom: '1px solid var(--border-glass)', display: 'flex', gap: '1rem', background: notif.read ? 'transparent' : 'rgba(255,255,255,0.03)', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.backgroundColor='rgba(255,255,255,0.05)'} onMouseLeave={(e)=>e.currentTarget.style.backgroundColor=notif.read ? 'transparent' : 'rgba(255,255,255,0.03)'}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: notif.read ? 'var(--text-muted)' : 'var(--color-primary)', marginTop: 6 }}></div>
                         <div>
-                          <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem' }}>{notif.text}</p>
+                          <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem', color: notif.read ? 'var(--text-muted)' : 'var(--text-main)' }}>{notif.text}</p>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{notif.time}</span>
                         </div>
                       </div>
@@ -342,7 +391,7 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody>
                   {patients.map((pt) => (
-                    <tr key={pt.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <tr key={pt.id} onClick={() => setSelectedPatient(pt)} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.backgroundColor='rgba(255,255,255,0.02)'} onMouseLeave={(e)=>e.currentTarget.style.backgroundColor='transparent'}>
                       <td style={{ padding: '1rem', color: 'var(--color-primary)' }}>{pt.id}</td>
                       <td style={{ padding: '1rem' }}><strong>{pt.name}</strong> <br/><span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{pt.type}</span></td>
                       <td style={{ padding: '1rem' }}>{pt.ownerName} <br/><span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{pt.ownerPhone}</span></td>
@@ -354,6 +403,196 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+
+              {/* DETAILED PATIENT MODAL */}
+              {selectedPatient && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }}>
+                  <div style={{ background: 'var(--bg-surface)', width: '90%', maxWidth: '900px', height: '80vh', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+                    
+                    {/* Header */}
+                    <div style={{ padding: '2rem', borderBottom: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-dark)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000', fontSize: '2.5rem', fontWeight: 800 }}>
+                          {selectedPatient.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h2 style={{ margin: 0, fontSize: '2rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            {selectedPatient.name} 
+                            <span style={{ fontSize: '0.9rem', padding: '0.25rem 0.75rem', background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', borderRadius: '1rem', fontWeight: 600 }}>{selectedPatient.status}</span>
+                          </h2>
+                          <p style={{ margin: '0.25rem 0 0 0', color: 'var(--text-muted)', fontSize: '1.1rem' }}>{selectedPatient.type} • ID: {selectedPatient.id}</p>
+                        </div>
+                      </div>
+                      <button onClick={() => setSelectedPatient(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }}>
+                        <X size={28} />
+                      </button>
+                    </div>
+
+                    {/* Body */}
+                    <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+                      {/* Tabs Sidebar */}
+                      <div style={{ width: '200px', background: 'rgba(0,0,0,0.2)', borderRight: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', padding: '1rem 0' }}>
+                        {['genel', 'aşılar', 'laboratuvar', 'notlar'].map(tab => (
+                          <button key={tab} onClick={() => setPatientTab(tab)} style={{ background: patientTab === tab ? 'var(--bg-surface)' : 'transparent', color: patientTab === tab ? 'var(--color-primary)' : 'var(--text-muted)', border: 'none', padding: '1rem 1.5rem', textAlign: 'left', fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize', borderLeft: `3px solid ${patientTab === tab ? 'var(--color-primary)' : 'transparent'}` }}>
+                            {tab === 'genel' ? 'Genel Bilgiler' : tab === 'aşılar' ? 'Aşı Geçmişi' : tab === 'laboratuvar' ? 'Laboratuvar' : 'Tedavi Notları'}
+                          </button>
+                        ))}
+                      </div>
+                      {/* Tab Content */}
+                      <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+                        {patientTab === 'genel' && (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                            <div>
+                              <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Sahibi</h4>
+                              <p style={{ fontSize: '1.2rem', margin: 0 }}>{selectedPatient.ownerName}</p>
+                            </div>
+                            <div>
+                              <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Telefon</h4>
+                              <p style={{ fontSize: '1.2rem', margin: 0 }}>{selectedPatient.ownerPhone}</p>
+                            </div>
+                            <div>
+                              <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Kayıt Tarihi</h4>
+                              <p style={{ fontSize: '1.2rem', margin: 0 }}>12.04.2023</p>
+                            </div>
+                            <div>
+                              <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Alerjiler</h4>
+                              <p style={{ fontSize: '1.2rem', margin: 0, color: '#ef4444' }}>Penisilin Alerjisi Mevcut</p>
+                            </div>
+                          </div>
+                        )}
+                        {patientTab === 'aşılar' && (
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', marginBottom: '1rem' }}>
+                              <span style={{ fontWeight: 600 }}>{selectedPatient.vaccineName}</span>
+                              <span style={{ color: 'var(--color-primary)' }}>Sonraki: {selectedPatient.nextVaccine}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', opacity: 0.7 }}>
+                              <span style={{ fontWeight: 600 }}>İç Parazit</span>
+                              <span>Yapıldı: 10.01.2026</span>
+                            </div>
+                          </div>
+                        )}
+                        {patientTab === 'laboratuvar' && (
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '4rem 0' }}>
+                            <Activity size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
+                            <p>Henüz laboratuvar veya röntgen kaydı bulunmuyor.</p>
+                            <button style={{ marginTop: '1rem', background: 'transparent', border: '1px dashed var(--color-primary)', color: 'var(--color-primary)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>+ Sonuç Yükle</button>
+                          </div>
+                        )}
+                        {patientTab === 'notlar' && (
+                          <div>
+                            <textarea placeholder="Hekim notu ekleyin..." style={{ width: '100%', height: '100px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', color: 'white', padding: '1rem', marginBottom: '1rem', outline: 'none' }}></textarea>
+                            <button style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.5rem 1.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, cursor: 'pointer' }}>Notu Kaydet</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 3.1: INVENTORY */}
+          {activeTab === 'inventory' && (
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Klinik Stok & Depo Takibi</h3>
+                <button style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}>+ Ürün Ekle</button>
+              </div>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-glass)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '1rem' }}>Ürün Kodu</th>
+                    <th style={{ padding: '1rem' }}>Ürün Adı</th>
+                    <th style={{ padding: '1rem' }}>Kategori</th>
+                    <th style={{ padding: '1rem' }}>Stok Durumu</th>
+                    <th style={{ padding: '1rem' }}>Durum</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryData.map((inv) => (
+                    <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <td style={{ padding: '1rem', color: 'var(--color-primary)' }}>{inv.id}</td>
+                      <td style={{ padding: '1rem', fontWeight: 600 }}>{inv.name}</td>
+                      <td style={{ padding: '1rem' }}>{inv.category}</td>
+                      <td style={{ padding: '1rem' }}>{inv.stock} Adet</td>
+                      <td style={{ padding: '1rem' }}>
+                        {inv.stock <= inv.critical ? (
+                          <span style={{ padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.8rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}><AlertTriangle size={14}/> Kritik Stok</span>
+                        ) : (
+                          <span style={{ padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.8rem', background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>Yeterli</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* TAB 3.2: FINANCE */}
+          {activeTab === 'finance' && (
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', margin: '0 0 2rem 0' }}>Finans & Faturalama</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+                <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+                  <p style={{ color: '#10b981', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Günlük Ciro</p>
+                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺14,250</h2>
+                </div>
+                <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+                  <p style={{ color: '#38bdf8', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Haftalık Ciro</p>
+                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺86,400</h2>
+                </div>
+                <div style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+                  <p style={{ color: '#fbbf24', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Bekleyen Ödemeler</p>
+                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺2,100</h2>
+                </div>
+              </div>
+              
+              <h4 style={{ marginBottom: '1rem' }}>Son İşlemler</h4>
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+                {['Klinik Muayene - Mia', 'Karma Aşı - Max', 'Pet Kuaför - Duman'].map((txn, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: i !== 2 ? '1px solid var(--border-glass)' : 'none' }}>
+                    <span style={{ fontWeight: 600 }}>{txn}</span>
+                    <span style={{ color: '#10b981', fontWeight: 600 }}>+ ₺{(Math.random() * 1000 + 500).toFixed(0)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3.3: STAFF */}
+          {activeTab === 'staff' && (
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Personel & Nöbet Çizelgesi</h3>
+                <button style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}>+ Personel Ekle</button>
+              </div>
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                {staffData.map(staff => (
+                  <div key={staff.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-dark)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000', fontSize: '1.2rem', fontWeight: 800 }}>
+                        {staff.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem' }}>{staff.name}</h4>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Mesai: {staff.shift}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ 
+                        padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 600,
+                        background: staff.status === 'Müsait' ? 'rgba(16, 185, 129, 0.2)' : staff.status === 'Muayenede' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        color: staff.status === 'Müsait' ? '#10b981' : staff.status === 'Muayenede' ? '#38bdf8' : '#ef4444'
+                      }}>
+                        {staff.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -460,6 +699,30 @@ const AdminDashboard = () => {
                   <input type="checkbox" checked={settings.maintenanceMode} onChange={() => setSettings({...settings, maintenanceMode: !settings.maintenanceMode})} style={{ width: 24, height: 24, cursor: 'pointer' }} />
                 </div>
               </div>
+
+              <h3 style={{ fontFamily: 'var(--font-heading)', margin: '3rem 0 2rem 0', borderTop: '1px solid var(--border-glass)', paddingTop: '2rem' }}>İletişim & Sosyal Medya Ayarları</h3>
+              <form onSubmit={handleSaveContactSettings} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Telefon Numarası</label>
+                  <input type="text" value={contactSettings.phone} onChange={(e) => setContactSettings({...contactSettings, phone: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>E-Posta Adresi</label>
+                  <input type="email" value={contactSettings.email} onChange={(e) => setContactSettings({...contactSettings, email: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Instagram Linki</label>
+                  <input type="url" value={contactSettings.instagram} onChange={(e) => setContactSettings({...contactSettings, instagram: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Facebook Linki</label>
+                  <input type="url" value={contactSettings.facebook} onChange={(e) => setContactSettings({...contactSettings, facebook: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <button type="submit" style={{ padding: '0.8rem 2rem', background: 'var(--color-primary)', color: '#000', fontWeight: 600, border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>Ayarları Kaydet</button>
+                  {saveSuccess && <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={18}/> Kaydedildi!</span>}
+                </div>
+              </form>
             </div>
           )}
 

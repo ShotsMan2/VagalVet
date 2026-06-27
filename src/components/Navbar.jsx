@@ -52,15 +52,7 @@ const Navbar = () => {
           
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-            <span style={{ 
-              fontFamily: 'var(--font-heading)', 
-              fontSize: '1.75rem', 
-              fontWeight: 800,
-              letterSpacing: '-0.02em'
-            }}>
-              <span style={{ color: 'var(--color-primary)' }}>Vagal</span>
-              <span style={{ color: 'var(--color-secondary)' }}>Vet</span>
-            </span>
+            <img src="/logo.png" alt="VagalVet Logo" style={{ height: '40px', objectFit: 'contain' }} />
           </Link>
 
           {/* Desktop Links */}

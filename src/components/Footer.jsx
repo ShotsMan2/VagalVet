@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MapPin, Phone, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 
@@ -8,6 +8,14 @@ const Footer = () => {
   
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [contactSettings, setContactSettings] = useState({ phone: '0553 384 14 60', email: 'vagalvetveterinerklinigi@gmail.com', instagram: '#', facebook: '#' });
+
+  useEffect(() => {
+    const saved = localStorage.getItem('vagalvet_contact_settings');
+    if (saved) {
+      setContactSettings(JSON.parse(saved));
+    }
+  }, []);
 
   if (isAdmin) return null;
 
@@ -78,15 +86,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: '1rem' }}>
-              <span style={{ 
-                fontFamily: 'var(--font-heading)', 
-                fontSize: '2rem', 
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                color: 'white'
-              }}>
-                <span style={{ color: 'var(--color-primary)' }}>Vagal</span>Vet
-              </span>
+              <img src="/logo.png" alt="VagalVet Logo" style={{ height: '48px', objectFit: 'contain' }} />
             </Link>
             <p style={{ maxWidth: '280px', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
               Can dostlarınız için güvenilir, şefkatli ve modern veteriner sağlık hizmetleri sunan tam donanımlı hayvan hastanesi.
@@ -134,11 +134,11 @@ const Footer = () => {
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Phone size={20} color="var(--color-primary)" style={{ flexShrink: 0 }} />
-                <a href="tel:+905533841460" style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>0553 384 14 60</a>
+                <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>{contactSettings.phone}</a>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Mail size={20} color="var(--color-primary)" style={{ flexShrink: 0 }} />
-                <a href="mailto:vagalvetveterinerklinigi@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>vagalvetveterinerklinigi@gmail.com</a>
+                <a href={`mailto:${contactSettings.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{contactSettings.email}</a>
               </div>
             </div>
           </div>

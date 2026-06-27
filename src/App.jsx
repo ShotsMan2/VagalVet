@@ -1,7 +1,9 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Chatbot from './components/Chatbot'
 import Home from './pages/Home'
 import Hizmetler from './pages/Hizmetler'
 import Ekibimiz from './pages/Ekibimiz'
@@ -14,8 +16,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import './App.css'
 
 // Scroll to top on page change
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+// Removed duplicated imports
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -45,6 +46,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <Chatbot />
       </div>
     </Router>
   )
