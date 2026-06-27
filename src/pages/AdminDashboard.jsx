@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle, Mail } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [messages, setMessages] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [newsletter, setNewsletter] = useState([]);
   
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
@@ -35,6 +36,7 @@ const AdminDashboard = () => {
     // Load Data
     setMessages(JSON.parse(localStorage.getItem('vagalvet_messages') || '[]'));
     setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
+    setNewsletter(JSON.parse(localStorage.getItem('vagalvet_newsletter') || '[]'));
     
     // Default dummy patients if empty
     let pts = JSON.parse(localStorage.getItem('vagalvet_patients') || '[]');
@@ -86,6 +88,7 @@ const AdminDashboard = () => {
     { id: 'appointments', label: 'Akıllı Randevular', icon: <Calendar size={20} /> },
     { id: 'patients', label: 'Biyo-Kayıtlar (CRM)', icon: <Users size={20} /> },
     { id: 'messages', label: 'Gelen Mesajlar', icon: <MessageSquare size={20} /> },
+    { id: 'newsletter', label: 'Bülten Aboneleri', icon: <Mail size={20} /> },
     { id: 'settings', label: 'Sistem Ayarları', icon: <Settings size={20} /> },
   ];
 
@@ -395,6 +398,31 @@ const AdminDashboard = () => {
                           <CheckCircle2 size={18} /> Yanıt başarıyla iletildi.
                         </div>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4.5: NEWSLETTER */}
+          {activeTab === 'newsletter' && (
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>E-Bülten Aboneleri</h3>
+                <span style={{ backgroundColor: 'var(--color-primary)', color: '#000', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.875rem', fontWeight: 'bold' }}>
+                  {newsletter.length} Abone
+                </span>
+              </div>
+              
+              {newsletter.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>Henüz bülten abonesi bulunmuyor.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {newsletter.map((email, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-dark)', padding: '1rem 1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
+                      <Mail size={20} color="var(--color-primary)" />
+                      <span style={{ fontSize: '1.05rem' }}>{email}</span>
                     </div>
                   ))}
                 </div>
