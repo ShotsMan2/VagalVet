@@ -6,7 +6,9 @@ const navLinks = [
   { to: '/hizmetler', label: 'Hizmetlerimiz' },
   { to: '/ekibimiz', label: 'Ekibimiz' },
   { to: '/galeri', label: 'Galeri' },
+  { to: '/blog', label: 'Blog' },
   { to: '/iletisim', label: 'İletişim' },
+  { to: '/hasta-sorgu', label: 'Hasta Portalı' },
 ];
 
 const Navbar = () => {
@@ -91,8 +93,8 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            <Link to="/iletisim" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>
-              Randevu Al
+            <Link to="/randevu" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>
+              Online Randevu Al
             </Link>
           </div>
 

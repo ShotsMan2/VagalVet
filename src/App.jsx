@@ -7,6 +7,9 @@ import Hizmetler from './pages/Hizmetler'
 import Ekibimiz from './pages/Ekibimiz'
 import Galeri from './pages/Galeri'
 import Iletisim from './pages/Iletisim'
+import Randevu from './pages/Randevu'
+import HastaSorgu from './pages/HastaSorgu'
+import Blog from './pages/Blog'
 import AdminDashboard from './pages/AdminDashboard'
 import './App.css'
 
@@ -35,6 +38,9 @@ function App() {
             <Route path="/ekibimiz" element={<Ekibimiz />} />
             <Route path="/galeri" element={<Galeri />} />
             <Route path="/iletisim" element={<Iletisim />} />
+            <Route path="/randevu" element={<Randevu />} />
+            <Route path="/hasta-sorgu" element={<HastaSorgu />} />
+            <Route path="/blog" element={<Blog />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
           </Routes>
         </main>
