@@ -3,14 +3,44 @@ import { Link } from 'react-router-dom';
 import { 
   Activity, ShieldPlus, Dna, Syringe, ChevronRight, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
-  ArrowRight, Award, Heart, Shield
+  ArrowRight, Award, Heart, Shield, Star, Quote
 } from 'lucide-react';
+
+const Counter = ({ end, label, suffix = '' }) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const duration = 2000;
+    const increment = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        clearInterval(timer);
+        setCount(end);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [end]);
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: '3.5rem', fontWeight: '800', color: 'var(--color-secondary)', fontFamily: 'var(--font-heading)' }}>{count}{suffix}</div>
+      <div style={{ fontSize: '1.2rem', color: 'var(--text-main)', marginTop: '0.5rem', fontWeight: 600 }}>{label}</div>
+    </div>
+  );
+};
 
 const Home = () => {
   const [mounted, setMounted] = useState(false);
+  const [contactSettings, setContactSettings] = useState({ phone: '0553 384 14 60', email: 'info@vagalvet.com', instagram: '#', facebook: '#' });
 
   useEffect(() => {
     setMounted(true);
+    const saved = localStorage.getItem('vagalvet_contact_settings');
+    if (saved) {
+      setContactSettings(JSON.parse(saved));
+    }
   }, []);
 
   const services = [
@@ -79,22 +109,32 @@ const Home = () => {
             }}>
               VagalVet Veteriner Kliniği olarak sevimli dostlarımızın sağlığı için en güncel tıbbi yöntemlerle yanınızdayız. Profesyonel kadromuz ve donanımlı altyapımızla sevgi dolu bir sağlık hizmeti sunuyoruz.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="tel:+905533841460" className="btn btn-primary">
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} className="btn btn-primary">
                 <Phone size={20} style={{ marginRight: '0.5rem' }}/>
                 Randevu Alın
               </a>
               <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>
                 Hizmetleri İncele
               </Link>
+              {contactSettings.instagram && contactSettings.instagram !== '#' && (
+                <a href={contactSettings.instagram} target="_blank" rel="noopener noreferrer" style={{ padding: '0.8rem', borderRadius: '50%', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e=>e.currentTarget.style.color='#E1306C'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-main)'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+              )}
+              {contactSettings.facebook && contactSettings.facebook !== '#' && (
+                <a href={contactSettings.facebook} target="_blank" rel="noopener noreferrer" style={{ padding: '0.8rem', borderRadius: '50%', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e=>e.currentTarget.style.color='#1877F2'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-main)'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+              )}
             </div>
             <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', maxWidth: '400px' }}>
               <div style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
                 <HeartPulse size={24} color="var(--color-secondary)" />
               </div>
               <div>
-                <span style={{ fontSize: '1rem', fontWeight: 700, display: 'block' }}>7/24 Acil Müdahale</span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>0553 384 14 60</span>
+                <span style={{ fontSize: '1rem', fontWeight: 700, display: 'block' }}>7/24 Acil Müdahale & Destek</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{contactSettings.phone} • {contactSettings.email}</span>
               </div>
             </div>
           </div>
@@ -248,6 +288,50 @@ const Home = () => {
                 </div>
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: 'var(--text-main)' }}>{v.title}</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-main)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem' }}>
+          <Counter end={15} label="Uzman Hekim & Personel" suffix="+" />
+          <Counter end={10000} label="Mutlu Hasta" suffix="+" />
+          <Counter end={20} label="Yıllık Deneyim" suffix="+" />
+          <Counter end={7} label="Gün / 24 Saat Açık" suffix="/24" />
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, marginBottom: '1rem' }}>
+              <Star size={16} fill="currentColor" /> Başarı Hikayeleri
+            </div>
+            <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Hasta Sahiplerimizin <span style={{ color: 'var(--color-secondary)' }}>Yorumları</span></h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            {[
+              { text: "Lina'nın parvo tedavisinde gösterdikleri çaba ve şefkat kelimelerle anlatılamaz. Gece gündüz demeden yanımızda oldular. VagalVet ekibine minnettarız.", author: "Ayşe T.", pet: "Lina'nın Annesi" },
+              { text: "Kliniğin hijyeni ve teknolojik altyapısı muazzam. Mia'nın kısırlaştırma ameliyatı çok başarılı geçti, ertesi gün ayaklandı. Her şey için teşekkürler.", author: "Burak K.", pet: "Mia'nın Babası" },
+              { text: "Acil bir durumda gecenin 3'ünde getirdik kedimizi. Kapıda karşılayıp anında müdahale ettiler. Gözü kapalı güvenebileceğiniz tek klinik.", author: "Elif S.", pet: "Duman'ın Annesi" }
+            ].map((review, i) => (
+              <div key={i} className="surface-card" style={{ padding: '3rem', borderRadius: 'var(--radius-lg)', position: 'relative' }}>
+                <Quote size={48} color="rgba(251, 191, 36, 0.1)" style={{ position: 'absolute', top: '1rem', right: '1rem' }} />
+                <div style={{ display: 'flex', gap: '0.25rem', color: 'var(--color-secondary)', marginBottom: '1.5rem' }}>
+                  {[...Array(5)].map((_, j) => <Star key={j} size={18} fill="currentColor" />)}
+                </div>
+                <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: '2rem', fontStyle: 'italic' }}>
+                  "{review.text}"
+                </p>
+                <div>
+                  <h4 style={{ color: 'var(--text-main)', fontSize: '1.1rem', marginBottom: '0.25rem' }}>{review.author}</h4>
+                  <span style={{ color: 'var(--color-primary)', fontSize: '0.9rem' }}>{review.pet}</span>
+                </div>
               </div>
             ))}
           </div>

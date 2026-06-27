@@ -6,7 +6,9 @@ const navLinks = [
   { to: '/hizmetler', label: 'Hizmetlerimiz' },
   { to: '/ekibimiz', label: 'Ekibimiz' },
   { to: '/galeri', label: 'Galeri' },
+  { to: '/blog', label: 'Blog' },
   { to: '/iletisim', label: 'İletişim' },
+  { to: '/hasta-sorgu', label: 'Hasta Portalı' },
 ];
 
 const Navbar = () => {
@@ -50,15 +52,7 @@ const Navbar = () => {
           
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-            <span style={{ 
-              fontFamily: 'var(--font-heading)', 
-              fontSize: '1.75rem', 
-              fontWeight: 800,
-              letterSpacing: '-0.02em'
-            }}>
-              <span style={{ color: 'var(--color-primary)' }}>Vagal</span>
-              <span style={{ color: 'var(--color-secondary)' }}>Vet</span>
-            </span>
+            <img src="/logo.png" alt="VagalVet Logo" style={{ height: '40px', objectFit: 'contain' }} />
           </Link>
 
           {/* Desktop Links */}
@@ -91,8 +85,8 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            <Link to="/iletisim" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>
-              Randevu Al
+            <Link to="/randevu" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>
+              Online Randevu Al
             </Link>
           </div>
 
