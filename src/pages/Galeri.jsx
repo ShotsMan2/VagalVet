@@ -77,7 +77,7 @@ export default function Galeri() {
         style={{
           paddingTop: '120px',
           paddingBottom: '64px',
-          background: 'linear-gradient(135deg, var(--color-secondary) 0%, #3a5f5f 100%)',
+          background: 'linear-gradient(135deg, var(--page-header-bg) 0%, #3a5f5f 100%)',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',

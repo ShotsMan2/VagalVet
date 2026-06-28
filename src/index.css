@@ -46,6 +46,8 @@
   --hours-card-text: #ffffff;
   --badge-bg: var(--color-primary);
   --badge-text: var(--color-secondary);
+  --footer-bg: var(--color-secondary);
+  --page-header-bg: var(--color-secondary);
   
   /* Glass Variables */
   --glass-bg: rgba(255, 255, 255, 0.7);
@@ -82,11 +84,17 @@
   --hours-card-text: var(--text-main);
   --badge-bg: var(--color-primary); /* Keep badge yellow on dark card */
   --badge-text: #0D1412; /* Dark text for yellow badge */
+  --footer-bg: var(--bg-surface); /* Dark footer in dark mode */
+  --page-header-bg: var(--bg-surface); /* Dark headers in dark mode */
   
   /* Glass Variables */
   --glass-bg: rgba(20, 31, 28, 0.7);
   --glass-border: rgba(255, 255, 255, 0.05);
   --glass-shadow: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .dark-map {
+  filter: invert(90%) hue-rotate(180deg) brightness(95%) contrast(1.1);
 }
 
 * {

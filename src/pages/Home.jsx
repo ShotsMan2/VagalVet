@@ -464,11 +464,12 @@ const Home = () => {
             
             <div style={{ flex: '1 1 400px', minHeight: '400px' }}>
               <iframe 
+                className="dark-map"
                 title="VagalVet Konum"
                 src="https://maps.google.com/maps?q=VagalVet+Veteriner+Klini%C4%9Fi+Konya&t=&z=16&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{ border: 0, display: 'block', minHeight: '400px' }}
+                style={{ border: 0, display: 'block', minHeight: '400px', transition: 'filter 0.3s ease' }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

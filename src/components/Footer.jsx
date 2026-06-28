@@ -35,7 +35,7 @@ const Footer = () => {
   return (
     <footer style={{ 
       padding: '5rem 0 0', 
-      backgroundColor: 'var(--color-secondary)',
+      backgroundColor: 'var(--footer-bg)',
       color: 'rgba(255, 255, 255, 0.8)',
     }}>
       <div className="container">
@@ -71,7 +71,7 @@ const Footer = () => {
               required
               style={{
                 flex: 1, padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                outline: 'none', background: 'var(--bg-surface)'
+                outline: 'none', background: 'var(--bg-surface)', color: 'var(--text-main)'
               }}
             />
             <button type="submit" className="btn btn-primary" style={{ padding: '0 1.5rem' }}>
