@@ -15,38 +15,47 @@ export default function Blog() {
     };
   }, [activeArticle]);
 
-  const articles = [
-    {
-      id: 1,
-      title: 'Evcil Hayvanlarımızı Neden Kısırlaştırmalıyız? Kısırlaştırmanın Önemi Nedir?',
-      excerpt: 'Kısırlaştırma, hayvan refahını artıran, yaşam süresini uzatan ve birçok ciddi hastalığın önüne geçen çok önemli bir cerrahi müdahaledir.',
-      content: `🔖 Dişi hayvanların kısırlaştırılmasıyla kızgınlık dönemine bağlı huzursuzluk, aşırı miyavlama, yuvarlanma ve çiftleşme davranışları ortadan kalkmaktadır. Erkek hayvanların dişilere yönelmesine bağlı kaçma, kavga etme ve yaralanma risklerini azaltır.\n\n🔖 Erkek hayvanların kısırlaştırılmasıyla üreme hormonlarına bağlı davranışlarda belirgin azalma görülmektedir. Alan işaretleme, dolaşma eğilimi, dişilere yönelme ve cinsel motivasyonla ilişkili davranışların azalmasına katkı sağlar. Bu durum hem hayvan refahının artmasına hem de sahip-hayvan ilişkisinin güçlenmesine yardımcı olmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma meme tümörü riskini anlamlı ölçüde azaltmaktadır. Erkek kedi ve köpeklerde testiküler tümörleri tamamen önlemekte, prostat hastalıklarının riskini önemli ölçüde azaltmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma (ovariohisterektomi) uygulaması pyometra riskini tamamen ortadan kaldıran tek yöntemdir. Pyometra, yaş ilerledikçe gelişme riski artan ve potansiyel olarak yaşamı tehdit eden üreme sistemi hastalığıdır.\n\n🔖 Kısırlaştırma istenmeyen gebelikleri ve doğumla ilgili komplikasyonları tamamen önler.\n\n🔖 Kısırlaştırma sonrası evcil hayvanlarda hormonların metabolik hız üzerindeki etkilerinin ortadan kalkmasıyla birlikte toplam enerji gereksiniminde azalma meydana gelmektedir. Hormonlarda meydana gelen değişiklikler stresin azalmasına yol açar, iştah artışı yaygın olarak görülür. Bu durumda enerji alımı ve fiziksel aktivite dengesi yönetilerek obezite riskinin önüne geçilmelidir.\n\n‼️ ÖZELLİKLE PYOMETRA VE PROSTAT HASTALIKLARI GİBİ CİDDİ KLİNİK TABLOLAR GÖZ ÖNÜNE ALINIRSA EVCİL HAYVANIMIZI KISIRLAŞTIRMAK İÇİN GEÇ KALINMAMALI, POTANSİYEL RİSKLERİN ÖNÜNE GEÇİLMELİDİR.`,
-      image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80',
-      category: 'Koruyucu Hekimlik',
-      date: 'Yakın Zamanda',
-      author: '@muru.vett & @m.ali_eraslan'
-    },
-    {
-      id: 2,
-      title: 'Yeni Doğum Yapan Bir Kedideki Anne Rolü Nedir?',
-      excerpt: 'İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu kliniğimize getirildi. Göbek bağını annenin kesmediği durumlarda ne yapılmalıdır?',
-      content: `İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu yavrular birbirine dolanmış bir şekilde kliniğimize getirildi. Göbek bağını annenin kesmediği bu durumda erken müdahale için geç kalınmıştı. Gerekli müdahale sonucunda 2 yavru uygun seviyeden göbek bağları kesilerek sağlıklı şekilde kurtarıldı. Genel durumları stabil ve yaşamsal refleksleri iyi hale getirildi.\n\n📌 YENİ DOĞUM YAPAN BİR KEDİDEKİ ANNE ROLÜ NEDİR, GÖBEK BAĞINI ANNENİN KESMEDİĞİ DURUMLARDA NE YAPILMALIDIR?\n\n🐱 Yenidoğan yavru kediler doğru vücut ısısının korunması, bakım, korunma ve idrar/dışkılama uyarımı için annelerine bağımlıdır.\n🐱 Bu nedenle doğumda ve sonrasında uygun anne davranışı ve bakımı yavru kedinin hayatta kalması için gereklidir.\n🐱 Doğumda normal koşullar altında anne fetal zarları açmak, göbek bağını kesmek (ısırmak) ve yavruları yalamakla sorumludur; yalamanın amacı, solunumu uyarmada önemli olmasının yanı sıra, fetal sıvıları uzaklaştırmak ve yavru kedinin kurumasını sağlamaktır.\n🐱 İlk kez doğum yapan annelerde, doğum sırasında ve doğumdan sonraki ilk 48 saat boyunca anne davranışlarının sıkı bir şekilde izlenmesi, anormallikleri belirlemek ve yavru kedileri kurtarmak için çok önemlidir.\n🐱 Yeni doğum sonrası annenin yapamadığı müdahalelerde mutlaka veteriner hekime başvurulmalıdır.\n\n⚠️ NELERE DİKKAT ETMELİYİZ?\n\n➡️ Anne, yavruların göbek bağını koparmış mı?\nEğer göbek bağları duruyorsa, dolanma, enfeksiyon ve kan akımının kesilmesi riski vardır.\n➡️ Yavrular birbirine dolanmış mı?\nGöbek bağları, özellikle doğumdan sonraki ilk birkaç gün içinde kuruyana kadar oldukça esnek ve tehlikelidir.\n➡️ Göbek bağı şiş, kızarık ya da kötü kokulu mu?\nBöyle durumlar göbek enfeksiyonuna işaret eder ve sistemik enfeksiyonlara yol açabilir.\n\n⚠️ UNUTMAYIN!\nİlk doğumu yapan annelerde annelik içgüdüsü zayıf olabilir. Bu gibi durumlarda en kısa sürede veteriner hekime başvurulmalıdır.`,
-      image: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=800&q=80',
-      category: 'Klinik Vakalar',
-      date: 'Yakın Zamanda',
-      author: 'VagalVet Ekibi'
-    },
-    {
-      id: 3,
-      title: 'Canine Parvoviral Enteritis (Lina Vakamız)',
-      excerpt: 'Kanin Parvoviral Enteritis nedir? Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.',
-      content: `🐶🤎 Lina\n🦠 Canine Parvoviral Enteritis\n\n🔖 Kanin Parvoviral Enteritis nedir?\n• Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.\n\n🔖 Nasıl Bulaşır?\n• Bu hastalık hava yoluyla direkt olarak veya hasta köpekler tarafından enfekte dışkı ile kontamine gıdaların ağız yoluyla alınması sonucu geçebilmektedir. Ayrıca enfekte bir hayvanın dışkısıyla (gaitasıyla) kontamine araç ve ekipmanlarla temas yoluyla da enfeksiyon etkenleri duyarlı hayvanlara bulaşabilmektedir.\n\n🔖 En duyarlı yaş aralığı nedir?\n• Her yaş ve ırktan köpek Parvovirüs ile enfekte olabilmesine rağmen en duyarlı yaş aralığı 6-16 haftalık yavru köpeklerdir.\n\n🔖 Klinik belirtileri nelerdir?\n• Halsizlik, iştahsızlık, kusma ve şiddetli ishal gözlemlenir.\n• Bağırsak cidarı etkilendiği için bağırsak yüzeyinde kanamalar şekillenebilmekte ve bunun sonucunda kusma ve kanlı ishal görülmektedir.\n\n📌 Koruyucu immunitenin eksikliği hastalığa yatkın hale getiren hazırlayıcı faktörlerdendir.\n📌 Klinik bulguların görülmesiyle beraber veteriner hekiminize danışmanız erken teşhis ve tedavi için oldukça önemlidir. Tedavinin yanı sıra hastalıktan korunma, önemini korumaktadır.\n\n⚠️ Korunmanın En Etkili Yolu: AŞILAMA 💉\n• Veteriner hekim tarafından köpeğinizin mevcut durumuna göre uygun görülen zaman içerisinde aşılama takvimine başlanmalıdır.\n• Aşılama, viral enfeksiyonlara karşı koruma sağlamak için hayati öneme sahiptir. Can dostlarımız için, sağlıklı yaşamları için aşılarımızı ihmal etmeyelim, geç kalmayalım.❣️\n\nGeçmiş olsun Lina! 🥰`,
-      image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80',
-      category: 'Köpek Bakımı',
-      date: 'Yakın Zamanda',
-      author: 'VagalVet Ekibi'
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    let savedBlogs = JSON.parse(localStorage.getItem('vagalvet_blogs') || '[]');
+    if (savedBlogs.length === 0) {
+      savedBlogs = [
+        {
+          id: 1,
+          title: 'Evcil Hayvanlarımızı Neden Kısırlaştırmalıyız? Kısırlaştırmanın Önemi Nedir?',
+          excerpt: 'Kısırlaştırma, hayvan refahını artıran, yaşam süresini uzatan ve birçok ciddi hastalığın önüne geçen çok önemli bir cerrahi müdahaledir.',
+          content: `🔖 Dişi hayvanların kısırlaştırılmasıyla kızgınlık dönemine bağlı huzursuzluk, aşırı miyavlama, yuvarlanma ve çiftleşme davranışları ortadan kalkmaktadır. Erkek hayvanların dişilere yönelmesine bağlı kaçma, kavga etme ve yaralanma risklerini azaltır.\n\n🔖 Erkek hayvanların kısırlaştırılmasıyla üreme hormonlarına bağlı davranışlarda belirgin azalma görülmektedir. Alan işaretleme, dolaşma eğilimi, dişilere yönelme ve cinsel motivasyonla ilişkili davranışların azalmasına katkı sağlar. Bu durum hem hayvan refahının artmasına hem de sahip-hayvan ilişkisinin güçlenmesine yardımcı olmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma meme tümörü riskini anlamlı ölçüde azaltmaktadır. Erkek kedi ve köpeklerde testiküler tümörleri tamamen önlemekte, prostat hastalıklarının riskini önemli ölçüde azaltmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma (ovariohisterektomi) uygulaması pyometra riskini tamamen ortadan kaldıran tek yöntemdir. Pyometra, yaş ilerledikçe gelişme riski artan ve potansiyel olarak yaşamı tehdit eden üreme sistemi hastalığıdır.\n\n🔖 Kısırlaştırma istenmeyen gebelikleri ve doğumla ilgili komplikasyonları tamamen önler.\n\n🔖 Kısırlaştırma sonrası evcil hayvanlarda hormonların metabolik hız üzerindeki etkilerinin ortadan kalkmasıyla birlikte toplam enerji gereksiniminde azalma meydana gelmektedir. Hormonlarda meydana gelen değişiklikler stresin azalmasına yol açar, iştah artışı yaygın olarak görülür. Bu durumda enerji alımı ve fiziksel aktivite dengesi yönetilerek obezite riskinin önüne geçilmelidir.\n\n‼️ ÖZELLİKLE PYOMETRA VE PROSTAT HASTALIKLARI GİBİ CİDDİ KLİNİK TABLOLAR GÖZ ÖNÜNE ALINIRSA EVCİL HayVANIMIZI KISIRLAŞTIRMAK İÇİN GEÇ KALINMAMALI, POTANSİYEL RİSKLERİN ÖNÜNE GEÇİLMELİDİR.`,
+          image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80',
+          category: 'Koruyucu Hekimlik',
+          date: 'Yakın Zamanda',
+          author: '@muru.vett & @m.ali_eraslan'
+        },
+        {
+          id: 2,
+          title: 'Yeni Doğum Yapan Bir Kedideki Anne Rolü Nedir?',
+          excerpt: 'İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu kliniğimize getirildi. Göbek bağını annenin kesmediği durumlarda ne yapılmalıdır?',
+          content: `İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu yavrular birbirine dolanmış bir şekilde kliniğimize getirildi. Göbek bağını annenin kesmediği bu durumda erken müdahale için geç kalınmıştı. Gerekli müdahale sonucunda 2 yavru uygun seviyeden göbek bağları kesilerek sağlıklı şekilde kurtarıldı. Genel durumları stabil ve yaşamsal refleksleri iyi hale getirildi.\n\n📌 YENİ DOĞUM YAPAN BİR KEDİDEKİ ANNE ROLÜ NEDİR, GÖBEK BAĞINI ANNENİN KESMEDİĞİ DURUMLARDA NE YAPILMALIDIR?\n\n🐱 Yenidoğan yavru kediler doğru vücut ısısının korunması, bakım, korunma ve idrar/dışkılama uyarımı için annelerine bağımlıdır.\n🐱 Bu nedenle doğumda ve sonrasında uygun anne davranışı ve bakımı yavru kedinin hayatta kalması için gereklidir.\n🐱 Doğumda normal koşullar altında anne fetal zarları açmak, göbek bağını kesmek (ısırmak) ve yavruları yalamakla sorumludur; yalamanın amacı, solunumu uyarmada önemli olmasının yanı sıra, fetal sıvıları uzaklaştırmak ve yavru kedinin kurumasını sağlamaktır.\n🐱 İlk kez doğum yapan annelerde, doğum sırasında ve doğumdan sonraki ilk 48 saat boyunca anne davranışlarının sıkı bir şekilde izlenmesi, anormallikleri belirlemek ve yavru kedileri kurtarmak için çok önemlidir.\n🐱 Yeni doğum sonrası annenin yapamadığı müdahalelerde mutlaka veteriner hekime başvurulmalıdır.\n\n⚠️ NELERE DİKKAT ETMELİYİZ?\n\n➡️ Anne, yavruların göbek bağını koparmış mı?\nEğer göbek bağları duruyorsa, dolanma, enfeksiyon ve kan akımının kesilmesi riski vardır.\n➡️ Yavrular birbirine dolanmış mı?\nGöbek bağları, özellikle doğumdan sonraki ilk birkaç gün içinde kuruyana kadar oldukça esnek ve tehlikelidir.\n➡️ Göbek bağı şiş, kızarık ya da kötü kokulu mu?\nBöyle durumlar göbek enfeksiyonuna işaret eder ve sistemik enfeksiyonlara yol açabilir.\n\n⚠️ UNUTMAYIN!\nİlk doğumu yapan annelerde annelik içgüdüsü zayıf olabilir. Bu gibi durumlarda en kısa sürede veteriner hekime başvurulmalıdır.`,
+          image: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=800&q=80',
+          category: 'Klinik Vakalar',
+          date: 'Yakın Zamanda',
+          author: 'VagalVet Ekibi'
+        },
+        {
+          id: 3,
+          title: 'Canine Parvoviral Enteritis (Lina Vakamız)',
+          excerpt: 'Kanin Parvoviral Enteritis nedir? Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.',
+          content: `🐶🤎 Lina\n🦠 Canine Parvoviral Enteritis\n\n🔖 Kanin Parvoviral Enteritis nedir?\n• Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.\n\n🔖 Nasıl Bulaşır?\n• Bu hastalık hava yoluyla direkt olarak veya hasta köpekler tarafından enfekte dışkı ile kontamine gıdaların ağız yoluyla alınması sonucu geçebilmektedir. Ayrıca enfekte bir hayvanın dışkısıyla (gaitasıyla) kontamine araç ve ekipmanlarla temas yoluyla da enfeksiyon etkenleri duyarlı hayvanlara bulaşabilmektedir.\n\n🔖 En duyarlı yaş aralığı nedir?\n• Her yaş ve ırktan köpek Parvovirüs ile enfekte olabilmesine rağmen en duyarlı yaş aralığı 6-16 haftalık yavru köpeklerdir.\n\n🔖 Klinik belirtileri nelerdir?\n• Halsizlik, iştahsızlık, kusma ve şiddetli ishal gözlemlenir.\n• Bağırsak cidarı etkilendiği için bağırsak yüzeyinde kanamalar şekillenebilmekte ve bunun sonucunda kusma ve kanlı ishal görülmektedir.\n\n📌 Koruyucu immunitenin eksikliği hastalığa yatkın hale getiren hazırlayıcı faktörlerdendir.\n📌 Klinik bulguların görülmesiyle beraber veteriner hekiminize danışmanız erken teşhis ve tedavi için oldukça önemlidir. Tedavinin yanı sıra hastalıktan korunma, önemini korumaktadır.\n\n⚠️ Korunmanın En Etkili Yolu: AŞILAMA 💉\n• Veteriner hekim tarafından köpeğinizin mevcut durumuna göre uygun görülen zaman içerisinde aşılama takvimine başlanmalıdır.\n• Aşılama, viral enfeksiyonlara karşı koruma sağlamak için hayati öneme sahiptir. Can dostlarımız için, sağlıklı yaşamları için aşılarımızı ihmal etmeyelim, geç kalmayalım.❣️\n\nGeçmiş olsun Lina! 🥰`,
+          image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80',
+          category: 'Köpek Bakımı',
+          date: 'Yakın Zamanda',
+          author: 'VagalVet Ekibi'
+        }
+      ];
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(savedBlogs));
     }
-  ];
+    setArticles(savedBlogs);
+  }, []);
 
   return (
     <main style={{ background: 'var(--bg-main)', minHeight: '100vh', padding: '120px 0 60px', position: 'relative' }}>

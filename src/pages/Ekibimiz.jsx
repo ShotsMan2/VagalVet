@@ -5,7 +5,15 @@ import {
 
 const Ekibimiz = () => {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  const [siteContent, setSiteContent] = useState({});
+
+  useEffect(() => { 
+    setMounted(true); 
+    const savedContent = localStorage.getItem('vagalvet_site_content');
+    if (savedContent) {
+      setSiteContent(JSON.parse(savedContent));
+    }
+  }, []);
 
   const values = [
     { icon: <Award size={28} color="var(--color-secondary)" />, title: 'Deneyim & Uzmanlık', desc: 'Yılların verdiği bilgi birikimi ve sürekli eğitimle en güncel veterinerlik uygulamalarını sunuyoruz.' },
@@ -141,14 +149,14 @@ const Ekibimiz = () => {
           <div className="surface-card" style={{ padding: '3rem', backgroundColor: 'var(--color-secondary)', color: 'white' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1.5rem' }}>
               <span style={{ fontSize: '1.2rem', fontWeight: 600 }}>Haftaiçi Her Gün</span>
-              <span style={{ fontSize: '1.2rem', opacity: 0.9 }}>09.00 - 20.00</span>
+              <span style={{ fontSize: '1.2rem', opacity: 0.9 }}>{siteContent.workingHoursWeekday || '09.00 - 20.00'}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
               <div>
                 <span style={{ fontSize: '1.2rem', fontWeight: 600, display: 'block' }}>Haftasonu</span>
                 <span style={{ fontSize: '0.9rem', opacity: 0.7 }}>(Cmt. - Paz.)</span>
               </div>
-              <span style={{ fontSize: '1.2rem', opacity: 0.9 }}>12.00 - 18.00</span>
+              <span style={{ fontSize: '1.2rem', opacity: 0.9 }}>{siteContent.workingHoursWeekend || '12.00 - 18.00'}</span>
             </div>
             <div style={{ backgroundColor: 'var(--color-primary)', padding: '1.25rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--color-secondary)', fontWeight: 700, fontSize: '1.05rem' }}>
               7/24 Acil Müdahale Hizmeti Sağlanmaktadır.

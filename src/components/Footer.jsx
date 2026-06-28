@@ -158,9 +158,8 @@ const Footer = () => {
         }}>
           <span>&copy; {new Date().getFullYear()} VagalVet Veteriner Kliniği. Tüm Hakları Saklıdır.</span>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>KVKK Metni</Link>
-            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Gizlilik Politikası</Link>
-            <Link to="/admin" style={{ color: 'inherit', textDecoration: 'none', opacity: 0.5 }}>Kurumsal Yönetim</Link>
+            <Link to="/kvkk" style={{ color: 'inherit', textDecoration: 'none' }}>KVKK Metni</Link>
+            <Link to="/gizlilik" style={{ color: 'inherit', textDecoration: 'none' }}>Gizlilik Politikası</Link>
           </div>
         </div>
       </div>

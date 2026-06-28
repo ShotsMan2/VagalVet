@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle, Mail } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle, Mail, FileText, BookOpen } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -10,6 +10,7 @@ const AdminDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [newsletter, setNewsletter] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
@@ -56,12 +57,27 @@ const AdminDashboard = () => {
   const [settings, setSettings] = useState({ maintenanceMode: false, onlineBooking: true, emailNotifications: true });
   const [contactSettings, setContactSettings] = useState({ phone: '', email: '', instagram: '', facebook: '' });
   const [saveSuccess, setSaveSuccess] = useState(false);
+  
+  // Blog State
+  const [showAddBlog, setShowAddBlog] = useState(false);
+  const [newBlog, setNewBlog] = useState({ title: '', excerpt: '', content: '', image: '', category: '', date: 'Yakın Zamanda', author: 'VagalVet Ekibi' });
+
+  // Content State
+  const [siteContent, setSiteContent] = useState({});
+  const [saveContentSuccess, setSaveContentSuccess] = useState(false);
 
   const handleSaveContactSettings = (e) => {
     e.preventDefault();
     localStorage.setItem('vagalvet_contact_settings', JSON.stringify(contactSettings));
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
+  };
+
+  const handleSaveSiteContent = (e) => {
+    e.preventDefault();
+    localStorage.setItem('vagalvet_site_content', JSON.stringify(siteContent));
+    setSaveContentSuccess(true);
+    setTimeout(() => setSaveContentSuccess(false), 3000);
   };
 
   useEffect(() => {
@@ -78,6 +94,74 @@ const AdminDashboard = () => {
       facebook: 'https://facebook.com/vagalvet'
     };
     setContactSettings(JSON.parse(localStorage.getItem('vagalvet_contact_settings') || JSON.stringify(defaultContactSettings)));
+
+    // Load Site Content
+    const defaultSiteContent = {
+      homeHeroTitle: 'Can dostlarınız için',
+      homeHeroTitleHighlight: 'modern sağlık.',
+      homeHeroSubtitle: 'VagalVet Veteriner Kliniği olarak sevimli dostlarımızın sağlığı için en güncel tıbbi yöntemlerle yanınızdayız. Profesyonel kadromuz ve donanımlı altyapımızla sevgi dolu bir sağlık hizmeti sunuyoruz.',
+      homeAboutTitle: 'Neden VagalVet?',
+      homeAboutText1: 'Kliniğimiz, dostlarımızın hem fiziksel hem de psikolojik ihtiyaçlarını göz önünde bulundurarak tasarlanmıştır. Modern ekipmanlarımızla hastalıkları erken teşhis ediyor ve en uygun tedavi yöntemlerini sunuyoruz.',
+      homeAboutText2: 'Aşı takibinden cerrahi operasyonlara, laboratuvar hizmetlerinden pet kuaförüne kadar geniş bir yelpazede hizmet veriyoruz. Amacımız sadece hastalıkları tedavi etmek değil, koruyucu hekimlik ile hastalıkların önüne geçmektir.',
+      workingHoursWeekday: '09.00 - 20.00',
+      workingHoursWeekend: '12.00 - 18.00'
+    };
+    const savedContent = localStorage.getItem('vagalvet_site_content');
+    if (savedContent) {
+      let parsed = JSON.parse(savedContent);
+      if (parsed.homeHeroTitle === 'Sevgiyle İyileştiriyor, Özenle Yaşatıyoruz') {
+        parsed.homeHeroTitle = 'Can dostlarınız için';
+      }
+      if (!parsed.homeHeroTitleHighlight) {
+        parsed.homeHeroTitleHighlight = 'modern sağlık.';
+      }
+      if (!parsed.workingHoursWeekday) {
+        parsed.workingHoursWeekday = '09.00 - 20.00';
+        parsed.workingHoursWeekend = '12.00 - 18.00';
+      }
+      setSiteContent(parsed);
+    } else {
+      setSiteContent(defaultSiteContent);
+    }
+    
+    // Load Blogs
+    let savedBlogs = JSON.parse(localStorage.getItem('vagalvet_blogs') || '[]');
+    if (savedBlogs.length === 0) {
+      savedBlogs = [
+        {
+          id: 1,
+          title: 'Evcil Hayvanlarımızı Neden Kısırlaştırmalıyız? Kısırlaştırmanın Önemi Nedir?',
+          excerpt: 'Kısırlaştırma, hayvan refahını artıran, yaşam süresini uzatan ve birçok ciddi hastalığın önüne geçen çok önemli bir cerrahi müdahaledir.',
+          content: `🔖 Dişi hayvanların kısırlaştırılmasıyla kızgınlık dönemine bağlı huzursuzluk, aşırı miyavlama, yuvarlanma ve çiftleşme davranışları ortadan kalkmaktadır. Erkek hayvanların dişilere yönelmesine bağlı kaçma, kavga etme ve yaralanma risklerini azaltır.\n\n🔖 Erkek hayvanların kısırlaştırılmasıyla üreme hormonlarına bağlı davranışlarda belirgin azalma görülmektedir. Alan işaretleme, dolaşma eğilimi, dişilere yönelme ve cinsel motivasyonla ilişkili davranışların azalmasına katkı sağlar. Bu durum hem hayvan refahının artmasına hem de sahip-hayvan ilişkisinin güçlenmesine yardımcı olmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma meme tümörü riskini anlamlı ölçüde azaltmaktadır. Erkek kedi ve köpeklerde testiküler tümörleri tamamen önlemekte, prostat hastalıklarının riskini önemli ölçüde azaltmaktadır.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma (ovariohisterektomi) uygulaması pyometra riskini tamamen ortadan kaldıran tek yöntemdir. Pyometra, yaş ilerledikçe gelişme riski artan ve potansiyel olarak yaşamı tehdit eden üreme sistemi hastalığıdır.\n\n🔖 Kısırlaştırma istenmeyen gebelikleri ve doğumla ilgili komplikasyonları tamamen önler.\n\n🔖 Kısırlaştırma sonrası evcil hayvanlarda hormonların metabolik hız üzerindeki etkilerinin ortadan kalkmasıyla birlikte toplam enerji gereksiniminde azalma meydana gelmektedir. Hormonlarda meydana gelen değişiklikler stresin azalmasına yol açar, iştah artışı yaygın olarak görülür. Bu durumda enerji alımı ve fiziksel aktivite dengesi yönetilerek obezite riskinin önüne geçilmelidir.\n\n‼️ ÖZELLİKLE PYOMETRA VE PROSTAT HASTALIKLARI GİBİ CİDDİ KLİNİK TABLOLAR GÖZ ÖNÜNE ALINIRSA EVCİL HAYVANIMIZI KISIRLAŞTIRMAK İÇİN GEÇ KALINMAMALI, POTANSİYEL RİSKLERİN ÖNÜNE GEÇİLMELİDİR.`,
+          image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80',
+          category: 'Koruyucu Hekimlik',
+          date: 'Yakın Zamanda',
+          author: '@muru.vett & @m.ali_eraslan'
+        },
+        {
+          id: 2,
+          title: 'Yeni Doğum Yapan Bir Kedideki Anne Rolü Nedir?',
+          excerpt: 'İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu kliniğimize getirildi. Göbek bağını annenin kesmediği durumlarda ne yapılmalıdır?',
+          content: `İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu yavrular birbirine dolanmış bir şekilde kliniğimize getirildi. Göbek bağını annenin kesmediği bu durumda erken müdahale için geç kalınmıştı. Gerekli müdahale sonucunda 2 yavru uygun seviyeden göbek bağları kesilerek sağlıklı şekilde kurtarıldı. Genel durumları stabil ve yaşamsal refleksleri iyi hale getirildi.\n\n📌 YENİ DOĞUM YAPAN BİR KEDİDEKİ ANNE ROLÜ NEDİR, GÖBEK BAĞINI ANNENİN KESMEDİĞİ DURUMLARDA NE YAPILMALIDIR?\n\n🐱 Yenidoğan yavru kediler doğru vücut ısısının korunması, bakım, korunma ve idrar/dışkılama uyarımı için annelerine bağımlıdır.\n🐱 Bu nedenle doğumda ve sonrasında uygun anne davranışı ve bakımı yavru kedinin hayatta kalması için gereklidir.\n🐱 Doğumda normal koşullar altında anne fetal zarları açmak, göbek bağını kesmek (ısırmak) ve yavruları yalamakla sorumludur; yalamanın amacı, solunumu uyarmada önemli olmasının yanı sıra, fetal sıvıları uzaklaştırmak ve yavru kedinin kurumasını sağlamaktır.\n🐱 İlk kez doğum yapan annelerde, doğum sırasında ve doğumdan sonraki ilk 48 saat boyunca anne davranışlarının sıkı bir şekilde izlenmesi, anormallikleri belirlemek ve yavru kedileri kurtarmak için çok önemlidir.\n🐱 Yeni doğum sonrası annenin yapamadığı müdahalelerde mutlaka veteriner hekime başvurulmalıdır.\n\n⚠️ NELERE DİKKAT ETMELİYİZ?\n\n➡️ Anne, yavruların göbek bağını koparmış mı?\nEğer göbek bağları duruyorsa, dolanma, enfeksiyon ve kan akımının kesilmesi riski vardır.\n➡️ Yavrular birbirine dolanmış mı?\nGöbek bağları, özellikle doğumdan sonraki ilk birkaç gün içinde kuruyana kadar oldukça esnek ve tehlikelidir.\n➡️ Göbek bağı şiş, kızarık ya da kötü kokulu mu?\nBöyle durumlar göbek enfeksiyonuna işaret eder ve sistemik enfeksiyonlara yol açabilir.\n\n⚠️ UNUTMAYIN!\nİlk doğumu yapan annelerde annelik içgüdüsü zayıf olabilir. Bu gibi durumlarda en kısa sürede veteriner hekime başvurulmalıdır.`,
+          image: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=800&q=80',
+          category: 'Klinik Vakalar',
+          date: 'Yakın Zamanda',
+          author: 'VagalVet Ekibi'
+        },
+        {
+          id: 3,
+          title: 'Canine Parvoviral Enteritis (Lina Vakamız)',
+          excerpt: 'Kanin Parvoviral Enteritis nedir? Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.',
+          content: `🐶🤎 Lina\n🦠 Canine Parvoviral Enteritis\n\n🔖 Kanin Parvoviral Enteritis nedir?\n• Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.\n\n🔖 Nasıl Bulaşır?\n• Bu hastalık hava yoluyla direkt olarak veya hasta köpekler tarafından enfekte dışkı ile kontamine gıdaların ağız yoluyla alınması sonucu geçebilmektedir. Ayrıca enfekte bir hayvanın dışkısıyla (gaitasıyla) kontamine araç ve ekipmanlarla temas yoluyla da enfeksiyon etkenleri duyarlı hayvanlara bulaşabilmektedir.\n\n🔖 En duyarlı yaş aralığı nedir?\n• Her yaş ve ırktan köpek Parvovirüs ile enfekte olabilmesine rağmen en duyarlı yaş aralığı 6-16 haftalık yavru köpeklerdir.\n\n🔖 Klinik belirtileri nelerdir?\n• Halsizlik, iştahsızlık, kusma ve şiddetli ishal gözlemlenir.\n• Bağırsak cidarı etkilendiği için bağırsak yüzeyinde kanamalar şekillenebilmekte ve bunun sonucunda kusma ve kanlı ishal görülmektedir.\n\n📌 Koruyucu immunitenin eksikliği hastalığa yatkın hale getiren hazırlayıcı faktörlerdendir.\n📌 Klinik bulguların görülmesiyle beraber veteriner hekiminize danışmanız erken teşhis ve tedavi için oldukça önemlidir. Tedavinin yanı sıra hastalıktan korunma, önemini korumaktadır.\n\n⚠️ Korunmanın En Etkili Yolu: AŞILAMA 💉\n• Veteriner hekim tarafından köpeğinizin mevcut durumuna göre uygun görülen zaman içerisinde aşılama takvimine başlanmalıdır.\n• Aşılama, viral enfeksiyonlara karşı koruma sağlamak için hayati öneme sahiptir. Can dostlarımız için, sağlıklı yaşamları için aşılarımızı ihmal etmeyelim, geç kalmayalım.❣️\n\nGeçmiş olsun Lina! 🥰`,
+          image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80',
+          category: 'Köpek Bakımı',
+          date: 'Yakın Zamanda',
+          author: 'VagalVet Ekibi'
+        }
+      ];
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(savedBlogs));
+    }
+    setBlogs(savedBlogs);
     
     // Default dummy patients if empty
     let pts = JSON.parse(localStorage.getItem('vagalvet_patients') || '[]');
@@ -124,6 +208,27 @@ const AdminDashboard = () => {
     setNewPatient({ name: '', type: '', ownerName: '', ownerPhone: '', nextVaccine: '', vaccineName: '', status: 'Sağlıklı' });
   };
 
+  const handleAddBlog = (e) => {
+    e.preventDefault();
+    const blog = {
+      id: Date.now(),
+      ...newBlog
+    };
+    const updated = [blog, ...blogs];
+    setBlogs(updated);
+    localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    setNewBlog({ title: '', excerpt: '', content: '', image: '', category: '', date: 'Yakın Zamanda', author: 'VagalVet Ekibi' });
+    setShowAddBlog(false);
+  };
+
+  const handleDeleteBlog = (id) => {
+    if (window.confirm('Bu blog yazısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+      const updated = blogs.filter(b => b.id !== id);
+      setBlogs(updated);
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    }
+  };
+
   const menuItems = [
     { id: 'dashboard', label: 'Genel Bakış', icon: <LayoutDashboard size={20} /> },
     { id: 'appointments', label: 'Akıllı Randevular', icon: <Calendar size={20} /> },
@@ -134,6 +239,8 @@ const AdminDashboard = () => {
     { id: 'messages', label: 'Gelen Mesajlar', icon: <MessageSquare size={20} /> },
     { id: 'newsletter', label: 'Bülten Aboneleri', icon: <Mail size={20} /> },
     { id: 'settings', label: 'Sistem Ayarları', icon: <Settings size={20} /> },
+    { id: 'content', label: 'İçerik Yönetimi', icon: <FileText size={20} /> },
+    { id: 'blog', label: 'Blog Yönetimi', icon: <BookOpen size={20} /> },
   ];
 
   const adminThemeStyles = {
@@ -723,6 +830,118 @@ const AdminDashboard = () => {
                   {saveSuccess && <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={18}/> Kaydedildi!</span>}
                 </div>
               </form>
+            </div>
+          )}
+
+          {activeTab === 'content' && (
+            <div style={{ background: 'var(--bg-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)' }}>
+              <h2 style={{ fontFamily: 'var(--font-heading)', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>Site İçerik Yönetimi</h2>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Ana sayfa metinlerini ve başlıklarını buradan değiştirebilirsiniz.</p>
+
+              <form onSubmit={handleSaveSiteContent} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Büyük Başlık (Siyah Kısım)</label>
+                  <input type="text" value={siteContent.homeHeroTitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Büyük Başlık (Yeşil Kısım)</label>
+                  <input type="text" value={siteContent.homeHeroTitleHighlight || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitleHighlight: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Alt Açıklama</label>
+                  <textarea rows={3} value={siteContent.homeHeroSubtitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroSubtitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Başlığı</label>
+                  <input type="text" value={siteContent.homeAboutTitle || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutTitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Metni - Paragraf 1</label>
+                  <textarea rows={4} value={siteContent.homeAboutText1 || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutText1: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Metni - Paragraf 2</label>
+                  <textarea rows={4} value={siteContent.homeAboutText2 || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutText2: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
+                </div>
+                
+                <h3 style={{ fontFamily: 'var(--font-heading)', margin: '1rem 0 0.5rem 0', color: 'var(--color-primary)' }}>Çalışma Saatleri</h3>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Haftaiçi</label>
+                  <input type="text" value={siteContent.workingHoursWeekday || ''} onChange={(e) => setSiteContent({...siteContent, workingHoursWeekday: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Haftasonu (Cmt-Paz)</label>
+                  <input type="text" value={siteContent.workingHoursWeekend || ''} onChange={(e) => setSiteContent({...siteContent, workingHoursWeekend: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
+                  <button type="submit" style={{ padding: '0.8rem 2rem', background: 'var(--color-primary)', color: '#000', fontWeight: 600, border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>İçerikleri Kaydet</button>
+                  {saveContentSuccess && <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={18}/> Kaydedildi!</span>}
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* TAB 7: BLOG */}
+          {activeTab === 'blog' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h2 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Blog Yönetimi</h2>
+                <button onClick={() => setShowAddBlog(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Plus size={20} /> Yeni Yazı Ekle
+                </button>
+              </div>
+
+              {showAddBlog && (
+                <div style={{ background: 'var(--bg-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', marginBottom: '2rem' }}>
+                  <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Yeni Blog Yazısı</h3>
+                  <form onSubmit={handleAddBlog} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Başlık</label>
+                      <input type="text" required value={newBlog.title} onChange={e => setNewBlog({...newBlog, title: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Özet</label>
+                      <textarea rows={2} required value={newBlog.excerpt} onChange={e => setNewBlog({...newBlog, excerpt: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>İçerik</label>
+                      <textarea rows={6} required value={newBlog.content} onChange={e => setNewBlog({...newBlog, content: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 200px' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Görsel URL (Örn: https://images.unsplash...)</label>
+                        <input type="text" required value={newBlog.image} onChange={e => setNewBlog({...newBlog, image: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                      </div>
+                      <div style={{ flex: '1 1 200px' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Kategori</label>
+                        <input type="text" required value={newBlog.category} onChange={e => setNewBlog({...newBlog, category: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                      <button type="submit" className="btn btn-primary">Kaydet</button>
+                      <button type="button" onClick={() => setShowAddBlog(false)} className="btn btn-outline" style={{ color: 'var(--text-main)', border: '1px solid var(--border-glass)' }}>İptal</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                {blogs.map(blog => (
+                  <div key={blog.id} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                    <div style={{ height: '160px', width: '100%', background: '#333' }}>
+                      <img src={blog.image} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                    <div style={{ padding: '1.5rem' }}>
+                      <div style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: '0.5rem' }}>{blog.category}</div>
+                      <h3 style={{ fontSize: '1.1rem', margin: '0 0 1rem 0', color: 'var(--text-main)' }}>{blog.title}</h3>
+                      <button onClick={() => handleDeleteBlog(blog.id)} style={{ padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', width: '100%' }}>
+                        Yazıyı Sil
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
