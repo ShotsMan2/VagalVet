@@ -34,12 +34,35 @@ const Counter = ({ end, label, suffix = '' }) => {
 const Home = () => {
   const [mounted, setMounted] = useState(false);
   const [contactSettings, setContactSettings] = useState({ phone: '0553 384 14 60', email: 'info@vagalvet.com', instagram: '#', facebook: '#' });
+  const [siteContent, setSiteContent] = useState({
+    homeHeroTitle: 'Can dostlarınız için',
+    homeHeroTitleHighlight: 'modern sağlık.',
+    homeHeroSubtitle: 'VagalVet Veteriner Kliniği olarak sevimli dostlarımızın sağlığı için en güncel tıbbi yöntemlerle yanınızdayız. Profesyonel kadromuz ve donanımlı altyapımızla sevgi dolu bir sağlık hizmeti sunuyoruz.',
+    homeAboutTitle: 'Neden VagalVet?',
+    homeAboutText1: 'Kliniğimiz, dostlarımızın hem fiziksel hem de psikolojik ihtiyaçlarını göz önünde bulundurarak tasarlanmıştır. Modern ekipmanlarımızla hastalıkları erken teşhis ediyor ve en uygun tedavi yöntemlerini sunuyoruz.',
+    homeAboutText2: 'Aşı takibinden cerrahi operasyonlara, laboratuvar hizmetlerinden pet kuaförüne kadar geniş bir yelpazede hizmet veriyoruz. Amacımız sadece hastalıkları tedavi etmek değil, koruyucu hekimlik ile hastalıkların önüne geçmektir.'
+  });
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem('vagalvet_contact_settings');
-    if (saved) {
-      setContactSettings(JSON.parse(saved));
+    const savedContact = localStorage.getItem('vagalvet_contact_settings');
+    if (savedContact) {
+      setContactSettings(JSON.parse(savedContact));
+    }
+    const savedContent = localStorage.getItem('vagalvet_site_content');
+    if (savedContent) {
+      let parsed = JSON.parse(savedContent);
+      if (parsed.homeHeroTitle === 'Sevgiyle İyileştiriyor, Özenle Yaşatıyoruz') {
+        parsed.homeHeroTitle = 'Can dostlarınız için';
+      }
+      if (!parsed.homeHeroTitleHighlight) {
+        parsed.homeHeroTitleHighlight = 'modern sağlık.';
+      }
+      if (!parsed.workingHoursWeekday) {
+        parsed.workingHoursWeekday = '09.00 - 20.00';
+        parsed.workingHoursWeekend = '12.00 - 18.00';
+      }
+      setSiteContent(parsed);
     }
   }, []);
 
@@ -96,9 +119,10 @@ const Home = () => {
               fontSize: 'clamp(3rem, 5vw, 4.5rem)', 
               color: 'var(--text-main)',
               marginBottom: '1.5rem',
+              lineHeight: 1.1
             }}>
-              Can dostlarınız için <br/>
-              <span style={{ color: 'var(--color-secondary)' }}>modern</span> sağlık.
+              {siteContent.homeHeroTitle} <br/>
+              <span style={{ color: 'var(--color-secondary)' }}>{siteContent.homeHeroTitleHighlight}</span>
             </h1>
             <p style={{ 
               fontSize: '1.25rem', 
@@ -107,7 +131,7 @@ const Home = () => {
               maxWidth: '550px',
               lineHeight: 1.7
             }}>
-              VagalVet Veteriner Kliniği olarak sevimli dostlarımızın sağlığı için en güncel tıbbi yöntemlerle yanınızdayız. Profesyonel kadromuz ve donanımlı altyapımızla sevgi dolu bir sağlık hizmeti sunuyoruz.
+              {siteContent.homeHeroSubtitle}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
               <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} className="btn btn-primary">
@@ -117,16 +141,6 @@ const Home = () => {
               <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>
                 Hizmetleri İncele
               </Link>
-              {contactSettings.instagram && contactSettings.instagram !== '#' && (
-                <a href={contactSettings.instagram} target="_blank" rel="noopener noreferrer" style={{ padding: '0.8rem', borderRadius: '50%', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e=>e.currentTarget.style.color='#E1306C'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-main)'}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </a>
-              )}
-              {contactSettings.facebook && contactSettings.facebook !== '#' && (
-                <a href={contactSettings.facebook} target="_blank" rel="noopener noreferrer" style={{ padding: '0.8rem', borderRadius: '50%', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e=>e.currentTarget.style.color='#1877F2'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-main)'}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                </a>
-              )}
             </div>
             <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', maxWidth: '400px' }}>
               <div style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
@@ -155,6 +169,25 @@ const Home = () => {
              />
           </div>
 
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-surface)' }}>
+        <div className="container" style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
+          <div style={{ flex: '1 1 400px' }}>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>{siteContent.homeAboutTitle}</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+              {siteContent.homeAboutText1}
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', lineHeight: 1.8 }}>
+              {siteContent.homeAboutText2}
+            </p>
+          </div>
+          <div style={{ flex: '1 1 400px', display: 'flex', gap: '1rem' }}>
+            <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=500&fit=crop" alt="Kliniğimiz" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover' }} />
+            <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=500&fit=crop" alt="Muayene" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover', transform: 'translateY(2rem)' }} />
+          </div>
         </div>
       </section>
 
@@ -243,7 +276,7 @@ const Home = () => {
                   <div>
                     <span style={{ fontSize: '1.25rem', fontWeight: 600, display: 'block' }}>Haftaiçi Her Gün</span>
                   </div>
-                  <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>09.00 - 20.00</span>
+                  <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>{siteContent.workingHoursWeekday || '09.00 - 20.00'}</span>
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
@@ -251,7 +284,7 @@ const Home = () => {
                     <span style={{ fontSize: '1.25rem', fontWeight: 600, display: 'block' }}>Haftasonu</span>
                     <span style={{ fontSize: '0.9rem', opacity: 0.7 }}>(Cmt. - Paz.)</span>
                   </div>
-                  <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>12.00 - 18.00</span>
+                  <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>{siteContent.workingHoursWeekend || '12.00 - 18.00'}</span>
                 </div>
 
                 <div style={{ backgroundColor: 'var(--color-primary)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--color-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>
