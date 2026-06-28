@@ -112,14 +112,14 @@ const ClientPortal = () => {
           </div>
 
           {/* Upcoming Card */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)', background: 'linear-gradient(135deg, var(--color-primary) 0%, #dca743 100%)', color: '#000' }}>
+          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)', background: 'var(--badge-bg)', color: 'var(--badge-text)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-              <AlertCircle size={24} />
-              <h3 style={{ margin: 0 }}>Sıradaki İşlem</h3>
+              <AlertCircle size={24} color="var(--badge-text)" />
+              <h3 style={{ margin: 0, color: 'var(--badge-text)' }}>Sıradaki İşlem</h3>
             </div>
-            <div style={{ background: 'rgba(255,255,255,0.3)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
-              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '1.2rem' }}>{patient.nextVaccine.split('(')[0]}</p>
-              <p style={{ margin: 0, opacity: 0.9 }}>Tarih: {patient.nextVaccine.split('(')[1].replace(')', '')}</p>
+            <div style={{ background: 'rgba(0,0,0,0.05)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '1.2rem', color: 'var(--badge-text)' }}>{patient.nextVaccine.split('(')[0]}</p>
+              <p style={{ margin: 0, opacity: 0.9, color: 'var(--badge-text)' }}>Tarih: {patient.nextVaccine.split('(')[1].replace(')', '')}</p>
             </div>
           </div>
 

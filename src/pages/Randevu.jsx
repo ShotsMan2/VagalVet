@@ -182,7 +182,8 @@ export default function Randevu() {
                       min={new Date().toISOString().split('T')[0]}
                       style={{
                         width: '100%', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                        background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none'
+                        background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none',
+                        color: 'var(--text-main)'
                       }}
                     />
                   </div>
@@ -237,7 +238,8 @@ export default function Randevu() {
                           placeholder="Adınız ve Soyadınız"
                           style={{
                             width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                            background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none'
+                            background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none',
+                            color: 'var(--text-main)'
                           }}
                         />
                       </div>
@@ -255,7 +257,8 @@ export default function Randevu() {
                           placeholder="0 (5XX) XXX XX XX"
                           style={{
                             width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                            background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none'
+                            background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none',
+                            color: 'var(--text-main)'
                           }}
                         />
                       </div>
@@ -270,7 +273,8 @@ export default function Randevu() {
                         placeholder="Şikayet veya belirtileri buraya yazabilirsiniz..."
                         style={{
                           width: '100%', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                          background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', resize: 'vertical'
+                          background: 'var(--bg-surface)', fontFamily: 'inherit', fontSize: '1rem', outline: 'none', resize: 'vertical',
+                          color: 'var(--text-main)'
                         }}
                       />
                     </div>
