@@ -283,10 +283,10 @@ const Home = () => {
 
             {/* Hours */}
             <div style={{ flex: '1 1 400px', display: 'flex' }}>
-              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--color-secondary)', color: 'var(--text-on-secondary)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--text-on-secondary)' }}>Çalışma Saatlerimiz</h2>
+              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--hours-card-bg)', color: 'var(--hours-card-text)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--hours-card-text)' }}>Çalışma Saatlerimiz</h2>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1.5rem' }}>
                   <div>
                     <span style={{ fontSize: '1.25rem', fontWeight: 600, display: 'block' }}>Haftaiçi Her Gün</span>
                   </div>
@@ -464,11 +464,12 @@ const Home = () => {
             
             <div style={{ flex: '1 1 400px', minHeight: '400px' }}>
               <iframe 
+                className="dark-map"
                 title="VagalVet Konum"
                 src="https://maps.google.com/maps?q=VagalVet+Veteriner+Klini%C4%9Fi+Konya&t=&z=16&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{ border: 0, display: 'block', minHeight: '400px' }}
+                style={{ border: 0, display: 'block', minHeight: '400px', transition: 'filter 0.3s ease' }}
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

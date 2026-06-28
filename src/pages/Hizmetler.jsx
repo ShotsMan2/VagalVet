@@ -26,52 +26,52 @@ const Hizmetler = () => {
 
   const services = [
     {
-      icon: <Stethoscope size={32} color="var(--color-secondary)" />,
+      icon: <Stethoscope size={32} color="currentColor" />,
       title: 'Muayene & Teşhis',
       desc: 'Kapsamlı fiziksel muayene, klinik değerlendirme ve ileri teşhis yöntemleriyle dostlarınızın sağlık durumunu en doğru şekilde belirliyoruz. Detaylı muayene sürecimizle hastalıkları erken aşamada tespit ediyor, tedavi planını en doğru biçimde oluşturuyoruz.'
     },
     {
-      icon: <Activity size={32} color="var(--color-secondary)" />,
+      icon: <Activity size={32} color="currentColor" />,
       title: 'Dahiliye',
       desc: 'İç hastalıkları tedavisinde uzman kadromuzla kronik ve akut rahatsızlıkları etkin bir şekilde yönetiyoruz. Sindirim sistemi, solunum yolu, böbrek ve karaciğer rahatsızlıkları gibi pek çok alanda güvenilir tedavi sunuyoruz.'
     },
     {
-      icon: <Syringe size={32} color="var(--color-secondary)" />,
+      icon: <Syringe size={32} color="currentColor" />,
       title: 'Cerrahi Operasyonlar',
       desc: 'Modern cerrahi ekipmanlarımız ve deneyimli cerrahlarımız ile güvenli ameliyatlar gerçekleştiriyoruz. Kısırlaştırma, tümör operasyonları, ortopedik müdahaleler ve yumuşak doku cerrahisi konularında uzmanlaşmış ekibimiz her zaman yanınızda.'
     },
     {
-      icon: <ShieldPlus size={32} color="var(--color-secondary)" />,
+      icon: <ShieldPlus size={32} color="currentColor" />,
       title: 'Aşılama & Paraziter Uygulamalar',
       desc: 'Düzenli aşılama takvimleri ve parazit koruması ile dostlarınızın sağlığını koruma altına alıyoruz. Yavru ve yetişkin hayvanlar için özel aşı programları hazırlıyor, iç ve dış parazit tedavilerini eksiksiz uyguluyoruz.'
     },
     {
-      icon: <Dna size={32} color="var(--color-secondary)" />,
+      icon: <Dna size={32} color="currentColor" />,
       title: 'Laboratuvar Tetkik',
       desc: 'Kan, idrar ve dışkı analizleri ile hızlı ve doğru sonuçlar elde ediyoruz. Klinik biyokimya, hematoloji ve mikrobiyoloji testleriyle hastalıkların kesin tanısını koyarak en uygun tedavi yöntemini belirliyoruz.'
     },
     {
-      icon: <HeartPulse size={32} color="var(--color-secondary)" />,
+      icon: <HeartPulse size={32} color="currentColor" />,
       title: '7/24 Acil Veterinerlik Hizmeti',
       desc: 'Gece gündüz demeden, acil durumlarda hızlı ve etkili müdahale sağlıyoruz. Zehirlenme, travma, solunum sıkıntısı gibi acil durumlarda deneyimli ekibimiz anında devreye giriyor.'
     },
     {
-      icon: <Pill size={32} color="var(--color-secondary)" />,
+      icon: <Pill size={32} color="currentColor" />,
       title: 'Besleme & Danışmanlık',
       desc: 'Hayvanınızın türüne, yaşına ve sağlık durumuna göre özel beslenme programları oluşturuyoruz. Obezite, alerjik reaksiyonlar ve büyüme dönemindeki besin ihtiyaçları konusunda uzman danışmanlık hizmeti sunuyoruz.'
     },
     {
-      icon: <Truck size={32} color="var(--color-secondary)" />,
+      icon: <Truck size={32} color="currentColor" />,
       title: 'Evde Sağlık Hizmetleri',
       desc: 'Kliniğe gelemediğiniz durumlarda veteriner hekimlerimiz evinize geliyor. Gezici sağlık hizmetimizle muayene, aşılama ve basit tedavileri evinizin konforunda gerçekleştiriyoruz.'
     },
     {
-      icon: <Scissors size={32} color="var(--color-secondary)" />,
+      icon: <Scissors size={32} color="currentColor" />,
       title: 'Pet Kuaför Hizmeti',
       desc: 'Profesyonel bakım, tıraş, banyo ve tırnak kesimi hizmetleri sunuyoruz. Evcil hayvanınızın hijyeni ve konforu için özel bakım ürünleri kullanarak, onları pırıl pırıl yapıyoruz.'
     },
     {
-      icon: <ShoppingBag size={32} color="var(--color-secondary)" />,
+      icon: <ShoppingBag size={32} color="currentColor" />,
       title: 'Pet Shop',
       desc: 'Kaliteli mama, aksesuar ve bakım ürünleri geniş ürün yelpazemizde sizleri bekliyor. Güvenilir markaların ürünlerini uygun fiyatlarla sunuyor, evcil hayvanınız için en doğru seçimi yapmanıza yardımcı oluyoruz.'
     },
@@ -84,7 +84,7 @@ const Hizmetler = () => {
       <section style={{
         paddingTop: '160px',
         paddingBottom: '80px',
-        backgroundColor: 'var(--color-secondary)',
+        backgroundColor: 'var(--page-header-bg)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -130,10 +130,10 @@ const Hizmetler = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = 'var(--color-primary)';
                     e.currentTarget.querySelector('.icon-wrapper').style.backgroundColor = 'var(--color-primary)';
-                    e.currentTarget.querySelector('.icon-wrapper svg').style.color = 'var(--color-secondary)';
+                    e.currentTarget.querySelector('.icon-wrapper svg').style.color = 'var(--btn-accent-text)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    e.currentTarget.style.borderColor = 'var(--glass-border)';
                     e.currentTarget.querySelector('.icon-wrapper').style.backgroundColor = 'var(--bg-soft)';
                     e.currentTarget.querySelector('.icon-wrapper svg').style.color = 'var(--color-secondary)';
                   }}
@@ -145,7 +145,8 @@ const Hizmetler = () => {
                       backgroundColor: 'var(--bg-soft)',
                       borderRadius: 'var(--radius-md)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      color: 'var(--color-secondary)'
                     }}>
                     {s.icon}
                   </div>

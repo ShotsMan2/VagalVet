@@ -101,7 +101,7 @@ export default function Iletisim() {
         style={{
           paddingTop: '120px',
           paddingBottom: '72px',
-          background: 'linear-gradient(170deg, var(--color-secondary) 0%, #3a605f 100%)',
+          background: 'linear-gradient(170deg, var(--page-header-bg) 0%, #3a605f 100%)',
           position: 'relative',
           overflow: 'hidden',
         }}
