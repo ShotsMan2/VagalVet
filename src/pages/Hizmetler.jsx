@@ -1,12 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Stethoscope, Syringe, ShieldPlus, Dna, HeartPulse, Truck, Scissors, ShoppingBag,
-  Phone, ArrowRight, Activity, Pill
+  Phone, Activity, Pill
 } from 'lucide-react';
+import Tilt from 'react-parallax-tilt';
 
 const Hizmetler = () => {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true); 
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   const services = [
     {
@@ -92,22 +108,55 @@ const Hizmetler = () => {
         <div className="container">
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '2rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '2.5rem'
           }}>
             {services.map((s, i) => (
-              <div key={i} className="surface-card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{
-                  width: '64px', height: '64px',
-                  backgroundColor: 'var(--bg-soft)',
-                  borderRadius: 'var(--radius-md)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                  {s.icon}
+              <Tilt key={i} tiltMaxAngleX={10} tiltMaxAngleY={10} perspective={1000} scale={1.02} transitionSpeed={1500} style={{ height: '100%' }}>
+                <div 
+                  className={`glass-panel delay-${(i % 4) * 100} reveal-on-scroll`}
+                  style={{ 
+                    padding: '2.5rem', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: '1rem',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    borderRadius: 'var(--radius-lg)',
+                    height: '100%',
+                    boxShadow: 'var(--shadow-md)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-primary)';
+                    e.currentTarget.querySelector('.icon-wrapper').style.backgroundColor = 'var(--color-primary)';
+                    e.currentTarget.querySelector('.icon-wrapper svg').style.color = 'var(--color-secondary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    e.currentTarget.querySelector('.icon-wrapper').style.backgroundColor = 'var(--bg-soft)';
+                    e.currentTarget.querySelector('.icon-wrapper svg').style.color = 'var(--color-secondary)';
+                  }}
+                >
+                  <div 
+                    className="icon-wrapper"
+                    style={{
+                      width: '64px', height: '64px',
+                      backgroundColor: 'var(--bg-soft)',
+                      borderRadius: 'var(--radius-md)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transition: 'all 0.3s ease'
+                    }}>
+                    {s.icon}
+                  </div>
+                  <h3 style={{ fontSize: '1.4rem', marginTop: '0.5rem', color: 'var(--text-main)', transition: 'color 0.3s ease' }}>{s.title}</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7 }}>{s.desc}</p>
+                  <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>
+                    <span>Detaylı Bilgi</span>
+                    <span style={{ fontSize: '1.2rem' }}>→</span>
+                  </div>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', marginTop: '0.5rem', color: 'var(--text-main)' }}>{s.title}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7 }}>{s.desc}</p>
-              </div>
+              </Tilt>
             ))}
           </div>
         </div>

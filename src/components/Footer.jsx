@@ -134,7 +134,7 @@ const Footer = () => {
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Phone size={20} color="var(--color-primary)" style={{ flexShrink: 0 }} />
-                <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>{contactSettings.phone}</a>
+                <a href={`tel:${(contactSettings.phone || '').replace(/[^0-9]/g, '')}`} style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>{contactSettings.phone}</a>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Mail size={20} color="var(--color-primary)" style={{ flexShrink: 0 }} />

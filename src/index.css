@@ -35,6 +35,52 @@
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
   --font-heading: 'Outfit', sans-serif;
+
+  /* Button Text Colors */
+  --btn-primary-text: #ffffff;
+  --text-on-secondary: #ffffff;
+  
+  /* Specific component colors */
+  --badge-bg: var(--color-primary);
+  --badge-text: var(--color-secondary);
+  
+  /* Glass Variables */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: rgba(47, 79, 79, 0.05);
+}
+
+[data-theme="dark"] {
+  /* Midnight Pine (Vagal Green infused) Backgrounds */
+  --bg-main: #0D1412; /* Very deep dark pine, almost black */
+  --bg-surface: #141F1C; /* Elevated surface, slightly lighter pine */
+  --bg-soft: #1C2B27; /* Soft background for cards, inputs, icon wrappers */
+  
+  /* Text */
+  --text-main: #F2F5F3; /* Bright, crisp off-white with slight green undertone */
+  --text-muted: #9AAFA9; /* Elegant sage/muted green-grey */
+  
+  /* Borders and Dividers */
+  --border-color: #263834; /* Subtle dark green border */
+  
+  /* Shadows with a hint of Vagal Green depth */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(13, 20, 18, 0.8);
+  --shadow-lg: 0 20px 40px rgba(13, 20, 18, 0.9);
+
+  /* Accents (Using Vagal Yellow for Highlights) */
+  --color-secondary: var(--color-primary); /* Overrides dark green elements with glowing yellow */
+  --btn-primary-text: #0D1412; /* Deep pine text on yellow buttons for max contrast */
+  --text-on-secondary: #0D1412; /* Dark text for yellow cards */
+  
+  /* Badge inversion for dark mode */
+  --badge-bg: var(--bg-soft);
+  --badge-text: var(--color-primary);
+  
+  /* Glass Variables */
+  --glass-bg: rgba(20, 31, 28, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -101,7 +147,7 @@ a:hover {
 
 .btn-primary {
   background-color: var(--color-secondary);
-  color: #ffffff;
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
@@ -129,7 +175,7 @@ a:hover {
 
 .btn-outline:hover {
   background-color: var(--color-secondary);
-  color: #ffffff;
+  color: var(--btn-primary-text);
 }
 
 /* Cards / Surfaces */
@@ -152,3 +198,101 @@ a:hover {
 .mt-8 { margin-top: 2rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
+
+/* Premium Corporate Additions */
+/* Glassmorphism */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+}
+
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Gradients & Glows */
+.bg-gradient-premium {
+  background: linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-main) 100%);
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(90deg, var(--color-secondary), var(--color-primary-hover));
+}
+
+.glow-effect {
+  position: relative;
+}
+.glow-effect::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-primary));
+  z-index: -1;
+  border-radius: inherit;
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.glow-effect:hover::before {
+  opacity: 0.5;
+}
+
+/* Micro-Animations (Keyframes) */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseSoft {
+  0% { box-shadow: 0 0 0 0 rgba(238, 189, 95, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(238, 189, 95, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(238, 189, 95, 0); }
+}
+
+/* Animation Classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Scroll Animations */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s infinite;
+}
+
+/* Staggered Delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }

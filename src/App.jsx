@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 
 import Navbar from './components/Navbar'
@@ -10,9 +10,9 @@ import Ekibimiz from './pages/Ekibimiz'
 import Galeri from './pages/Galeri'
 import Iletisim from './pages/Iletisim'
 import Randevu from './pages/Randevu'
-import HastaSorgu from './pages/HastaSorgu'
 import Blog from './pages/Blog'
 import AdminDashboard from './pages/AdminDashboard'
+import ClientPortal from './pages/ClientPortal'
 import KVKK from './pages/KVKK'
 import Gizlilik from './pages/Gizlilik'
 import './App.css'
@@ -42,7 +42,7 @@ function App() {
             <Route path="/galeri" element={<Galeri />} />
             <Route path="/iletisim" element={<Iletisim />} />
             <Route path="/randevu" element={<Randevu />} />
-            <Route path="/hasta-sorgu" element={<HastaSorgu />} />
+            <Route path="/hasta-sorgu" element={<ClientPortal />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/kvkk" element={<KVKK />} />
             <Route path="/gizlilik" element={<Gizlilik />} />

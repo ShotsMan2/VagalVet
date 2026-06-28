@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Activity, ShieldPlus, Dna, Syringe, ChevronRight, Phone, 
+  ShieldPlus, Dna, Syringe, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
   ArrowRight, Award, Heart, Shield, Star, Quote
 } from 'lucide-react';
@@ -64,6 +64,20 @@ const Home = () => {
       }
       setSiteContent(parsed);
     }
+
+    // Scroll Animation Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const services = [
@@ -88,12 +102,11 @@ const Home = () => {
     <div style={{ opacity: mounted ? 1 : 0, transition: 'opacity 0.5s ease' }}>
       
       {/* Hero Section */}
-      <section style={{
+      <section className="bg-gradient-premium" style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         paddingTop: '80px', // Navbar offset
-        backgroundColor: 'var(--bg-main)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -111,7 +124,7 @@ const Home = () => {
 
         <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
           
-          <div style={{ flex: '1 1 500px', paddingRight: '2rem' }}>
+          <div className="animate-fade-in-up" style={{ flex: '1 1 500px', paddingRight: '2rem' }}>
             <div style={{ display: 'inline-block', padding: '0.5rem 1rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, fontSize: '0.875rem', marginBottom: '1.5rem' }}>
               VagalVet Veteriner Kliniği
             </div>
@@ -122,7 +135,7 @@ const Home = () => {
               lineHeight: 1.1
             }}>
               {siteContent.homeHeroTitle} <br/>
-              <span style={{ color: 'var(--color-secondary)' }}>{siteContent.homeHeroTitleHighlight}</span>
+              <span className="text-gradient">{siteContent.homeHeroTitleHighlight}</span>
             </h1>
             <p style={{ 
               fontSize: '1.25rem', 
@@ -134,7 +147,7 @@ const Home = () => {
               {siteContent.homeHeroSubtitle}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} className="btn btn-primary">
+              <a href={`tel:${(contactSettings.phone || '').replace(/[^0-9]/g, '')}`} className="btn btn-primary">
                 <Phone size={20} style={{ marginRight: '0.5rem' }}/>
                 Randevu Alın
               </a>
@@ -142,9 +155,9 @@ const Home = () => {
                 Hizmetleri İncele
               </Link>
             </div>
-            <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', maxWidth: '400px' }}>
-              <div style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
-                <HeartPulse size={24} color="var(--color-secondary)" />
+            <div className="glass-panel delay-200 animate-fade-in-up" style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px' }}>
+              <div className="animate-pulse-soft glow-effect" style={{ backgroundColor: 'var(--badge-bg)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
+                <HeartPulse size={24} color="var(--badge-text)" />
               </div>
               <div>
                 <span style={{ fontSize: '1rem', fontWeight: 700, display: 'block' }}>7/24 Acil Müdahale & Destek</span>
@@ -157,6 +170,7 @@ const Home = () => {
              <img 
                src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&h=1000&fit=crop" 
                alt="Modern Veteriner Kliniği" 
+               className="animate-float"
                style={{ 
                  width: '100%', 
                  maxWidth: '550px', 
@@ -173,7 +187,7 @@ const Home = () => {
       </section>
 
       {/* About Section */}
-      <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-surface)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '6rem 0', backgroundColor: 'var(--bg-surface)' }}>
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
           <div style={{ flex: '1 1 400px' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>{siteContent.homeAboutTitle}</h2>
@@ -192,7 +206,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section id="hizmetler" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-surface)' }}>
+      <section id="hizmetler" className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-surface)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '5rem', maxWidth: '700px', margin: '0 auto 5rem' }}>
             <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>
@@ -233,7 +247,7 @@ const Home = () => {
       </section>
 
       {/* Team & Hours Section */}
-      <section id="hekimler" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-main)' }}>
+      <section id="hekimler" className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-main)' }}>
         <div className="container">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'stretch' }}>
             
@@ -269,10 +283,10 @@ const Home = () => {
 
             {/* Hours */}
             <div style={{ flex: '1 1 400px', display: 'flex' }}>
-              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--color-secondary)', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'white' }}>Çalışma Saatlerimiz</h2>
+              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--color-secondary)', color: 'var(--text-on-secondary)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--text-on-secondary)' }}>Çalışma Saatlerimiz</h2>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '1.5rem' }}>
                   <div>
                     <span style={{ fontSize: '1.25rem', fontWeight: 600, display: 'block' }}>Haftaiçi Her Gün</span>
                   </div>
@@ -287,7 +301,7 @@ const Home = () => {
                   <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>{siteContent.workingHoursWeekend || '12.00 - 18.00'}</span>
                 </div>
 
-                <div style={{ backgroundColor: 'var(--color-primary)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--color-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>
+                <div style={{ backgroundColor: 'var(--badge-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--badge-text)', fontWeight: 700, fontSize: '1.1rem' }}>
                   7/24 Acil Müdahale Hizmeti Sağlanmaktadır.
                 </div>
               </div>
@@ -298,7 +312,7 @@ const Home = () => {
       </section>
 
       {/* Neden VagalVet */}
-      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Neden VagalVet?</h2>

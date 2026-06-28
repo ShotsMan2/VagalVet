@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Syringe, Calendar, FileText, ChevronRight, AlertCircle } from 'lucide-react';
+import { Search, Syringe, Calendar, FileText, AlertCircle } from 'lucide-react';
 
 export default function HastaSorgu() {
   const [phone, setPhone] = useState('');

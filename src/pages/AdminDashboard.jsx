@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle, Mail, FileText, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, CheckCircle2, X, Reply, Plus, Check, AlertTriangle, Mail, FileText, BookOpen, TrendingUp, Send, Type, AlignLeft, Image as ImageIcon, Link as LinkIcon, Bold, Italic, List } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -208,6 +209,12 @@ const AdminDashboard = () => {
     setNewPatient({ name: '', type: '', ownerName: '', ownerPhone: '', nextVaccine: '', vaccineName: '', status: 'Sağlıklı' });
   };
 
+  const handleDeletePatient = (id) => {
+    const updated = patients.filter(pt => pt.id !== id);
+    setPatients(updated);
+    localStorage.setItem('vagalvet_patients', JSON.stringify(updated));
+  };
+
   const handleAddBlog = (e) => {
     e.preventDefault();
     const blog = {
@@ -241,6 +248,16 @@ const AdminDashboard = () => {
     { id: 'settings', label: 'Sistem Ayarları', icon: <Settings size={20} /> },
     { id: 'content', label: 'İçerik Yönetimi', icon: <FileText size={20} /> },
     { id: 'blog', label: 'Blog Yönetimi', icon: <BookOpen size={20} /> },
+  ];
+
+  const chartData = [
+    { name: 'Pzt', randevu: 40 },
+    { name: 'Sal', randevu: 65 },
+    { name: 'Çar', randevu: 30 },
+    { name: 'Per', randevu: 80 },
+    { name: 'Cum', randevu: 50 },
+    { name: 'Cmt', randevu: 95 },
+    { name: 'Paz', randevu: 20 },
   ];
 
   const adminThemeStyles = {
@@ -378,16 +395,21 @@ const AdminDashboard = () => {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
-                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
-                  <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>Randevu Trafiği (Haftalık)</h3>
-                  <div style={{ height: '200px', display: 'flex', alignItems: 'flex-end', gap: '2%', paddingBottom: '2rem', borderBottom: '1px solid var(--border-glass)' }}>
-                    {[40, 65, 30, 80, 50, 95, 20].map((h, i) => (
-                      <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--color-primary)', borderRadius: '4px 4px 0 0', position: 'relative' }}>
-                        <span style={{ position: 'absolute', bottom: '-25px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'][i]}
-                        </span>
-                      </div>
-                    ))}
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '350px' }}>
+                  <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', color: 'var(--text-main)' }}>Randevu Trafiği (Haftalık)</h3>
+                  <div style={{ height: '250px', width: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                        <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                        <Tooltip 
+                          cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
+                          contentStyle={{ backgroundColor: 'var(--bg-dark)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', color: 'var(--text-main)' }} 
+                        />
+                        <Bar dataKey="randevu" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
 
@@ -417,43 +439,72 @@ const AdminDashboard = () => {
               {appointments.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>Randevu kaydı bulunmamaktadır.</div>
               ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid var(--border-glass)', color: 'var(--text-muted)' }}>
-                      <th style={{ padding: '1rem' }}>Tarih / Saat</th>
-                      <th style={{ padding: '1rem' }}>Hasta Sahibi</th>
-                      <th style={{ padding: '1rem' }}>Tür & Hizmet</th>
-                      <th style={{ padding: '1rem' }}>Durum</th>
-                      <th style={{ padding: '1rem' }}>İşlem</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {appointments.map((apt) => (
-                      <tr key={apt.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <td style={{ padding: '1rem' }}>{apt.date} <br/><span style={{ color: 'var(--color-primary)' }}>{apt.time}</span></td>
-                        <td style={{ padding: '1rem' }}>{apt.ownerName} <br/><span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{apt.phone}</span></td>
-                        <td style={{ padding: '1rem' }}>{apt.petType} <br/><span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{apt.service}</span></td>
-                        <td style={{ padding: '1rem' }}>
-                          <span style={{ 
-                            padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.8rem',
-                            background: apt.status === 'Onaylandı' ? 'rgba(16, 185, 129, 0.2)' : apt.status === 'Reddedildi' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)',
-                            color: apt.status === 'Onaylandı' ? '#10b981' : apt.status === 'Reddedildi' ? '#ef4444' : '#fbbf24'
-                          }}>
-                            {apt.status}
-                          </span>
-                        </td>
-                        <td style={{ padding: '1rem', display: 'flex', gap: '0.5rem' }}>
-                          {apt.status === 'Beklemede' && (
-                            <>
-                              <button onClick={() => handleAppointmentStatus(apt.id, 'Onaylandı')} style={{ background: '#10b981', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem' }}><Check size={14}/></button>
-                              <button onClick={() => handleAppointmentStatus(apt.id, 'Reddedildi')} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem' }}><X size={14}/></button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                  {/* Bekleyenler Column */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-lg)', padding: '1rem', border: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <h4 style={{ margin: 0, paddingBottom: '1rem', borderBottom: '1px solid var(--border-glass)', color: '#fbbf24', display: 'flex', justifyContent: 'space-between' }}>
+                      Bekleyenler 
+                      <span style={{ background: 'rgba(251, 191, 36, 0.2)', padding: '2px 8px', borderRadius: '1rem', fontSize: '0.8rem' }}>
+                        {appointments.filter(a => a.status === 'Beklemede').length}
+                      </span>
+                    </h4>
+                    {appointments.filter(a => a.status === 'Beklemede').map(apt => (
+                      <div key={apt.id} style={{ background: 'var(--bg-surface)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', cursor: 'grab', padding: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petType} - {apt.ownerName}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.time}</span>
+                        </div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--color-primary)', marginBottom: '1rem' }}>{apt.service}</div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button onClick={() => handleAppointmentStatus(apt.id, 'Onaylandı')} style={{ flex: 1, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '0.4rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(16, 185, 129, 0.2)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(16, 185, 129, 0.1)'}>Onayla</button>
+                          <button onClick={() => handleAppointmentStatus(apt.id, 'Reddedildi')} style={{ flex: 1, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '0.4rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(239, 68, 68, 0.2)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'}>İptal Et</button>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+
+                  {/* Onaylananlar / Muayenede Column */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-lg)', padding: '1rem', border: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <h4 style={{ margin: 0, paddingBottom: '1rem', borderBottom: '1px solid var(--border-glass)', color: '#10b981', display: 'flex', justifyContent: 'space-between' }}>
+                      Onaylananlar 
+                      <span style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '2px 8px', borderRadius: '1rem', fontSize: '0.8rem' }}>
+                        {appointments.filter(a => a.status === 'Onaylandı').length}
+                      </span>
+                    </h4>
+                    {appointments.filter(a => a.status === 'Onaylandı').map(apt => (
+                      <div key={apt.id} style={{ background: 'var(--bg-surface)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.3)', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', cursor: 'grab', padding: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petType} - {apt.ownerName}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.date}</span>
+                        </div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{apt.phone}</div>
+                        <div style={{ fontSize: '0.85rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Check size={14} /> Muayene Bekleniyor
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* İptal Edilenler Column */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-lg)', padding: '1rem', border: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <h4 style={{ margin: 0, paddingBottom: '1rem', borderBottom: '1px solid var(--border-glass)', color: '#ef4444', display: 'flex', justifyContent: 'space-between' }}>
+                      İptal / Red 
+                      <span style={{ background: 'rgba(239, 68, 68, 0.2)', padding: '2px 8px', borderRadius: '1rem', fontSize: '0.8rem' }}>
+                        {appointments.filter(a => a.status === 'Reddedildi').length}
+                      </span>
+                    </h4>
+                    {appointments.filter(a => a.status === 'Reddedildi').map(apt => (
+                      <div key={apt.id} style={{ background: 'rgba(255,255,255,0.02)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-glass)', padding: '1rem', opacity: 0.7 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                          <span style={{ fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'line-through' }}>{apt.petType}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.date}</span>
+                        </div>
+                        <div style={{ fontSize: '0.85rem', color: '#ef4444' }}>Randevu İptal Edildi</div>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
               )}
             </div>
           )}
@@ -530,9 +581,19 @@ const AdminDashboard = () => {
                           <p style={{ margin: '0.25rem 0 0 0', color: 'var(--text-muted)', fontSize: '1.1rem' }}>{selectedPatient.type} • ID: {selectedPatient.id}</p>
                         </div>
                       </div>
-                      <button onClick={() => setSelectedPatient(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }}>
-                        <X size={28} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <button onClick={() => {
+                          if(window.confirm('Bu hastayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+                            handleDeletePatient(selectedPatient.id);
+                            setSelectedPatient(null);
+                          }
+                        }} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', borderRadius: 'var(--radius-sm)', cursor: 'pointer', padding: '0.5rem 1rem', fontWeight: 600 }}>
+                          Kaydı Sil
+                        </button>
+                        <button onClick={() => setSelectedPatient(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }}>
+                          <X size={28} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Body */}
@@ -568,22 +629,49 @@ const AdminDashboard = () => {
                           </div>
                         )}
                         {patientTab === 'aşılar' && (
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', marginBottom: '1rem' }}>
-                              <span style={{ fontWeight: 600 }}>{selectedPatient.vaccineName}</span>
-                              <span style={{ color: 'var(--color-primary)' }}>Sonraki: {selectedPatient.nextVaccine}</span>
+                          <div style={{ paddingLeft: '1rem', borderLeft: '2px solid var(--color-primary)', position: 'relative' }}>
+                            <div style={{ position: 'relative', marginBottom: '2rem' }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--color-primary)', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>{selectedPatient.vaccineName} (Gelecek Randevu)</h4>
+                              <p style={{ margin: 0, color: 'var(--color-primary)', fontWeight: 600 }}>Beklenen Tarih: {selectedPatient.nextVaccine}</p>
+                              <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Hatırlatma SMS'i planlandı.</div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', opacity: 0.7 }}>
-                              <span style={{ fontWeight: 600 }}>İç Parazit</span>
-                              <span>Yapıldı: 10.01.2026</span>
+                            
+                            <div style={{ position: 'relative', marginBottom: '2rem', opacity: 0.7 }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>Karma Aşı (Uygulandı)</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Uygulama Tarihi: 10.01.2026</p>
+                              <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Hekim: Dr. Mürüvvet Eraslan</div>
+                            </div>
+
+                            <div style={{ position: 'relative', opacity: 0.5 }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>İç/Dış Parazit (Uygulandı)</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Uygulama Tarihi: 15.11.2025</p>
                             </div>
                           </div>
                         )}
                         {patientTab === 'laboratuvar' && (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '4rem 0' }}>
-                            <Activity size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
-                            <p>Henüz laboratuvar veya röntgen kaydı bulunmuyor.</p>
-                            <button style={{ marginTop: '1rem', background: 'transparent', border: '1px dashed var(--color-primary)', color: 'var(--color-primary)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>+ Sonuç Yükle</button>
+                          <div>
+                            <div style={{ border: '2px dashed var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '3rem', textAlign: 'center', background: 'rgba(255,255,255,0.02)', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={(e)=>e.currentTarget.style.borderColor='var(--color-primary)'} onMouseLeave={(e)=>e.currentTarget.style.borderColor='var(--border-glass)'}>
+                              <Activity size={48} color="var(--color-primary)" style={{ marginBottom: '1rem' }} />
+                              <h4 style={{ fontSize: '1.2rem', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>PDF / Tahlil Sonucu Yükle</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>Sürükleyip bırakın veya dosyalarınızdan seçin.</p>
+                            </div>
+                            
+                            <div style={{ marginTop: '2rem' }}>
+                              <h4 style={{ marginBottom: '1rem', color: 'var(--text-main)' }}>Geçmiş Dosyalar</h4>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                  <FileText size={24} color="#3b82f6" />
+                                  <div>
+                                    <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>tam_kan_sayimi_2025.pdf</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>12.04.2025 • 1.2 MB</div>
+                                  </div>
+                                </div>
+                                <button style={{ background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-main)', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer' }}>İndir</button>
+                              </div>
+                            </div>
                           </div>
                         )}
                         {patientTab === 'notlar' && (
@@ -640,32 +728,110 @@ const AdminDashboard = () => {
 
           {/* TAB 3.2: FINANCE */}
           {activeTab === 'finance' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
-              <h3 style={{ fontFamily: 'var(--font-heading)', margin: '0 0 2rem 0' }}>Finans & Faturalama</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
-                  <p style={{ color: '#10b981', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Günlük Ciro</p>
-                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺14,250</h2>
-                </div>
-                <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
-                  <p style={{ color: '#38bdf8', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Haftalık Ciro</p>
-                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺86,400</h2>
-                </div>
-                <div style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
-                  <p style={{ color: '#fbbf24', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Bekleyen Ödemeler</p>
-                  <h2 style={{ margin: 0, fontSize: '2.5rem', color: 'var(--text-main)' }}>₺2,100</h2>
-                </div>
-              </div>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '600px', display: 'flex', gap: '2rem' }}>
               
-              <h4 style={{ marginBottom: '1rem' }}>Son İşlemler</h4>
-              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-                {['Klinik Muayene - Mia', 'Karma Aşı - Max', 'Pet Kuaför - Duman'].map((txn, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: i !== 2 ? '1px solid var(--border-glass)' : 'none' }}>
-                    <span style={{ fontWeight: 600 }}>{txn}</span>
-                    <span style={{ color: '#10b981', fontWeight: 600 }}>+ ₺{(Math.random() * 1000 + 500).toFixed(0)}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                  <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Finans & Faturalama</h3>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button style={{ background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-main)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>Dışa Aktar (CSV)</button>
                   </div>
-                ))}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+                  <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)' }}></div>
+                    <p style={{ color: 'var(--text-muted)', margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '0.9rem' }}>Aylık Ciro</p>
+                    <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: 'var(--text-main)' }}>₺248,500</h2>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: '#10b981' }}><TrendingUp size={14}/> +12% geçen aya göre</div>
+                  </div>
+                  <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%)' }}></div>
+                    <p style={{ color: 'var(--text-muted)', margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '0.9rem' }}>Net Kar</p>
+                    <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: 'var(--text-main)' }}>₺86,400</h2>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: '#10b981' }}><TrendingUp size={14}/> +5% geçen aya göre</div>
+                  </div>
+                  <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%)' }}></div>
+                    <p style={{ color: 'var(--text-muted)', margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '0.9rem' }}>Bekleyen Tahsilatlar</p>
+                    <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: 'var(--text-main)' }}>₺12,100</h2>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>4 Açık Fatura</div>
+                  </div>
+                </div>
+                
+                <h4 style={{ marginBottom: '1rem', color: 'var(--text-main)' }}>Son Faturalar</h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid var(--border-glass)', color: 'var(--text-muted)' }}>
+                      <th style={{ padding: '1rem 0' }}>FATURA NO</th>
+                      <th style={{ padding: '1rem 0' }}>MÜŞTERİ</th>
+                      <th style={{ padding: '1rem 0' }}>TARİH</th>
+                      <th style={{ padding: '1rem 0' }}>TUTAR</th>
+                      <th style={{ padding: '1rem 0' }}>DURUM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { id: 'INV-2026-001', client: 'Ahmet Yılmaz (Mia)', date: '28 Haz 2026', amount: '₺1,250', status: 'Ödendi' },
+                      { id: 'INV-2026-002', client: 'Caner Demir (Max)', date: '28 Haz 2026', amount: '₺4,500', status: 'Bekliyor' },
+                      { id: 'INV-2026-003', client: 'Elif Kaya (Duman)', date: '27 Haz 2026', amount: '₺850', status: 'Ödendi' },
+                      { id: 'INV-2026-004', client: 'Burak Şahin (Paşa)', date: '26 Haz 2026', amount: '₺3,200', status: 'İptal' },
+                    ].map((inv) => (
+                      <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '1rem 0', color: 'var(--color-primary)', fontWeight: 600 }}>{inv.id}</td>
+                        <td style={{ padding: '1rem 0', color: 'var(--text-main)' }}>{inv.client}</td>
+                        <td style={{ padding: '1rem 0', color: 'var(--text-muted)' }}>{inv.date}</td>
+                        <td style={{ padding: '1rem 0', color: 'var(--text-main)', fontWeight: 600 }}>{inv.amount}</td>
+                        <td style={{ padding: '1rem 0' }}>
+                          <span style={{ 
+                            padding: '0.2rem 0.6rem', borderRadius: '1rem', fontSize: '0.75rem',
+                            background: inv.status === 'Ödendi' ? 'rgba(16, 185, 129, 0.1)' : inv.status === 'İptal' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(251, 191, 36, 0.1)',
+                            color: inv.status === 'Ödendi' ? '#10b981' : inv.status === 'İptal' ? '#ef4444' : '#fbbf24',
+                            border: `1px solid ${inv.status === 'Ödendi' ? 'rgba(16, 185, 129, 0.3)' : inv.status === 'İptal' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(251, 191, 36, 0.3)'}`
+                          }}>
+                            {inv.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+
+              <div style={{ width: '350px', background: 'var(--bg-dark)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', padding: '2rem', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div style={{ background: 'var(--color-primary)', padding: '0.5rem', borderRadius: 'var(--radius-sm)' }}><FileText size={20} color="#000" /></div>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-main)' }}>Yeni Fatura Oluştur</h3>
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Müşteri (Hasta Sahibi)</label>
+                    <select style={{ width: '100%', padding: '0.75rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', color: 'white', outline: 'none' }}>
+                      <option>Ahmet Yılmaz (Kedi - Mia)</option>
+                      <option>Caner Demir (Köpek - Max)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>İşlem Kalemleri</label>
+                    <div style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <span>Muayene Ücreti</span>
+                      <span style={{ color: 'var(--color-primary)' }}>₺750</span>
+                    </div>
+                    <button style={{ width: '100%', background: 'transparent', border: '1px dashed var(--border-glass)', color: 'var(--text-muted)', padding: '0.5rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }}>+ Kalem Ekle</button>
+                  </div>
+                  <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--border-glass)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 600 }}>
+                      <span>Genel Toplam:</span>
+                      <span style={{ color: 'var(--color-primary)' }}>₺750</span>
+                    </div>
+                    <button style={{ width: '100%', background: 'var(--color-primary)', color: '#000', border: 'none', padding: '1rem', borderRadius: 'var(--radius-md)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'transform 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.transform='translateY(-2px)'} onMouseLeave={(e)=>e.currentTarget.style.transform='translateY(0)'}>
+                      <Send size={18} /> Faturayı Kes ve Gönder
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
 
@@ -834,51 +1000,115 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === 'content' && (
-            <div style={{ background: 'var(--bg-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)' }}>
-              <h2 style={{ fontFamily: 'var(--font-heading)', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>Site İçerik Yönetimi</h2>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Ana sayfa metinlerini ve başlıklarını buradan değiştirebilirsiniz.</p>
+            <div style={{ background: 'var(--bg-main)', minHeight: '80vh', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', display: 'flex' }}>
+              {/* Notion-style Sidebar */}
+              <div style={{ width: '250px', background: 'var(--bg-surface)', borderRight: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '1.5rem 1rem', borderBottom: '1px solid var(--border-glass)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                    <div style={{ width: 24, height: 24, borderRadius: 4, background: 'var(--color-primary)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800 }}>V</div>
+                    VagalVet Workspace
+                  </div>
+                </div>
+                <div style={{ padding: '1rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>Sayfalar</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', background: 'rgba(255,255,255,0.05)', border: 'none', color: 'var(--text-main)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', textAlign: 'left', fontWeight: 500 }}>
+                      <FileText size={16} /> Ana Sayfa
+                    </button>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', textAlign: 'left' }}>
+                      <FileText size={16} /> Hakkımızda
+                    </button>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', textAlign: 'left' }}>
+                      <FileText size={16} /> Hizmetler
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-              <form onSubmit={handleSaveSiteContent} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Büyük Başlık (Siyah Kısım)</label>
-                  <input type="text" value={siteContent.homeHeroTitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Büyük Başlık (Yeşil Kısım)</label>
-                  <input type="text" value={siteContent.homeHeroTitleHighlight || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitleHighlight: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Ana Sayfa Alt Açıklama</label>
-                  <textarea rows={3} value={siteContent.homeHeroSubtitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroSubtitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Başlığı</label>
-                  <input type="text" value={siteContent.homeAboutTitle || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutTitle: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Metni - Paragraf 1</label>
-                  <textarea rows={4} value={siteContent.homeAboutText1 || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutText1: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Hakkımızda Metni - Paragraf 2</label>
-                  <textarea rows={4} value={siteContent.homeAboutText2 || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutText2: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white', resize: 'vertical' }} />
-                </div>
-                
-                <h3 style={{ fontFamily: 'var(--font-heading)', margin: '1rem 0 0.5rem 0', color: 'var(--color-primary)' }}>Çalışma Saatleri</h3>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Haftaiçi</label>
-                  <input type="text" value={siteContent.workingHoursWeekday || ''} onChange={(e) => setSiteContent({...siteContent, workingHoursWeekday: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Haftasonu (Cmt-Paz)</label>
-                  <input type="text" value={siteContent.workingHoursWeekend || ''} onChange={(e) => setSiteContent({...siteContent, workingHoursWeekend: e.target.value})} style={{ width: '100%', padding: '0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-glass)', background: 'var(--bg-dark)', color: 'white' }} />
-                </div>
+              {/* Notion-style Editor Area */}
+              <div style={{ flex: 1, padding: '4rem', overflowY: 'auto' }}>
+                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                  
+                  {/* Title Area */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                    <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-main)', outline: 'none' }} contentEditable suppressContentEditableWarning>Ana Sayfa</div>
+                    <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '1rem' }}>
+                      <button style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><ImageIcon size={16}/> Cover Ekle</button>
+                      <button style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><MessageSquare size={16}/> Yorum Ekle</button>
+                    </div>
+                  </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
-                  <button type="submit" style={{ padding: '0.8rem 2rem', background: 'var(--color-primary)', color: '#000', fontWeight: 600, border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>İçerikleri Kaydet</button>
-                  {saveContentSuccess && <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={18}/> Kaydedildi!</span>}
+                  {/* Toolbar */}
+                  <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', marginBottom: '2rem', position: 'sticky', top: '1rem', zIndex: 10 }}>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><Type size={18}/></button>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><Bold size={18}/></button>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><Italic size={18}/></button>
+                    <div style={{ width: '1px', background: 'var(--border-glass)', margin: '0 0.5rem' }}></div>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><AlignLeft size={18}/></button>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><List size={18}/></button>
+                    <button style={{ background: 'transparent', border: 'none', padding: '0.5rem', color: 'var(--text-main)', cursor: 'pointer', borderRadius: '4px' }}><LinkIcon size={18}/></button>
+                  </div>
+
+                  {/* Content Blocks */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', group: 'block' }}>
+                      <div style={{ color: 'var(--text-muted)', cursor: 'grab', marginTop: '0.25rem', opacity: 0.5 }}><LayoutDashboard size={16}/></div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-main)', outline: 'none' }} contentEditable suppressContentEditableWarning>Hero Bölümü (Karşılama Ekranı)</div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingLeft: '2rem' }}>
+                      <div style={{ flex: 1, background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', padding: '1rem' }}>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Büyük Başlık (Siyah Kısım)</div>
+                        <input type="text" value={siteContent.homeHeroTitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitle: e.target.value})} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-main)', fontSize: '1.2rem', outline: 'none' }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingLeft: '2rem' }}>
+                      <div style={{ flex: 1, background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', padding: '1rem' }}>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Büyük Başlık (Yeşil Kısım)</div>
+                        <input type="text" value={siteContent.homeHeroTitleHighlight || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroTitleHighlight: e.target.value})} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--color-primary)', fontSize: '1.2rem', outline: 'none' }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingLeft: '2rem', marginBottom: '2rem' }}>
+                      <div style={{ flex: 1, background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', padding: '1rem' }}>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Alt Açıklama (Subtitle)</div>
+                        <textarea rows={3} value={siteContent.homeHeroSubtitle || ''} onChange={(e) => setSiteContent({...siteContent, homeHeroSubtitle: e.target.value})} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', resize: 'none', lineHeight: 1.5 }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                      <div style={{ color: 'var(--text-muted)', cursor: 'grab', marginTop: '0.25rem', opacity: 0.5 }}><LayoutDashboard size={16}/></div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-main)', outline: 'none' }} contentEditable suppressContentEditableWarning>Hakkımızda Bölümü</div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', paddingLeft: '2rem' }}>
+                      <div style={{ flex: 1, background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-sm)', padding: '1rem' }}>
+                        <textarea rows={6} value={siteContent.homeAboutText1 || ''} onChange={(e) => setSiteContent({...siteContent, homeAboutText1: e.target.value})} style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', resize: 'vertical', lineHeight: 1.6 }} />
+                      </div>
+                    </div>
+
+                    {/* Placeholder for new block */}
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem', color: 'var(--text-muted)', cursor: 'text' }}>
+                      <Plus size={20} style={{ opacity: 0.5 }}/> ' / ' yazarak yeni bir komut seçin
+                    </div>
+
+                  </div>
                 </div>
-              </form>
+              </div>
+
+              {/* Floating Save Button */}
+              <div style={{ position: 'fixed', bottom: '2rem', right: '3rem', zIndex: 100 }}>
+                <button onClick={handleSaveSiteContent} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', background: 'var(--color-primary)', color: '#000', borderRadius: '2rem', fontWeight: 600, border: 'none', cursor: 'pointer', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', transition: 'transform 0.2s' }} onMouseEnter={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+                  {saveContentSuccess ? <><Check size={20}/> Kaydedildi!</> : 'Değişiklikleri Kaydet'}
+                </button>
+              </div>
+
             </div>
           )}
 

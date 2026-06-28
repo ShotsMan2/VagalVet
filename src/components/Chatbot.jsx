@@ -3,6 +3,7 @@ import { MessageSquare, X, Send, Bot } from 'lucide-react';
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
     { id: 1, text: 'Merhaba! VagalVet Veteriner Kliniğine hoş geldiniz. Size nasıl yardımcı olabilirim?', sender: 'bot' }
   ]);
@@ -34,15 +35,17 @@ export default function Chatbot() {
     const userMsg = { id: Date.now(), text: inputText, sender: 'user' };
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
+    setIsTyping(true);
 
     // Simulate bot response
     setTimeout(() => {
+      setIsTyping(false);
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
         text: `Mesajınızı aldık. Şu an hekimlerimiz yoğun olduğu için otomatik yanıt veriyorum. Acil durumlar için lütfen ${contactSettings.phone} numaralı telefonu arayınız. En kısa sürede size dönüş yapacağız.`,
         sender: 'bot'
       }]);
-    }, 1000);
+    }, 2000);
   };
 
   return (
@@ -82,20 +85,21 @@ export default function Chatbot() {
 
       {/* Chatbot Window */}
       {isOpen && (
-        <div style={{
+        <div className="glass-panel-dark animate-fade-in-up" style={{
           position: 'fixed',
           bottom: '100px',
           right: '30px',
           width: '350px',
-          height: '450px',
-          backgroundColor: 'var(--bg-surface)',
+          height: '480px',
           borderRadius: 'var(--radius-lg)',
-          boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+          boxShadow: '0 15px 50px rgba(0,0,0,0.5)',
           zIndex: 9998,
           display: 'flex',
           flexDirection: 'column',
           border: '1px solid var(--border-glass)',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)'
         }}>
           {/* Header */}
           <div style={{
@@ -117,38 +121,59 @@ export default function Chatbot() {
           {/* Messages */}
           <div style={{
             flex: 1,
-            padding: '1rem',
+            padding: '1.5rem 1rem',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
             gap: '1rem',
-            backgroundColor: 'var(--bg-main)'
+            backgroundColor: 'rgba(0,0,0,0.1)'
           }}>
             {messages.map((msg) => (
               <div key={msg.id} style={{
                 alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '80%',
-                backgroundColor: msg.sender === 'user' ? 'rgba(251, 191, 36, 0.2)' : 'var(--bg-soft)',
-                color: msg.sender === 'user' ? 'var(--color-primary)' : 'var(--text-main)',
-                padding: '0.75rem 1rem',
-                borderRadius: msg.sender === 'user' ? '1rem 1rem 0 1rem' : '1rem 1rem 1rem 0',
-                border: msg.sender === 'user' ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid var(--border-glass)',
+                maxWidth: '85%',
+                backgroundColor: msg.sender === 'user' ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)',
+                color: msg.sender === 'user' ? '#000' : '#f8fafc',
+                padding: '0.875rem 1.25rem',
+                borderRadius: msg.sender === 'user' ? '1.5rem 1.5rem 0.25rem 1.5rem' : '1.5rem 1.5rem 1.5rem 0.25rem',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
                 fontSize: '0.95rem',
-                lineHeight: 1.5
+                lineHeight: 1.5,
+                backdropFilter: msg.sender === 'bot' ? 'blur(10px)' : 'none',
+                border: msg.sender === 'bot' ? '1px solid rgba(255,255,255,0.1)' : 'none'
               }}>
                 {msg.text}
               </div>
             ))}
+            
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div style={{
+                alignSelf: 'flex-start',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                padding: '1rem 1.25rem',
+                borderRadius: '1.5rem 1.5rem 1.5rem 0.25rem',
+                border: '1px solid rgba(255,255,255,0.1)',
+                display: 'flex',
+                gap: '4px',
+                alignItems: 'center'
+              }}>
+                <div className="animate-pulse" style={{ width: 8, height: 8, backgroundColor: '#f8fafc', borderRadius: '50%', opacity: 0.7 }}></div>
+                <div className="animate-pulse delay-100" style={{ width: 8, height: 8, backgroundColor: '#f8fafc', borderRadius: '50%', opacity: 0.7 }}></div>
+                <div className="animate-pulse delay-200" style={{ width: 8, height: 8, backgroundColor: '#f8fafc', borderRadius: '50%', opacity: 0.7 }}></div>
+              </div>
+            )}
+            
             <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
           <form onSubmit={handleSend} style={{
             padding: '1rem',
-            borderTop: '1px solid var(--border-glass)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
             display: 'flex',
             gap: '0.5rem',
-            backgroundColor: 'var(--bg-surface)'
+            backgroundColor: 'rgba(15, 23, 42, 0.9)'
           }}>
             <input
               type="text"
@@ -159,9 +184,9 @@ export default function Chatbot() {
                 flex: 1,
                 padding: '0.75rem 1rem',
                 borderRadius: '2rem',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--bg-main)',
-                color: 'var(--text-main)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                color: '#f8fafc',
                 outline: 'none',
                 fontSize: '0.95rem'
               }}
