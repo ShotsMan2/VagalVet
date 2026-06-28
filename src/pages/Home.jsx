@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Activity, ShieldPlus, Dna, Syringe, ChevronRight, Phone, 
+  ShieldPlus, Dna, Syringe, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
   ArrowRight, Award, Heart, Shield, Star, Quote
 } from 'lucide-react';
@@ -88,12 +88,11 @@ const Home = () => {
     <div style={{ opacity: mounted ? 1 : 0, transition: 'opacity 0.5s ease' }}>
       
       {/* Hero Section */}
-      <section style={{
+      <section className="bg-gradient-premium" style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         paddingTop: '80px', // Navbar offset
-        backgroundColor: 'var(--bg-main)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -111,7 +110,7 @@ const Home = () => {
 
         <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
           
-          <div style={{ flex: '1 1 500px', paddingRight: '2rem' }}>
+          <div className="animate-fade-in-up" style={{ flex: '1 1 500px', paddingRight: '2rem' }}>
             <div style={{ display: 'inline-block', padding: '0.5rem 1rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, fontSize: '0.875rem', marginBottom: '1.5rem' }}>
               VagalVet Veteriner Kliniği
             </div>
@@ -122,7 +121,7 @@ const Home = () => {
               lineHeight: 1.1
             }}>
               {siteContent.homeHeroTitle} <br/>
-              <span style={{ color: 'var(--color-secondary)' }}>{siteContent.homeHeroTitleHighlight}</span>
+              <span className="text-gradient">{siteContent.homeHeroTitleHighlight}</span>
             </h1>
             <p style={{ 
               fontSize: '1.25rem', 
@@ -134,7 +133,7 @@ const Home = () => {
               {siteContent.homeHeroSubtitle}
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <a href={`tel:${contactSettings.phone.replace(/[^0-9]/g, '')}`} className="btn btn-primary">
+              <a href={`tel:${(contactSettings.phone || '').replace(/[^0-9]/g, '')}`} className="btn btn-primary">
                 <Phone size={20} style={{ marginRight: '0.5rem' }}/>
                 Randevu Alın
               </a>
@@ -142,8 +141,8 @@ const Home = () => {
                 Hizmetleri İncele
               </Link>
             </div>
-            <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', maxWidth: '400px' }}>
-              <div style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
+            <div className="glass-panel delay-200 animate-fade-in-up" style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px' }}>
+              <div className="animate-pulse-soft glow-effect" style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
                 <HeartPulse size={24} color="var(--color-secondary)" />
               </div>
               <div>
@@ -157,6 +156,7 @@ const Home = () => {
              <img 
                src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&h=1000&fit=crop" 
                alt="Modern Veteriner Kliniği" 
+               className="animate-float"
                style={{ 
                  width: '100%', 
                  maxWidth: '550px', 

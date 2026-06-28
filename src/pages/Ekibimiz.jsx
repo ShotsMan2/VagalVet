@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  Stethoscope, Award, Heart, Clock, Shield, Phone, Star, Users
+  Stethoscope, Award, Heart, Clock, Shield, Phone
 } from 'lucide-react';
 
 const Ekibimiz = () => {
@@ -51,59 +51,85 @@ const Ekibimiz = () => {
       {/* Team Profiles */}
       <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-main)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <div className="animate-fade-in-up delay-100" style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Veteriner Hekimlerimiz</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
               Alanında uzman, sevgi dolu ve özveriyle çalışan veteriner hekimlerimizi tanıyın.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
             
             {/* Vet 1 */}
-            <div className="surface-card" style={{ padding: '3rem', textAlign: 'center' }}>
+            <div className="surface-card glass-panel delay-200 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
-                width: '140px', height: '140px',
-                backgroundColor: 'var(--bg-soft)',
+                position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
+                background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
+                opacity: 0.8,
+                zIndex: 0
+              }}></div>
+              <div style={{
+                position: 'relative', zIndex: 1,
+                width: '160px', height: '160px',
                 borderRadius: '50%',
                 margin: '0 auto 2rem',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '4px solid var(--color-primary)'
+                border: '6px solid var(--bg-surface)',
+                boxShadow: 'var(--shadow-md)',
+                overflow: 'hidden',
+                background: '#fff'
               }}>
-                <Stethoscope size={56} color="var(--color-secondary)" />
+                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80" alt="Mürüvvet Eraslan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Mürüvvet Eraslan</h3>
-              <div style={{ display: 'inline-block', padding: '0.4rem 1rem', backgroundColor: 'rgba(238,189,95,0.15)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
-                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Veteriner Hekim</span>
+              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.25rem', position: 'relative', zIndex: 1 }}>Mürüvvet Eraslan</h3>
+              <div style={{ display: 'inline-block', padding: '0.4rem 1rem', backgroundColor: 'rgba(238,189,95,0.15)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Veteriner Hekim & Dahiliye Uzmanı</span>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '2rem' }}>
                 Hayvan sağlığı ve refahı konusundaki tutkusu ile tanınan Veteriner Hekim Mürüvvet Eraslan, 
                 her hastasına bireysel yaklaşım göstererek en uygun tedavi planlarını oluşturmaktadır. 
-                Dahiliye, koruyucu hekimlik ve beslenme danışmanlığı alanlarında deneyim sahibidir.
               </p>
+              
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Dahiliye</span>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Koruyucu Hekimlik</span>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Beslenme</span>
+              </div>
             </div>
 
             {/* Vet 2 */}
-            <div className="surface-card" style={{ padding: '3rem', textAlign: 'center' }}>
+            <div className="surface-card glass-panel delay-300 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
-                width: '140px', height: '140px',
-                backgroundColor: 'var(--bg-soft)',
+                position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
+                background: 'linear-gradient(135deg, var(--color-secondary), #10b981)',
+                opacity: 0.8,
+                zIndex: 0
+              }}></div>
+              <div style={{
+                position: 'relative', zIndex: 1,
+                width: '160px', height: '160px',
                 borderRadius: '50%',
                 margin: '0 auto 2rem',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '4px solid var(--color-primary)'
+                border: '6px solid var(--bg-surface)',
+                boxShadow: 'var(--shadow-md)',
+                overflow: 'hidden',
+                background: '#fff'
               }}>
-                <Stethoscope size={56} color="var(--color-secondary)" />
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&q=80" alt="Mehmet Ali Eraslan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Mehmet Ali Eraslan</h3>
-              <div style={{ display: 'inline-block', padding: '0.4rem 1rem', backgroundColor: 'rgba(238,189,95,0.15)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
-                <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Veteriner Hekim</span>
+              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-main)', marginBottom: '0.25rem', position: 'relative', zIndex: 1 }}>Mehmet Ali Eraslan</h3>
+              <div style={{ display: 'inline-block', padding: '0.4rem 1rem', backgroundColor: 'rgba(47,79,79,0.1)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem', position: 'relative', zIndex: 1 }}>
+                <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>Veteriner Hekim & Cerrahi Uzmanı</span>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '2rem' }}>
                 Cerrahi ve acil müdahale konularındaki uzmanlığıyla bilinen Veteriner Hekim Mehmet Ali Eraslan, 
-                hayvan sağlığı alanında kapsamlı bir deneyime sahiptir. Ortopedik cerrahi, 
-                yumuşak doku cerrahisi ve acil veterinerlik hizmetleri konularında uzmanlaşmıştır.
+                hayvan sağlığı alanında kapsamlı bir deneyime sahiptir.
               </p>
+              
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Ortopedi</span>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Yumuşak Doku Cerrahisi</span>
+                <span style={{ fontSize: '0.8rem', padding: '0.25rem 0.75rem', background: 'var(--bg-soft)', borderRadius: '4px', color: 'var(--text-muted)' }}>Acil</span>
+              </div>
             </div>
 
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, Send, CheckCircle2, X, Reply, Plus, Search, Check, AlertTriangle, Mail, FileText, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, CheckCircle2, X, Reply, Plus, Check, AlertTriangle, Mail, FileText, BookOpen } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -206,6 +206,12 @@ const AdminDashboard = () => {
     localStorage.setItem('vagalvet_patients', JSON.stringify(updated));
     setShowAddPatient(false);
     setNewPatient({ name: '', type: '', ownerName: '', ownerPhone: '', nextVaccine: '', vaccineName: '', status: 'Sağlıklı' });
+  };
+
+  const handleDeletePatient = (id) => {
+    const updated = patients.filter(pt => pt.id !== id);
+    setPatients(updated);
+    localStorage.setItem('vagalvet_patients', JSON.stringify(updated));
   };
 
   const handleAddBlog = (e) => {
@@ -530,9 +536,19 @@ const AdminDashboard = () => {
                           <p style={{ margin: '0.25rem 0 0 0', color: 'var(--text-muted)', fontSize: '1.1rem' }}>{selectedPatient.type} • ID: {selectedPatient.id}</p>
                         </div>
                       </div>
-                      <button onClick={() => setSelectedPatient(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }}>
-                        <X size={28} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <button onClick={() => {
+                          if(window.confirm('Bu hastayı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+                            handleDeletePatient(selectedPatient.id);
+                            setSelectedPatient(null);
+                          }
+                        }} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', borderRadius: 'var(--radius-sm)', cursor: 'pointer', padding: '0.5rem 1rem', fontWeight: 600 }}>
+                          Kaydı Sil
+                        </button>
+                        <button onClick={() => setSelectedPatient(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.5rem' }}>
+                          <X size={28} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Body */}
@@ -568,22 +584,49 @@ const AdminDashboard = () => {
                           </div>
                         )}
                         {patientTab === 'aşılar' && (
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', marginBottom: '1rem' }}>
-                              <span style={{ fontWeight: 600 }}>{selectedPatient.vaccineName}</span>
-                              <span style={{ color: 'var(--color-primary)' }}>Sonraki: {selectedPatient.nextVaccine}</span>
+                          <div style={{ paddingLeft: '1rem', borderLeft: '2px solid var(--color-primary)', position: 'relative' }}>
+                            <div style={{ position: 'relative', marginBottom: '2rem' }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--color-primary)', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>{selectedPatient.vaccineName} (Gelecek Randevu)</h4>
+                              <p style={{ margin: 0, color: 'var(--color-primary)', fontWeight: 600 }}>Beklenen Tarih: {selectedPatient.nextVaccine}</p>
+                              <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Hatırlatma SMS'i planlandı.</div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: 'var(--radius-md)', opacity: 0.7 }}>
-                              <span style={{ fontWeight: 600 }}>İç Parazit</span>
-                              <span>Yapıldı: 10.01.2026</span>
+                            
+                            <div style={{ position: 'relative', marginBottom: '2rem', opacity: 0.7 }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>Karma Aşı (Uygulandı)</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Uygulama Tarihi: 10.01.2026</p>
+                              <div style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Hekim: Dr. Mürüvvet Eraslan</div>
+                            </div>
+
+                            <div style={{ position: 'relative', opacity: 0.5 }}>
+                              <div style={{ position: 'absolute', left: '-1.45rem', top: '0', width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '4px solid var(--bg-surface)' }}></div>
+                              <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)', fontSize: '1.1rem' }}>İç/Dış Parazit (Uygulandı)</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Uygulama Tarihi: 15.11.2025</p>
                             </div>
                           </div>
                         )}
                         {patientTab === 'laboratuvar' && (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '4rem 0' }}>
-                            <Activity size={48} style={{ marginBottom: '1rem', opacity: 0.5 }} />
-                            <p>Henüz laboratuvar veya röntgen kaydı bulunmuyor.</p>
-                            <button style={{ marginTop: '1rem', background: 'transparent', border: '1px dashed var(--color-primary)', color: 'var(--color-primary)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>+ Sonuç Yükle</button>
+                          <div>
+                            <div style={{ border: '2px dashed var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '3rem', textAlign: 'center', background: 'rgba(255,255,255,0.02)', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={(e)=>e.currentTarget.style.borderColor='var(--color-primary)'} onMouseLeave={(e)=>e.currentTarget.style.borderColor='var(--border-glass)'}>
+                              <Activity size={48} color="var(--color-primary)" style={{ marginBottom: '1rem' }} />
+                              <h4 style={{ fontSize: '1.2rem', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>PDF / Tahlil Sonucu Yükle</h4>
+                              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>Sürükleyip bırakın veya dosyalarınızdan seçin.</p>
+                            </div>
+                            
+                            <div style={{ marginTop: '2rem' }}>
+                              <h4 style={{ marginBottom: '1rem', color: 'var(--text-main)' }}>Geçmiş Dosyalar</h4>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-sm)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                  <FileText size={24} color="#3b82f6" />
+                                  <div>
+                                    <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>tam_kan_sayimi_2025.pdf</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>12.04.2025 • 1.2 MB</div>
+                                  </div>
+                                </div>
+                                <button style={{ background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-main)', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer' }}>İndir</button>
+                              </div>
+                            </div>
                           </div>
                         )}
                         {patientTab === 'notlar' && (

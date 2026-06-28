@@ -56,14 +56,14 @@ export default function Randevu() {
   };
 
   return (
-    <main style={{ background: 'var(--bg-main)', minHeight: '100vh', padding: '120px 0 60px' }}>
-      <div className="container" style={{ maxWidth: '800px' }}>
+    <main className="bg-gradient-premium" style={{ minHeight: '100vh', padding: '120px 0 60px' }}>
+      <div className="container animate-fade-in-up" style={{ maxWidth: '800px' }}>
         
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, marginBottom: '1rem' }}>
             Hızlı & Kolay
           </div>
-          <h1 style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
+          <h1 className="text-gradient" style={{ fontSize: '2.5rem', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
             Online Randevu Alın
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
@@ -93,7 +93,7 @@ export default function Randevu() {
           </div>
         )}
 
-        <div className="glass-panel" style={{ padding: '2.5rem', borderRadius: 'var(--radius-lg)' }}>
+        <div className="glass-panel delay-200 animate-fade-in-up" style={{ padding: '3rem', borderRadius: 'var(--radius-lg)' }}>
           {isSuccess ? (
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
               <div style={{ width: 80, height: 80, background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>

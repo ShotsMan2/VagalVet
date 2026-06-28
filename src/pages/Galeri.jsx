@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, ExternalLink, Camera } from 'lucide-react';
+import { ExternalLink, Camera } from 'lucide-react';
 
 const galleryImages = [
   { src: '/images/1.png', alt: 'Sevimli Yavru Kedi' },
