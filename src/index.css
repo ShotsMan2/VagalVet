@@ -38,9 +38,12 @@
 
   /* Button Text Colors */
   --btn-primary-text: #ffffff;
+  --btn-accent-text: var(--color-secondary);
   --text-on-secondary: #ffffff;
   
   /* Specific component colors */
+  --hours-card-bg: var(--color-secondary);
+  --hours-card-text: #ffffff;
   --badge-bg: var(--color-primary);
   --badge-text: var(--color-secondary);
   
@@ -71,11 +74,14 @@
   /* Accents (Using Vagal Yellow for Highlights) */
   --color-secondary: var(--color-primary); /* Overrides dark green elements with glowing yellow */
   --btn-primary-text: #0D1412; /* Deep pine text on yellow buttons for max contrast */
+  --btn-accent-text: #0D1412; /* Deep pine text on yellow accent buttons */
   --text-on-secondary: #0D1412; /* Dark text for yellow cards */
   
   /* Badge inversion for dark mode */
-  --badge-bg: var(--bg-soft);
-  --badge-text: var(--color-primary);
+  --hours-card-bg: var(--bg-soft);
+  --hours-card-text: var(--text-main);
+  --badge-bg: var(--color-primary); /* Keep badge yellow on dark card */
+  --badge-text: #0D1412; /* Dark text for yellow badge */
   
   /* Glass Variables */
   --glass-bg: rgba(20, 31, 28, 0.7);
@@ -158,7 +164,7 @@ a:hover {
 
 .btn-accent {
   background-color: var(--color-primary);
-  color: var(--color-secondary);
+  color: var(--btn-accent-text);
 }
 
 .btn-accent:hover {
