@@ -156,8 +156,8 @@ const Home = () => {
               </Link>
             </div>
             <div className="glass-panel delay-200 animate-fade-in-up" style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px' }}>
-              <div className="animate-pulse-soft glow-effect" style={{ backgroundColor: 'var(--color-primary)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
-                <HeartPulse size={24} color="var(--color-secondary)" />
+              <div className="animate-pulse-soft glow-effect" style={{ backgroundColor: 'var(--badge-bg)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
+                <HeartPulse size={24} color="var(--badge-text)" />
               </div>
               <div>
                 <span style={{ fontSize: '1rem', fontWeight: 700, display: 'block' }}>7/24 Acil Müdahale & Destek</span>
@@ -283,10 +283,10 @@ const Home = () => {
 
             {/* Hours */}
             <div style={{ flex: '1 1 400px', display: 'flex' }}>
-              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--color-secondary)', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'white' }}>Çalışma Saatlerimiz</h2>
+              <div className="surface-card" style={{ padding: '3.5rem', width: '100%', backgroundColor: 'var(--color-secondary)', color: 'var(--text-on-secondary)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <h2 style={{ fontSize: '2rem', marginBottom: '3rem', color: 'var(--text-on-secondary)' }}>Çalışma Saatlerimiz</h2>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '1.5rem' }}>
                   <div>
                     <span style={{ fontSize: '1.25rem', fontWeight: 600, display: 'block' }}>Haftaiçi Her Gün</span>
                   </div>
@@ -301,7 +301,7 @@ const Home = () => {
                   <span style={{ fontSize: '1.25rem', opacity: 0.9 }}>{siteContent.workingHoursWeekend || '12.00 - 18.00'}</span>
                 </div>
 
-                <div style={{ backgroundColor: 'var(--color-primary)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--color-secondary)', fontWeight: 700, fontSize: '1.1rem' }}>
+                <div style={{ backgroundColor: 'var(--badge-bg)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--badge-text)', fontWeight: 700, fontSize: '1.1rem' }}>
                   7/24 Acil Müdahale Hizmeti Sağlanmaktadır.
                 </div>
               </div>
