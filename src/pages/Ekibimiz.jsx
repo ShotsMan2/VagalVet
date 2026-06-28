@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   Stethoscope, Award, Heart, Clock, Shield, Phone
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Ekibimiz = () => {
   const [mounted, setMounted] = useState(false);
@@ -36,15 +37,30 @@ const Ekibimiz = () => {
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
         <div style={{ position: 'absolute', bottom: '-40px', left: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}
+          >
             <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Uzman Kadromuz</span>
-          </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}
+          >
             Ekibimiz
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}
+          >
             Deneyimli ve şefkatli veteriner hekimlerimizle can dostlarınız güvenilir ellerde.
-          </p>
+          </motion.p>
         </div>
       </section>
 
