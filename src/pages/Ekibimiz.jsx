@@ -14,6 +14,19 @@ const Ekibimiz = () => {
     if (savedContent) {
       setSiteContent(JSON.parse(savedContent));
     }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const values = [
@@ -77,7 +90,7 @@ const Ekibimiz = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
             
             {/* Vet 1 */}
-            <div className="surface-card glass-panel delay-200 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div className="surface-card glass-panel delay-100 reveal-on-scroll" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
                 position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
                 background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
@@ -113,7 +126,7 @@ const Ekibimiz = () => {
             </div>
 
             {/* Vet 2 */}
-            <div className="surface-card glass-panel delay-300 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div className="surface-card glass-panel delay-200 reveal-on-scroll" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
                 position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
                 background: 'linear-gradient(135deg, var(--color-secondary), #10b981)',
@@ -164,7 +177,7 @@ const Ekibimiz = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
             {values.map((v, i) => (
-              <div key={i} className="surface-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
+              <div key={i} className={`surface-card reveal-on-scroll delay-${(i % 4) * 100}`} style={{ padding: '2.5rem', textAlign: 'center' }}>
                 <div style={{
                   width: '64px', height: '64px',
                   backgroundColor: 'var(--bg-soft)',

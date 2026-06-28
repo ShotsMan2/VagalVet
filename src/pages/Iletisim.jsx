@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -59,6 +59,21 @@ const workingHours = [
 export default function Iletisim() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -143,12 +158,12 @@ export default function Iletisim() {
             gap: 24,
           }}
         >
-          {contactCards.map((card) => {
+          {contactCards.map((card, index) => {
             const Icon = card.icon;
             return (
               <div
                 key={card.title}
-                className="surface-card"
+                className={`surface-card reveal-on-scroll delay-${(index % 4) * 100}`}
                 style={{
                   padding: '36px 28px',
                   borderRadius: 'var(--radius-lg)',

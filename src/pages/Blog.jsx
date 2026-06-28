@@ -6,6 +6,21 @@ export default function Blog() {
   const [activeArticle, setActiveArticle] = useState(null);
 
   useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeArticle]);
+
+  useEffect(() => {
     if (activeArticle) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -101,10 +116,10 @@ export default function Blog() {
       <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-          {articles.map((article) => (
+          {articles.map((article, index) => (
             <article 
               key={article.id} 
-              className="glass-panel"
+              className={`glass-panel reveal-on-scroll delay-${(index % 4) * 100}`}
               onClick={() => setActiveArticle(article)}
               style={{ 
                 borderRadius: 'var(--radius-lg)', 

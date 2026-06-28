@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExternalLink, Camera } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -70,6 +70,22 @@ function GalleryCard({ src, alt }) {
 
 export default function Galeri() {
   const [igHovered, setIgHovered] = useState(false);
+  const [activeTab, setActiveTab] = useState('Tümü');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeTab]);
 
   return (
     <div style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
@@ -116,17 +132,11 @@ export default function Galeri() {
         className="container"
         style={{ padding: '72px 24px 56px' }}
       >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
-            maxWidth: '1100px',
-            margin: '0 auto',
-          }}
-        >
-          {galleryImages.map((img) => (
-            <GalleryCard key={img.src} src={img.src} alt={img.alt} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
+          {galleryImages.map((img, index) => (
+            <div key={index} className={`reveal-on-scroll delay-${(index % 4) * 100}`}>
+              <GalleryCard src={img.src} alt={img.alt} />
+            </div>
           ))}
         </div>
       </section>
