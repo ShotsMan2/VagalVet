@@ -222,9 +222,11 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteBlog = (id) => {
-    const updated = blogs.filter(b => b.id !== id);
-    setBlogs(updated);
-    localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    if (window.confirm('Bu blog yazısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+      const updated = blogs.filter(b => b.id !== id);
+      setBlogs(updated);
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    }
   };
 
   const menuItems = [
