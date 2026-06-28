@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MapPin, Phone, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Footer = () => {
   const location = useLocation();
@@ -27,9 +28,10 @@ const Footer = () => {
     const subs = JSON.parse(localStorage.getItem('vagalvet_newsletter') || '[]');
     localStorage.setItem('vagalvet_newsletter', JSON.stringify([email, ...subs]));
     
-    setSubscribed(true);
     setEmail('');
-    setTimeout(() => setSubscribed(false), 3000);
+    toast.success('Bültene başarıyla abone oldunuz!', {
+      description: 'Yeni gelişmelerden ilk siz haberdar olacaksınız.',
+    });
   };
 
   return (
@@ -75,7 +77,7 @@ const Footer = () => {
               }}
             />
             <button type="submit" className="btn btn-primary" style={{ padding: '0 1.5rem' }}>
-              {subscribed ? <CheckCircle2 size={24} /> : 'Abone Ol'}
+              Abone Ol
             </button>
           </form>
         </div>
