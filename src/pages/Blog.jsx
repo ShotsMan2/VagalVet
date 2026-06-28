@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, User, ArrowRight, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Blog() {
   const [activeArticle, setActiveArticle] = useState(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeArticle]);
 
   useEffect(() => {
     if (activeArticle) {
@@ -69,26 +85,41 @@ export default function Blog() {
         <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
         <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}
+          >
             <BookOpen size={18} color="var(--color-secondary)" />
             <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>VagalVet Blog & Klinik Vakalar</span>
-          </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}
+          >
             Evcil Hayvan Sağlığı Rehberi
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}
+          >
             Uzman hekimlerimiz tarafından hazırlanan güncel makaleler, klinik vakalarımız ve detaylı bakım ipuçları.
-          </p>
+          </motion.p>
         </div>
       </section>
 
       <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-          {articles.map((article) => (
+          {articles.map((article, index) => (
             <article 
               key={article.id} 
-              className="glass-panel"
+              className={`glass-panel reveal-on-scroll delay-${(index % 4) * 100}`}
               onClick={() => setActiveArticle(article)}
               style={{ 
                 borderRadius: 'var(--radius-lg)', 

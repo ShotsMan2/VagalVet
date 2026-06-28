@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, User, FileText, Calendar, Activity, Pill, LogOut, Download, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const ClientPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -10,6 +12,13 @@ const ClientPortal = () => {
     e.preventDefault();
     if (phone && password) {
       setIsLoggedIn(true);
+      toast.success('Başarıyla giriş yapıldı', {
+        description: 'Hasta portalına yönlendiriliyorsunuz.'
+      });
+    } else {
+      toast.error('Giriş başarısız', {
+        description: 'Lütfen bilgilerinizi kontrol edin.'
+      });
     }
   };
 
@@ -86,10 +95,18 @@ const ClientPortal = () => {
         </div>
 
         {/* Dashboard Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}
+        >
           
           {/* Pet Info Card */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 700, color: '#000' }}>
                 {patient.petName.charAt(0)}
@@ -109,10 +126,10 @@ const ClientPortal = () => {
                 <div style={{ color: 'var(--text-main)', fontWeight: 600, fontSize: '1.1rem' }}>{patient.weight}</div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Upcoming Card */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <AlertCircle size={24} color="var(--color-primary)" />
               <h3 style={{ margin: 0, color: 'var(--text-main)' }}>Sıradaki İşlem</h3>
@@ -121,10 +138,10 @@ const ClientPortal = () => {
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '1.2rem', color: 'var(--text-main)' }}>{patient.nextVaccine.split('(')[0]}</p>
               <p style={{ margin: 0, color: 'var(--text-muted)' }}>Tarih: {patient.nextVaccine.split('(')[1].replace(')', '')}</p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Records List */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <Activity size={24} color="var(--color-primary)" />
               <h3 style={{ margin: 0, color: 'var(--text-main)' }}>Son Ziyaretler</h3>
@@ -140,10 +157,10 @@ const ClientPortal = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Prescriptions */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
               <Pill size={24} color="var(--color-primary)" />
               <h3 style={{ margin: 0, color: 'var(--text-main)' }}>Aktif Reçeteler</h3>
@@ -156,10 +173,10 @@ const ClientPortal = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Lab Results Placeholder */}
-          <div className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)', gridColumn: '1 / -1' }}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="glass-panel" style={{ padding: '2rem', borderRadius: 'var(--radius-lg)', gridColumn: '1 / -1' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <FileText size={24} color="var(--color-primary)" />
@@ -170,9 +187,9 @@ const ClientPortal = () => {
               <FileText size={48} color="var(--text-muted)" style={{ marginBottom: '1rem', opacity: 0.5 }} />
               <p style={{ color: 'var(--text-muted)', margin: 0 }}>Yakın zamanda laboratuvar tahlili bulunmuyor.</p>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
       </div>
     </div>
   );

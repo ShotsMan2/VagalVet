@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, PawPrint, Stethoscope, ChevronRight, CheckCircle2, User, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function Randevu() {
   const [step, setStep] = useState(1);
@@ -52,12 +54,27 @@ export default function Randevu() {
       const existing = JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]');
       localStorage.setItem('vagalvet_appointments', JSON.stringify([newAppointment, ...existing]));
       
+      toast.success('Randevu talebiniz başarıyla alındı!', {
+        description: 'Uzman hekimlerimiz en kısa sürede sizinle iletişime geçecektir.',
+      });
+      
     }, 1500);
+  };
+
+  const slideVariants = {
+    hidden: { opacity: 0, x: 20 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+    exit: { opacity: 0, x: -20, transition: { duration: 0.2 } }
   };
 
   return (
     <main className="bg-gradient-premium" style={{ minHeight: '100vh', padding: '120px 0 60px' }}>
-      <div className="container animate-fade-in-up" style={{ maxWidth: '800px' }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container" style={{ maxWidth: '800px' }}
+      >
         
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div style={{ display: 'inline-block', padding: '0.5rem 1.5rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, marginBottom: '1rem' }}>
@@ -93,9 +110,14 @@ export default function Randevu() {
           </div>
         )}
 
-        <div className="glass-panel delay-200 animate-fade-in-up" style={{ padding: '3rem', borderRadius: 'var(--radius-lg)' }}>
+        <div className="glass-panel" style={{ padding: '3rem', borderRadius: 'var(--radius-lg)' }}>
+          <AnimatePresence mode="wait">
           {isSuccess ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+            <motion.div 
+              key="success"
+              initial="hidden" animate="visible" exit="exit" variants={slideVariants}
+              style={{ textAlign: 'center', padding: '2rem 0' }}
+            >
               <div style={{ width: 80, height: 80, background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
                 <CheckCircle2 size={40} color="#10b981" />
               </div>
@@ -104,13 +126,17 @@ export default function Randevu() {
                 Uzman hekimlerimiz talebinizi inceleyip en kısa sürede <strong>{formData.phone}</strong> numaralı telefondan size ulaşarak randevunuzu kesinleştirecektir.
               </p>
               <button onClick={() => window.location.href='/'} className="btn btn-primary">Ana Sayfaya Dön</button>
-            </div>
+            </motion.div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <motion.form 
+              key="form"
+              initial="hidden" animate="visible" exit="exit" variants={slideVariants}
+              onSubmit={handleSubmit}
+            >
               
               {/* STEP 1: Pet Type */}
               {step === 1 && (
-                <div className="fade-in">
+                <motion.div initial="hidden" animate="visible" exit="exit" variants={slideVariants}>
                   <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <PawPrint color="var(--color-primary)" /> Dostumuzun Türü Nedir?
                   </h3>
@@ -134,7 +160,7 @@ export default function Randevu() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* STEP 2: Service */}
@@ -314,10 +340,11 @@ export default function Randevu() {
                 )}
               </div>
 
-            </form>
+            </motion.form>
           )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 }

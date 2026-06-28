@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { Toaster } from 'sonner'
 
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -32,6 +33,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <Toaster position="bottom-right" theme="dark" richColors />
       <div className="app-container">
         <Navbar />
         <main className="main-content">

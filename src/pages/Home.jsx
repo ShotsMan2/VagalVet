@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   ShieldPlus, Dna, Syringe, Phone, 
   Clock, Mail, MapPin, Stethoscope, Scissors, ShoppingBag, Truck, HeartPulse,
@@ -124,11 +125,25 @@ const Home = () => {
 
         <div className="container" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
           
-          <div className="animate-fade-in-up" style={{ flex: '1 1 500px', paddingRight: '2rem' }}>
-            <div style={{ display: 'inline-block', padding: '0.5rem 1rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ flex: '1 1 500px', paddingRight: '2rem' }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              style={{ display: 'inline-block', padding: '0.5rem 1rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, fontSize: '0.875rem', marginBottom: '1.5rem' }}
+            >
               VagalVet Veteriner Kliniği
-            </div>
-            <h1 style={{ 
+            </motion.div>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              style={{ 
               fontSize: 'clamp(3rem, 5vw, 4.5rem)', 
               color: 'var(--text-main)',
               marginBottom: '1.5rem',
@@ -136,8 +151,12 @@ const Home = () => {
             }}>
               {siteContent.homeHeroTitle} <br/>
               <span className="text-gradient">{siteContent.homeHeroTitleHighlight}</span>
-            </h1>
-            <p style={{ 
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              style={{ 
               fontSize: '1.25rem', 
               color: 'var(--text-muted)', 
               marginBottom: '2.5rem',
@@ -145,8 +164,13 @@ const Home = () => {
               lineHeight: 1.7
             }}>
               {siteContent.homeHeroSubtitle}
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}
+            >
               <a href={`tel:${(contactSettings.phone || '').replace(/[^0-9]/g, '')}`} className="btn btn-primary">
                 <Phone size={20} style={{ marginRight: '0.5rem' }}/>
                 Randevu Alın
@@ -154,8 +178,13 @@ const Home = () => {
               <Link to="/hizmetler" className="btn btn-outline" style={{ textDecoration: 'none' }}>
                 Hizmetleri İncele
               </Link>
-            </div>
-            <div className="glass-panel delay-200 animate-fade-in-up" style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px' }}>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="glass-panel" style={{ marginTop: '3rem', display: 'flex', gap: '1rem', alignItems: 'center', color: 'var(--text-main)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px' }}
+            >
               <div className="animate-pulse-soft glow-effect" style={{ backgroundColor: 'var(--badge-bg)', padding: '0.75rem', borderRadius: '50%', display: 'flex' }}>
                 <HeartPulse size={24} color="var(--badge-text)" />
               </div>
@@ -163,14 +192,20 @@ const Home = () => {
                 <span style={{ fontSize: '1rem', fontWeight: 700, display: 'block' }}>7/24 Acil Müdahale & Destek</span>
                 <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{contactSettings.phone} • {contactSettings.email}</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           
-          <div style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center' }}>
-             <img 
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center' }}
+          >
+             <motion.img 
                src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&h=1000&fit=crop" 
                alt="Modern Veteriner Kliniği" 
-               className="animate-float"
+               animate={{ y: [0, -10, 0] }}
+               transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
                style={{ 
                  width: '100%', 
                  maxWidth: '550px', 
@@ -181,7 +216,7 @@ const Home = () => {
                  boxShadow: 'var(--shadow-lg)'
                }} 
              />
-          </div>
+          </motion.div>
 
         </div>
       </section>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   Stethoscope, Award, Heart, Clock, Shield, Phone
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Ekibimiz = () => {
   const [mounted, setMounted] = useState(false);
@@ -13,6 +14,19 @@ const Ekibimiz = () => {
     if (savedContent) {
       setSiteContent(JSON.parse(savedContent));
     }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const values = [
@@ -36,15 +50,30 @@ const Ekibimiz = () => {
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
         <div style={{ position: 'absolute', bottom: '-40px', left: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}
+          >
             <span style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>Uzman Kadromuz</span>
-          </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}
+          >
             Ekibimiz
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}
+          >
             Deneyimli ve şefkatli veteriner hekimlerimizle can dostlarınız güvenilir ellerde.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -61,7 +90,7 @@ const Ekibimiz = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
             
             {/* Vet 1 */}
-            <div className="surface-card glass-panel delay-200 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div className="surface-card glass-panel delay-100 reveal-on-scroll" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
                 position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
                 background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
@@ -97,7 +126,7 @@ const Ekibimiz = () => {
             </div>
 
             {/* Vet 2 */}
-            <div className="surface-card glass-panel delay-300 animate-fade-in-up" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div className="surface-card glass-panel delay-200 reveal-on-scroll" style={{ padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{
                 position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
                 background: 'linear-gradient(135deg, var(--color-secondary), #10b981)',
@@ -148,7 +177,7 @@ const Ekibimiz = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
             {values.map((v, i) => (
-              <div key={i} className="surface-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
+              <div key={i} className={`surface-card reveal-on-scroll delay-${(i % 4) * 100}`} style={{ padding: '2.5rem', textAlign: 'center' }}>
                 <div style={{
                   width: '64px', height: '64px',
                   backgroundColor: 'var(--bg-soft)',

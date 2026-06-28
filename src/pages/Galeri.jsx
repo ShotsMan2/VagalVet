@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExternalLink, Camera } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const galleryImages = [
   { src: '/images/1.png', alt: 'Sevimli Yavru Kedi' },
@@ -69,6 +70,22 @@ function GalleryCard({ src, alt }) {
 
 export default function Galeri() {
   const [igHovered, setIgHovered] = useState(false);
+  const [activeTab, setActiveTab] = useState('Tümü');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeTab]);
 
   return (
     <div style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
@@ -83,15 +100,30 @@ export default function Galeri() {
         <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
         <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}
+          >
             <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>Fotoğraf Galerisi</span>
-          </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}
+          >
             Galeri
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}
+          >
             Kliniğimizden, sevimli hastalarımızdan ve ekibimizden kareler.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -100,17 +132,11 @@ export default function Galeri() {
         className="container"
         style={{ padding: '72px 24px 56px' }}
       >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
-            maxWidth: '1100px',
-            margin: '0 auto',
-          }}
-        >
-          {galleryImages.map((img) => (
-            <GalleryCard key={img.src} src={img.src} alt={img.alt} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
+          {galleryImages.map((img, index) => (
+            <div key={index} className={`reveal-on-scroll delay-${(index % 4) * 100}`}>
+              <GalleryCard src={img.src} alt={img.alt} />
+            </div>
           ))}
         </div>
       </section>

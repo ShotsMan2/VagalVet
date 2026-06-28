@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, CheckCircle2, X, Reply, Plus, Check, AlertTriangle, Mail, FileText, BookOpen, TrendingUp, Send, Type, AlignLeft, Image as ImageIcon, Link as LinkIcon, Bold, Italic, List } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -42,17 +44,13 @@ const AdminDashboard = () => {
   const [patientTab, setPatientTab] = useState('genel');
 
   // New Tabs State
-  const inventoryData = [
-    { id: 'INV-01', name: 'Karma Aşı (Kedi)', category: 'Aşı', stock: 12, critical: 15 },
-    { id: 'INV-02', name: 'Kuduz Aşısı', category: 'Aşı', stock: 45, critical: 10 },
-    { id: 'INV-03', name: 'Geniş Spektrumlu Antibiyotik', category: 'İlaç', stock: 8, critical: 20 },
-    { id: 'INV-04', name: 'Premium Kedi Maması 15kg', category: 'Mama', stock: 4, critical: 5 }
-  ];
-  const staffData = [
-    { id: 1, name: 'Vet. Hekim Mürüvvet Eraslan', status: 'Muayenede', shift: '09:00 - 18:00' },
-    { id: 2, name: 'Vet. Hekim Mehmet Ali Eraslan', status: 'Ameliyatta', shift: '10:00 - 19:00' },
-    { id: 3, name: 'Vet. Tek. Ayşe Yılmaz', status: 'Müsait', shift: '08:00 - 17:00' }
-  ];
+  const [inventoryData, setInventoryData] = useState([]);
+  const [showAddInventory, setShowAddInventory] = useState(false);
+  const [newInventory, setNewInventory] = useState({ name: '', category: '', stock: 0, critical: 5 });
+
+  const [staffData, setStaffData] = useState([]);
+  const [showAddStaff, setShowAddStaff] = useState(false);
+  const [newStaff, setNewStaff] = useState({ name: '', status: 'Müsait', shift: '09:00 - 18:00' });
 
   // Settings State
   const [settings, setSettings] = useState({ maintenanceMode: false, onlineBooking: true, emailNotifications: true });
@@ -174,6 +172,32 @@ const AdminDashboard = () => {
       localStorage.setItem('vagalvet_patients', JSON.stringify(pts));
     }
     setPatients(pts);
+
+    // Load Inventory
+    let inv = JSON.parse(localStorage.getItem('vagalvet_inventory') || '[]');
+    if (inv.length === 0) {
+      inv = [
+        { id: 'INV-01', name: 'Karma Aşı (Kedi)', category: 'Aşı', stock: 12, critical: 15 },
+        { id: 'INV-02', name: 'Kuduz Aşısı', category: 'Aşı', stock: 45, critical: 10 },
+        { id: 'INV-03', name: 'Geniş Spektrumlu Antibiyotik', category: 'İlaç', stock: 8, critical: 20 },
+        { id: 'INV-04', name: 'Premium Kedi Maması 15kg', category: 'Mama', stock: 4, critical: 5 }
+      ];
+      localStorage.setItem('vagalvet_inventory', JSON.stringify(inv));
+    }
+    setInventoryData(inv);
+
+    // Load Staff
+    let staff = JSON.parse(localStorage.getItem('vagalvet_staff') || '[]');
+    if (staff.length === 0) {
+      staff = [
+        { id: 1, name: 'Vet. Hekim Mürüvvet Eraslan', status: 'Muayenede', shift: '09:00 - 18:00' },
+        { id: 2, name: 'Vet. Hekim Mehmet Ali Eraslan', status: 'Ameliyatta', shift: '10:00 - 19:00' },
+        { id: 3, name: 'Vet. Tek. Ayşe Yılmaz', status: 'Müsait', shift: '08:00 - 17:00' }
+      ];
+      localStorage.setItem('vagalvet_staff', JSON.stringify(staff));
+    }
+    setStaffData(staff);
+
   }, [activeTab]);
 
   const handleReplySubmit = (msgId) => {
@@ -213,6 +237,52 @@ const AdminDashboard = () => {
     const updated = patients.filter(pt => pt.id !== id);
     setPatients(updated);
     localStorage.setItem('vagalvet_patients', JSON.stringify(updated));
+  };
+
+  const handleAddInventory = (e) => {
+    e.preventDefault();
+    const item = {
+      id: 'INV-' + Math.floor(10 + Math.random() * 90),
+      ...newInventory
+    };
+    const updated = [item, ...inventoryData];
+    setInventoryData(updated);
+    localStorage.setItem('vagalvet_inventory', JSON.stringify(updated));
+    setShowAddInventory(false);
+    setNewInventory({ name: '', category: '', stock: 0, critical: 5 });
+    toast.success('Yeni stok ürünü başarıyla eklendi.');
+  };
+
+  const handleDeleteInventory = (id) => {
+    if(window.confirm('Bu ürünü silmek istediğinize emin misiniz?')) {
+      const updated = inventoryData.filter(i => i.id !== id);
+      setInventoryData(updated);
+      localStorage.setItem('vagalvet_inventory', JSON.stringify(updated));
+      toast.success('Ürün silindi.');
+    }
+  };
+
+  const handleAddStaff = (e) => {
+    e.preventDefault();
+    const s = {
+      id: Date.now(),
+      ...newStaff
+    };
+    const updated = [s, ...staffData];
+    setStaffData(updated);
+    localStorage.setItem('vagalvet_staff', JSON.stringify(updated));
+    setShowAddStaff(false);
+    setNewStaff({ name: '', status: 'Müsait', shift: '09:00 - 18:00' });
+    toast.success('Yeni personel başarıyla eklendi.');
+  };
+
+  const handleDeleteStaff = (id) => {
+    if(window.confirm('Personel kaydını silmek istediğinize emin misiniz?')) {
+      const updated = staffData.filter(s => s.id !== id);
+      setStaffData(updated);
+      localStorage.setItem('vagalvet_staff', JSON.stringify(updated));
+      toast.success('Personel kaydı silindi.');
+    }
   };
 
   const handleAddBlog = (e) => {
@@ -375,11 +445,15 @@ const AdminDashboard = () => {
         </header>
 
         {/* Dynamic Content */}
-        <div style={{ padding: '2rem', flex: 1, overflowY: 'auto' }}>
+        <div style={{ padding: '2rem', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+          <AnimatePresence mode="wait">
           
           {/* TAB 1: DASHBOARD */}
           {activeTab === 'dashboard' && (
-            <>
+            <motion.div 
+              key="dashboard"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+            >
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
                 {[
                   { title: 'Bekleyen Randevu', value: appointments.filter(a => a.status === 'Beklemede').length, color: 'var(--color-primary)' },
@@ -394,24 +468,60 @@ const AdminDashboard = () => {
                 ))}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
                 <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '350px' }}>
                   <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', color: 'var(--text-main)' }}>Randevu Trafiği (Haftalık)</h3>
                   <div style={{ height: '250px', width: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="colorRandevu" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.4}/>
+                            <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
                         <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
                         <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
                         <Tooltip 
-                          cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
+                          cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }} 
                           contentStyle={{ backgroundColor: 'var(--bg-dark)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', color: 'var(--text-main)' }} 
                         />
-                        <Bar dataKey="randevu" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                        <Area type="monotone" dataKey="randevu" stroke="var(--color-primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorRandevu)" />
+                      </AreaChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
+
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '350px' }}>
+                  <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', color: 'var(--text-main)' }}>Aylık Gelir Trendi (₺)</h3>
+                  <div style={{ height: '250px', width: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={[
+                        { name: 'Oca', gelir: 45000 }, { name: 'Şub', gelir: 52000 }, { name: 'Mar', gelir: 48000 },
+                        { name: 'Nis', gelir: 61000 }, { name: 'May', gelir: 59000 }, { name: 'Haz', gelir: 72000 }
+                      ]} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="colorGelir" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
+                        <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+                        <Tooltip 
+                          cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }} 
+                          contentStyle={{ backgroundColor: 'var(--bg-dark)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', color: 'var(--text-main)' }} 
+                        />
+                        <Area type="monotone" dataKey="gelir" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorGelir)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
 
                 <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
                   <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>Son Aktiviteler</h3>
@@ -423,12 +533,16 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
-            </>
+            </motion.div>
           )}
 
           {/* TAB 2: APPOINTMENTS */}
           {activeTab === 'appointments' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+            <motion.div 
+              key="appointments"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Akıllı Randevular</h3>
                 <span style={{ backgroundColor: 'var(--color-primary)', color: '#000', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.875rem', fontWeight: 'bold' }}>
@@ -506,12 +620,16 @@ const AdminDashboard = () => {
 
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3: PATIENTS CRM */}
           {activeTab === 'patients' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+            <motion.div 
+              key="patients"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Biyo-Kayıtlar (Hasta Yönetimi)</h3>
                 <button onClick={() => setShowAddPatient(!showAddPatient)} style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
@@ -685,16 +803,38 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3.1: INVENTORY */}
           {activeTab === 'inventory' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+            <motion.div 
+              key="inventory"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Klinik Stok & Depo Takibi</h3>
-                <button style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}>+ Ürün Ekle</button>
+                <button onClick={() => setShowAddInventory(!showAddInventory)} style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Plus size={16}/> {showAddInventory ? 'Vazgeç' : 'Ürün Ekle'}
+                </button>
               </div>
+
+              {showAddInventory && (
+                <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem', border: '1px solid var(--border-glass)' }}>
+                  <h4 style={{ margin: '0 0 1.5rem 0' }}>Yeni Ürün Ekle</h4>
+                  <form onSubmit={handleAddInventory} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    <input type="text" placeholder="Ürün Adı" required value={newInventory.name} onChange={e => setNewInventory({...newInventory, name: e.target.value})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <input type="text" placeholder="Kategori (Aşı, İlaç, Mama vb.)" required value={newInventory.category} onChange={e => setNewInventory({...newInventory, category: e.target.value})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <input type="number" placeholder="Mevcut Stok" required value={newInventory.stock || ''} onChange={e => setNewInventory({...newInventory, stock: parseInt(e.target.value) || 0})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <input type="number" placeholder="Kritik Stok Seviyesi" required value={newInventory.critical || ''} onChange={e => setNewInventory({...newInventory, critical: parseInt(e.target.value) || 0})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <div style={{ gridColumn: 'span 2', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                      <button type="submit" style={{ padding: '0.6rem 2rem', background: '#10b981', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>Kaydet</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-glass)', color: 'var(--text-muted)' }}>
@@ -703,6 +843,7 @@ const AdminDashboard = () => {
                     <th style={{ padding: '1rem' }}>Kategori</th>
                     <th style={{ padding: '1rem' }}>Stok Durumu</th>
                     <th style={{ padding: '1rem' }}>Durum</th>
+                    <th style={{ padding: '1rem', textAlign: 'right' }}>İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -719,16 +860,23 @@ const AdminDashboard = () => {
                           <span style={{ padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.8rem', background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>Yeterli</span>
                         )}
                       </td>
+                      <td style={{ padding: '1rem', textAlign: 'right' }}>
+                        <button onClick={() => handleDeleteInventory(inv.id)} style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem' }}>Sil</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3.2: FINANCE */}
           {activeTab === 'finance' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '600px', display: 'flex', gap: '2rem' }}>
+            <motion.div 
+              key="finance"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '600px', display: 'flex', gap: '2rem' }}
+            >
               
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -832,16 +980,42 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3.3: STAFF */}
           {activeTab === 'staff' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}>
+            <motion.div 
+              key="staff"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', minHeight: '400px' }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Personel & Nöbet Çizelgesi</h3>
-                <button style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}>+ Personel Ekle</button>
+                <button onClick={() => setShowAddStaff(!showAddStaff)} style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Plus size={16}/> {showAddStaff ? 'Vazgeç' : 'Personel Ekle'}
+                </button>
               </div>
+
+              {showAddStaff && (
+                <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: 'var(--radius-md)', marginBottom: '2rem', border: '1px solid var(--border-glass)' }}>
+                  <h4 style={{ margin: '0 0 1.5rem 0' }}>Yeni Personel Ekle</h4>
+                  <form onSubmit={handleAddStaff} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    <input type="text" placeholder="Ad Soyad" required value={newStaff.name} onChange={e => setNewStaff({...newStaff, name: e.target.value})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <input type="text" placeholder="Mesai (Örn: 09:00 - 18:00)" required value={newStaff.shift} onChange={e => setNewStaff({...newStaff, shift: e.target.value})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)' }} />
+                    <select required value={newStaff.status} onChange={e => setNewStaff({...newStaff, status: e.target.value})} style={{ padding: '0.8rem', background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', color: 'white', borderRadius: 'var(--radius-sm)', outline: 'none' }}>
+                      <option value="Müsait">Müsait</option>
+                      <option value="Muayenede">Muayenede</option>
+                      <option value="Ameliyatta">Ameliyatta</option>
+                      <option value="İzinde">İzinde</option>
+                    </select>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', alignItems: 'center' }}>
+                      <button type="submit" style={{ padding: '0.6rem 2rem', background: '#10b981', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>Kaydet</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
               <div style={{ display: 'grid', gap: '1rem' }}>
                 {staffData.map(staff => (
                   <div key={staff.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-dark)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
@@ -854,7 +1028,7 @@ const AdminDashboard = () => {
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Mesai: {staff.shift}</span>
                       </div>
                     </div>
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                       <span style={{ 
                         padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 600,
                         background: staff.status === 'Müsait' ? 'rgba(16, 185, 129, 0.2)' : staff.status === 'Muayenede' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(239, 68, 68, 0.2)',
@@ -862,11 +1036,12 @@ const AdminDashboard = () => {
                       }}>
                         {staff.status}
                       </span>
+                      <button onClick={() => handleDeleteStaff(staff.id)} style={{ padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem' }}>Sil</button>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 4: MESSAGES */}
@@ -944,7 +1119,11 @@ const AdminDashboard = () => {
 
           {/* TAB 5: SETTINGS */}
           {activeTab === 'settings' && (
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', maxWidth: '600px' }}>
+            <motion.div 
+              key="settings"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem', maxWidth: '600px' }}
+            >
               <h3 style={{ fontFamily: 'var(--font-heading)', margin: '0 0 2rem 0' }}>Sistem Ayarları</h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -996,11 +1175,15 @@ const AdminDashboard = () => {
                   {saveSuccess && <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Check size={18}/> Kaydedildi!</span>}
                 </div>
               </form>
-            </div>
+            </motion.div>
           )}
 
           {activeTab === 'content' && (
-            <div style={{ background: 'var(--bg-main)', minHeight: '80vh', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', display: 'flex' }}>
+            <motion.div 
+              key="content"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+              style={{ background: 'var(--bg-main)', minHeight: '80vh', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-glass)', display: 'flex' }}
+            >
               {/* Notion-style Sidebar */}
               <div style={{ width: '250px', background: 'var(--bg-surface)', borderRight: '1px solid var(--border-glass)', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ padding: '1.5rem 1rem', borderBottom: '1px solid var(--border-glass)' }}>
@@ -1109,12 +1292,15 @@ const AdminDashboard = () => {
                 </button>
               </div>
 
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 7: BLOG */}
           {activeTab === 'blog' && (
-            <div>
+            <motion.div 
+              key="blog"
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
+            >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Blog Yönetimi</h2>
                 <button onClick={() => setShowAddBlog(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1172,9 +1358,10 @@ const AdminDashboard = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
+          </AnimatePresence>
         </div>
       </main>
     </div>

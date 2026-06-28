@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^12.42.0",
     "jimp": "^1.6.1",
     "lucide-react": "^1.21.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-parallax-tilt": "^1.7.333",
     "react-router-dom": "^7.18.0",
-    "recharts": "^3.9.0"
+    "recharts": "^3.9.0",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
