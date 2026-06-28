@@ -241,7 +241,7 @@ export default function Iletisim() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
             gap: 32,
-            alignItems: 'start',
+            alignItems: 'stretch',
           }}
         >
           {/* — Working Hours — */}
@@ -251,6 +251,9 @@ export default function Iletisim() {
               padding: '40px 36px',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
@@ -380,6 +383,9 @@ export default function Iletisim() {
               padding: '40px 36px',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <h2
@@ -405,7 +411,7 @@ export default function Iletisim() {
               Formu doldurun, en kısa sürede size dönüş yapalım.
             </p>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
               {/* Ad Soyad */}
               <div>
                 <label
@@ -536,17 +542,19 @@ export default function Iletisim() {
                 disabled={isSubmitting}
                 className="btn btn-primary"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 10,
-                  padding: '14px 32px',
+                  width: '100%',
+                  padding: '12px',
+                  fontFamily: 'var(--font-sans)',
                   fontSize: '0.95rem',
                   fontWeight: 600,
-                  fontFamily: 'var(--font-sans)',
-                  marginTop: 4,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  border: 'none',
+                  borderRadius: 'var(--radius-md)',
                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  width: '100%',
+                  marginTop: 'auto',
                   opacity: isSubmitting ? 0.7 : 1,
                   transition: 'opacity 0.3s ease',
                 }}
