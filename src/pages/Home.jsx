@@ -64,6 +64,20 @@ const Home = () => {
       }
       setSiteContent(parsed);
     }
+
+    // Scroll Animation Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const services = [
@@ -173,7 +187,7 @@ const Home = () => {
       </section>
 
       {/* About Section */}
-      <section style={{ padding: '6rem 0', backgroundColor: 'var(--bg-surface)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '6rem 0', backgroundColor: 'var(--bg-surface)' }}>
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center' }}>
           <div style={{ flex: '1 1 400px' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>{siteContent.homeAboutTitle}</h2>
@@ -192,7 +206,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section id="hizmetler" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-surface)' }}>
+      <section id="hizmetler" className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-surface)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '5rem', maxWidth: '700px', margin: '0 auto 5rem' }}>
             <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>
@@ -233,7 +247,7 @@ const Home = () => {
       </section>
 
       {/* Team & Hours Section */}
-      <section id="hekimler" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-main)' }}>
+      <section id="hekimler" className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-main)' }}>
         <div className="container">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'stretch' }}>
             
@@ -298,7 +312,7 @@ const Home = () => {
       </section>
 
       {/* Neden VagalVet */}
-      <section style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
+      <section className="reveal-on-scroll" style={{ padding: '8rem 0', backgroundColor: 'var(--bg-soft)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>Neden VagalVet?</h2>

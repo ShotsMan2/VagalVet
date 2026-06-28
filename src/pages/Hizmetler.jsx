@@ -6,7 +6,22 @@ import {
 
 const Hizmetler = () => {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true); 
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   const services = [
     {
@@ -98,7 +113,7 @@ const Hizmetler = () => {
             {services.map((s, i) => (
               <div 
                 key={i} 
-                className={`surface-card glass-panel animate-fade-in-up delay-${Math.min((i + 1) * 100, 400)}`} 
+                className={`glass-panel delay-${(i % 4) * 100} reveal-on-scroll`}
                 style={{ 
                   padding: '2.5rem', 
                   display: 'flex', 
@@ -106,7 +121,8 @@ const Hizmetler = () => {
                   gap: '1rem',
                   position: 'relative',
                   overflow: 'hidden',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  borderRadius: 'var(--radius-lg)'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-10px)';
