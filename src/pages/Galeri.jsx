@@ -73,92 +73,24 @@ export default function Galeri() {
   return (
     <div style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
       {/* ── Hero Banner ── */}
-      <section
-        style={{
-          paddingTop: '120px',
-          paddingBottom: '64px',
-          background: 'linear-gradient(135deg, var(--page-header-bg) 0%, #3a5f5f 100%)',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Decorative circle */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-80px',
-            right: '-80px',
-            width: '280px',
-            height: '280px',
-            borderRadius: '50%',
-            background: 'rgba(238,189,95,0.08)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-60px',
-            left: '-60px',
-            width: '200px',
-            height: '200px',
-            borderRadius: '50%',
-            background: 'rgba(238,189,95,0.06)',
-            pointerEvents: 'none',
-          }}
-        />
-
+      <section style={{
+        paddingTop: '160px',
+        paddingBottom: '80px',
+        backgroundColor: 'var(--page-header-bg)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
+        <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(238,189,95,0.15)',
-              padding: '8px 20px',
-              borderRadius: 'var(--radius-full)',
-              marginBottom: '20px',
-            }}
-          >
-            <Camera size={16} style={{ color: 'var(--color-primary)' }} />
-            <span
-              style={{
-                color: 'var(--color-primary)',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Fotoğraf Galerisi
-            </span>
+          <div style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+            <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>Fotoğraf Galerisi</span>
           </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(2.4rem, 5vw, 3.4rem)',
-              fontWeight: 700,
-              color: '#FFFFFF',
-              margin: '0 0 16px',
-              lineHeight: 1.15,
-            }}
-          >
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
             Galeri
           </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(1rem, 2vw, 1.15rem)',
-              color: 'rgba(255,255,255,0.75)',
-              margin: '0 auto',
-              maxWidth: '520px',
-              lineHeight: 1.7,
-            }}
-          >
-            Kliniğimizden ve sevimli hastalarımızdan kareler
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
+            Kliniğimizden, sevimli hastalarımızdan ve ekibimizden kareler.
           </p>
         </div>
       </section>

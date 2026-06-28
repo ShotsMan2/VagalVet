@@ -97,83 +97,23 @@ export default function Iletisim() {
   return (
     <main style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
       {/* ─── HERO ─── */}
-      <section
-        style={{
-          paddingTop: '120px',
-          paddingBottom: '72px',
-          background: 'linear-gradient(170deg, var(--page-header-bg) 0%, #3a605f 100%)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* decorative circles */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-120px',
-            right: '-80px',
-            width: 340,
-            height: 340,
-            borderRadius: '50%',
-            background: 'rgba(238,189,95,0.08)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-60px',
-            left: '-60px',
-            width: 220,
-            height: 220,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.04)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <span
-            style={{
-              display: 'inline-block',
-              background: 'rgba(238,189,95,0.15)',
-              color: 'var(--color-primary)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              padding: '6px 18px',
-              borderRadius: 'var(--radius-full)',
-              marginBottom: 18,
-              fontFamily: 'var(--font-sans)',
-            }}
-          >
-            İletişim
-          </span>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(2rem, 5vw, 3.2rem)',
-              fontWeight: 700,
-              color: '#fff',
-              margin: '0 0 16px',
-              lineHeight: 1.15,
-            }}
-          >
+      <section style={{
+        paddingTop: '160px',
+        paddingBottom: '80px',
+        backgroundColor: 'var(--page-header-bg)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
+        <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-block', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+            <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>İletişim</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
             Bizimle İletişime Geçin
           </h1>
-
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(1rem, 2vw, 1.15rem)',
-              color: 'rgba(255,255,255,0.75)',
-              maxWidth: 560,
-              margin: '0 auto',
-              lineHeight: 1.7,
-            }}
-          >
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
             Sorularınız ve randevu talepleriniz için bizimle iletişime geçin.
             Dostlarınızın sağlığı için her zaman buradayız.
           </p>
@@ -301,7 +241,7 @@ export default function Iletisim() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
             gap: 32,
-            alignItems: 'start',
+            alignItems: 'stretch',
           }}
         >
           {/* — Working Hours — */}
@@ -311,6 +251,9 @@ export default function Iletisim() {
               padding: '40px 36px',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
@@ -440,6 +383,9 @@ export default function Iletisim() {
               padding: '40px 36px',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid var(--border-color)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <h2
@@ -465,7 +411,7 @@ export default function Iletisim() {
               Formu doldurun, en kısa sürede size dönüş yapalım.
             </p>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
               {/* Ad Soyad */}
               <div>
                 <label
@@ -596,17 +542,19 @@ export default function Iletisim() {
                 disabled={isSubmitting}
                 className="btn btn-primary"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 10,
-                  padding: '14px 32px',
+                  width: '100%',
+                  padding: '12px',
+                  fontFamily: 'var(--font-sans)',
                   fontSize: '0.95rem',
                   fontWeight: 600,
-                  fontFamily: 'var(--font-sans)',
-                  marginTop: 4,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  border: 'none',
+                  borderRadius: 'var(--radius-md)',
                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  width: '100%',
+                  marginTop: 'auto',
                   opacity: isSubmitting ? 0.7 : 1,
                   transition: 'opacity 0.3s ease',
                 }}
@@ -671,11 +619,12 @@ export default function Iletisim() {
             }}
           >
             <iframe
+              className="dark-map"
               title="VagalVet Konum"
               src="https://maps.google.com/maps?q=VagalVet+Veteriner+Klini%C4%9Fi+Konya&t=&z=16&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="450"
-              style={{ border: 0, display: 'block' }}
+              style={{ border: 0, display: 'block', transition: 'filter 0.3s ease' }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

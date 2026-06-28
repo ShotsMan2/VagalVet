@@ -58,20 +58,31 @@ export default function Blog() {
   }, []);
 
   return (
-    <main style={{ background: 'var(--bg-main)', minHeight: '100vh', padding: '120px 0 60px', position: 'relative' }}>
-      <div className="container">
-        
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.5rem', backgroundColor: 'rgba(238, 189, 95, 0.2)', color: 'var(--color-secondary)', borderRadius: 'var(--radius-full)', fontWeight: 600, marginBottom: '1rem' }}>
-            <BookOpen size={18} /> VagalVet Blog & Klinik Vakalar
+    <main style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
+      <section style={{
+        paddingTop: '160px',
+        paddingBottom: '80px',
+        backgroundColor: 'var(--page-header-bg)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(238,189,95,0.08)' }}></div>
+        <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(238,189,95,0.05)' }}></div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', backgroundColor: 'rgba(238,189,95,0.2)', borderRadius: 'var(--radius-full)', marginBottom: '1.5rem' }}>
+            <BookOpen size={18} color="var(--color-secondary)" />
+            <span style={{ color: 'var(--color-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>VagalVet Blog & Klinik Vakalar</span>
           </div>
-          <h1 style={{ fontSize: '3rem', color: 'var(--text-main)', marginBottom: '1rem', fontFamily: 'var(--font-heading)' }}>
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'white', marginBottom: '1rem' }}>
             Evcil Hayvan Sağlığı Rehberi
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.25rem', maxWidth: '600px', lineHeight: 1.7 }}>
             Uzman hekimlerimiz tarafından hazırlanan güncel makaleler, klinik vakalarımız ve detaylı bakım ipuçları.
           </p>
         </div>
+      </section>
+
+      <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
           {articles.map((article) => (
