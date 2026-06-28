@@ -36,29 +36,42 @@ export default function Randevu() {
   const handleNext = () => setStep(step + 1);
   const handlePrev = () => setStep(step - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ownerName: formData.ownerName,
+          petName: formData.petType, // Storing petType as petName in our simple schema
+          phone: formData.phone,
+          date: formData.date,
+          time: formData.time,
+          reason: formData.service + (formData.notes ? ' - ' + formData.notes : '')
+        })
+      });
+      
+      if (!response.ok) throw new Error('Sunucu hatası');
+      
       setIsSubmitting(false);
       setIsSuccess(true);
-      
-      const newAppointment = {
-        id: 'RND-' + Math.floor(Math.random() * 10000),
-        createdAt: new Date().toLocaleString('tr-TR'),
-        ...formData,
-        status: 'Beklemede'
-      };
-      
-      const existing = JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]');
-      localStorage.setItem('vagalvet_appointments', JSON.stringify([newAppointment, ...existing]));
       
       toast.success('Randevu talebiniz başarıyla alındı!', {
         description: 'Uzman hekimlerimiz en kısa sürede sizinle iletişime geçecektir.',
       });
       
-    }, 1500);
+      setTimeout(() => {
+        setStep(1);
+        setFormData({ petType: '', service: '', date: '', time: '', ownerName: '', phone: '', notes: '' });
+        setIsSuccess(false);
+      }, 5000);
+    } catch (error) {
+      setIsSubmitting(false);
+      toast.error('Hata oluştu', { description: 'Lütfen tekrar deneyiniz.' });
+    }
   };
 
   const slideVariants = {

@@ -14,6 +14,12 @@ const AdminDashboard = () => {
   const [patients, setPatients] = useState([]);
   const [newsletter, setNewsletter] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [stats, setStats] = useState({
+    totalPatients: 0,
+    appointmentsToday: 0,
+    activeTreatments: 0,
+    newRegistrations: 0
+  });
   
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
@@ -80,10 +86,35 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    // Load Data
+    // Load Data from Local Storage (legacy or temporary)
     setMessages(JSON.parse(localStorage.getItem('vagalvet_messages') || '[]'));
-    setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
     setNewsletter(JSON.parse(localStorage.getItem('vagalvet_newsletter') || '[]'));
+    
+    // Fetch Data from API
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error("Stats API hatası:", err));
+
+    fetch('/api/appointments')
+      .then(res => res.json())
+      .then(data => {
+        // Fallback to local storage if API is empty or fails
+        if (data && data.length > 0) setAppointments(data);
+        else setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
+      })
+      .catch(err => {
+        console.error("Appointments API hatası:", err);
+        setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
+      });
+      
+    fetch('/api/blog')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) setBlogs(data);
+        else setBlogs(JSON.parse(localStorage.getItem('vagalvet_blogs') || '[]'));
+      })
+      .catch(err => console.error("Blog API hatası:", err));
     
     // Load Contact Settings
     const defaultContactSettings = {
