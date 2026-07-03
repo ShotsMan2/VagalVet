@@ -53,6 +53,24 @@ app.get('/api/blog', (req, res) => {
   res.json(blogs);
 });
 
+app.post('/api/blog', (req, res) => {
+  const { title, excerpt, content, author, date, category, image } = req.body;
+  if (!title || !excerpt || !category || !image) {
+    return res.status(400).json({ error: 'title, excerpt, category ve image zorunludur' });
+  }
+  const result = db.prepare(
+    'INSERT INTO blog (title, excerpt, content, author, date, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(title, excerpt, content || '', author || '', date || '', category, image);
+  const newBlog = db.prepare('SELECT * FROM blog WHERE id = ?').get(result.lastInsertRowid);
+  res.json(newBlog);
+});
+
+app.delete('/api/blog/:id', (req, res) => {
+  const { id } = req.params;
+  db.prepare('DELETE FROM blog WHERE id = ?').run(id);
+  res.json({ success: true });
+});
+
 // --- APPOINTMENTS ---
 app.post('/api/appointments', (req, res) => {
   const { ownerName, petName, phone, date, time, reason } = req.body;

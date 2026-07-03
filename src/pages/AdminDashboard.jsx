@@ -316,21 +316,44 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleAddBlog = (e) => {
+  const handleAddBlog = async (e) => {
     e.preventDefault();
-    const blog = {
-      id: Date.now(),
-      ...newBlog
-    };
-    const updated = [blog, ...blogs];
-    setBlogs(updated);
-    localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    try {
+      const response = await fetch('/api/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBlog)
+      });
+      if (response.ok) {
+        const savedBlog = await response.json();
+        const updated = [savedBlog, ...blogs];
+        setBlogs(updated);
+        localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+      } else {
+        // API başarısız, localStorage fallback
+        const blog = { id: Date.now(), ...newBlog };
+        const updated = [blog, ...blogs];
+        setBlogs(updated);
+        localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+      }
+    } catch (err) {
+      console.error('Blog kaydetme hatası:', err);
+      const blog = { id: Date.now(), ...newBlog };
+      const updated = [blog, ...blogs];
+      setBlogs(updated);
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    }
     setNewBlog({ title: '', excerpt: '', content: '', image: '', category: '', date: 'Yakın Zamanda', author: 'VagalVet Ekibi' });
     setShowAddBlog(false);
   };
 
-  const handleDeleteBlog = (id) => {
+  const handleDeleteBlog = async (id) => {
     if (window.confirm('Bu blog yazısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+      try {
+        await fetch(`/api/blog/${id}`, { method: 'DELETE' });
+      } catch (err) {
+        console.error('Blog silme API hatası:', err);
+      }
       const updated = blogs.filter(b => b.id !== id);
       setBlogs(updated);
       localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));

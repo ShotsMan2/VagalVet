@@ -2,21 +2,94 @@ import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, User, ArrowRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// Hardcoded fallback blog verileri — API ve localStorage başarısız olursa kullanılır
+const fallbackBlogs = [
+  {
+    id: '1',
+    title: 'Evcil Hayvanlarımızı Neden Kısırlaştırmalıyız? Kısırlaştırmanın Önemi Nedir?',
+    excerpt: 'Kısırlaştırma, hayvan refahını artıran, yaşam süresini uzatan ve birçok ciddi hastalığın önüne geçen çok önemli bir cerrahi müdahaledir.',
+    content: '🔖 Dişi hayvanların kısırlaştırılmasıyla kızgınlık dönemine bağlı huzursuzluk, aşırı miyavlama, yuvarlanma ve çiftleşme davranışları ortadan kalkmaktadır. Erkek hayvanların dişilere yönelmesine bağlı kaçma, kavga etme ve yaralanma risklerini azaltır.\n\n🔖 Erkek hayvanların kısırlaştırılmasıyla üreme hormonlarına bağlı davranışlarda belirgin azalma görülmektedir.\n\n🔖 Dişi kedi ve köpeklerde kısırlaştırma meme tümörü riskini anlamlı ölçüde azaltmaktadır.\n\n🔖 Kısırlaştırma istenmeyen gebelikleri ve doğumla ilgili komplikasyonları tamamen önler.\n\n‼️ ÖZELLİKLE PYOMETRA VE PROSTAT HASTALIKLARI GİBİ CİDDİ KLİNİK TABLOLAR GÖZ ÖNÜNE ALINIRSA EVCİL HAYVANIMIZI KISIRLAŞTIRMAK İÇİN GEÇ KALINMAMALI, POTANSİYEL RİSKLERİN ÖNÜNE GEÇİLMELİDİR.',
+    image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80',
+    category: 'Koruyucu Hekimlik',
+    date: 'Yakın Zamanda',
+    author: '@muru.vett & @m.ali_eraslan'
+  },
+  {
+    id: '2',
+    title: 'Yeni Doğum Yapan Bir Kedideki Anne Rolü Nedir?',
+    excerpt: 'İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu kliniğimize getirildi. Göbek bağını annenin kesmediği durumlarda ne yapılmalıdır?',
+    content: 'İlk doğumunu yapan anne kedimiz yavrularının göbek bağlarını kesmemesi sonucu yavrular birbirine dolanmış bir şekilde kliniğimize getirildi.\n\n📌 YENİ DOĞUM YAPAN BİR KEDİDEKİ ANNE ROLÜ NEDİR?\n\n🐱 Yenidoğan yavru kediler doğru vücut ısısının korunması, bakım, korunma ve idrar/dışkılama uyarımı için annelerine bağımlıdır.\n🐱 Doğumda normal koşullar altında anne fetal zarları açmak, göbek bağını kesmek ve yavruları yalamakla sorumludur.\n\n⚠️ UNUTMAYIN! İlk doğumu yapan annelerde annelik içgüdüsü zayıf olabilir. Bu gibi durumlarda en kısa sürede veteriner hekime başvurulmalıdır.',
+    image: 'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=800&q=80',
+    category: 'Klinik Vakalar',
+    date: 'Yakın Zamanda',
+    author: 'VagalVet Ekibi'
+  },
+  {
+    id: '3',
+    title: 'Canine Parvoviral Enteritis (Lina Vakamız)',
+    excerpt: 'Kanin Parvoviral Enteritis nedir? Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.',
+    content: '🐶🤎 Lina\n🦠 Canine Parvoviral Enteritis\n\n🔖 Kanin Parvoviral Enteritis nedir?\n• Köpeklerde ölüm oranı yüksek, bulaşıcı ve özellikle yavru köpekleri etkileyen viral bir hastalıktır.\n\n🔖 Nasıl Bulaşır?\n• Bu hastalık hava yoluyla direkt olarak veya hasta köpekler tarafından enfekte dışkı ile kontamine gıdaların ağız yoluyla alınması sonucu geçebilmektedir.\n\n⚠️ Korunmanın En Etkili Yolu: AŞILAMA 💉\n\nGeçmiş olsun Lina! 🥰',
+    image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80',
+    category: 'Köpek Bakımı',
+    date: 'Yakın Zamanda',
+    author: 'VagalVet Ekibi'
+  }
+];
+
 export default function Blog() {
   const [activeArticle, setActiveArticle] = useState(null);
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loadFromFallback = () => {
+      // Önce localStorage'dan dene, yoksa hardcoded fallback kullan
+      const cached = localStorage.getItem('vagalvet_blogs');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.length > 0) {
+            setArticles(parsed);
+            return;
+          }
+        } catch (e) {
+          console.error('localStorage parse hatası:', e);
+        }
+      }
+      setArticles(fallbackBlogs);
+    };
+
     fetch('/api/blog')
-      .then(res => res.json())
-      .then(data => {
-        const mapped = data.map(item => ({
-          ...item,
-          id: item.id.toString(),
-        }));
-        setArticles(mapped);
+      .then(res => {
+        if (!res.ok) throw new Error('API yanıt vermedi: ' + res.status);
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('API JSON döndürmedi');
+        }
+        return res.json();
       })
-      .catch(err => console.error("Blog fetch hatası:", err));
+      .then(data => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          const mapped = data.map(item => ({
+            ...item,
+            id: item.id.toString(),
+          }));
+          setArticles(mapped);
+        } else {
+          // API başarılı ama boş dönerse → fallback'ten oku
+          loadFromFallback();
+        }
+      })
+      .catch(err => {
+        console.error("Blog fetch hatası:", err);
+        setError(err.message);
+        // API başarısız olursa → fallback'ten oku
+        loadFromFallback();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -89,6 +162,91 @@ export default function Blog() {
 
       <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
 
+        {/* Loading State - Skeleton Kartlar */}
+        {loading && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="glass-panel"
+                style={{
+                  borderRadius: 'var(--radius-lg)',
+                  overflow: 'hidden',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}
+              >
+                <div style={{ height: '240px', background: 'linear-gradient(135deg, rgba(238,189,95,0.08), rgba(238,189,95,0.03))' }} />
+                <div style={{ padding: '2rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ width: '80px', height: '14px', borderRadius: '4px', background: 'rgba(255,255,255,0.08)' }} />
+                    <div style={{ width: '100px', height: '14px', borderRadius: '4px', background: 'rgba(255,255,255,0.08)' }} />
+                  </div>
+                  <div style={{ width: '85%', height: '20px', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', marginBottom: '0.75rem' }} />
+                  <div style={{ width: '60%', height: '20px', borderRadius: '4px', background: 'rgba(255,255,255,0.07)', marginBottom: '1rem' }} />
+                  <div style={{ width: '100%', height: '14px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', marginBottom: '0.5rem' }} />
+                  <div style={{ width: '90%', height: '14px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', marginBottom: '1.5rem' }} />
+                  <div style={{ width: '120px', height: '16px', borderRadius: '4px', background: 'rgba(238,189,95,0.15)' }} />
+                </div>
+              </div>
+            ))}
+            <style>{`
+              @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+              }
+            `}</style>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && articles.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '5rem 2rem',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{
+              width: '100px',
+              height: '100px',
+              borderRadius: '50%',
+              background: 'rgba(238,189,95,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '2rem',
+              border: '2px solid rgba(238,189,95,0.2)'
+            }}>
+              <BookOpen size={40} color="var(--color-secondary)" />
+            </div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              color: 'var(--text-main)',
+              fontFamily: 'var(--font-heading)',
+              marginBottom: '0.75rem'
+            }}>
+              Henüz blog yazısı bulunmamaktadır
+            </h3>
+            <p style={{
+              color: 'var(--text-muted)',
+              fontSize: '1rem',
+              maxWidth: '450px',
+              lineHeight: 1.7
+            }}>
+              Uzman hekimlerimiz tarafından hazırlanan makaleler yakında burada yayınlanacaktır.
+            </p>
+          </motion.div>
+        )}
+
+        {/* Blog Grid */}
+        {!loading && articles.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
           {articles.map((article, index) => (
             <article 
@@ -143,6 +301,7 @@ export default function Blog() {
             </article>
           ))}
         </div>
+        )}
 
         {/* Modal for full article reading */}
         {activeArticle && (
