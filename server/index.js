@@ -87,6 +87,24 @@ app.get('/api/appointments', (req, res) => {
   res.json(appointments);
 });
 
+app.patch('/api/appointments/:id', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ success: false, message: 'Durum alanı gereklidir.' });
+  }
+
+  const result = db.prepare('UPDATE appointments SET status = ? WHERE id = ?').run(status, id);
+
+  if (result.changes === 0) {
+    return res.status(404).json({ success: false, message: 'Randevu bulunamadı.' });
+  }
+
+  const updated = db.prepare('SELECT * FROM appointments WHERE id = ?').get(id);
+  res.json({ success: true, message: 'Randevu durumu güncellendi.', appointment: updated });
+});
+
 // --- SETTINGS (ADMIN DASHBOARD) ---
 app.get('/api/settings', (req, res) => {
   const settingsRows = db.prepare('SELECT * FROM settings').all();
