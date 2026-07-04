@@ -7,35 +7,33 @@ const ClientPortal = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [patient, setPatient] = useState(null);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (phone && password) {
-      setIsLoggedIn(true);
-      toast.success('Başarıyla giriş yapıldı', {
-        description: 'Hasta portalına yönlendiriliyorsunuz.'
+    try {
+      const authRes = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: phone, password })
       });
-    } else {
-      toast.error('Giriş başarısız', {
-        description: 'Lütfen bilgilerinizi kontrol edin.'
-      });
-    }
-  };
+      const user = await authRes.json();
+      
+      if (!authRes.ok) throw new Error(user.error || 'Giriş başarısız');
 
-  const patient = {
-    owner: 'Ayşe Yılmaz',
-    petName: 'Mia',
-    petType: 'Kedi (British Shorthair)',
-    age: '2 Yaş',
-    weight: '4.2 kg',
-    nextVaccine: 'Karma Aşı (15 Temmuz 2026)',
-    recentVisits: [
-      { date: '10 Haz 2026', type: 'Genel Muayene', doctor: 'Dr. Mürüvvet Eraslan' },
-      { date: '25 May 2026', type: 'İç-Dış Parazit', doctor: 'Dr. Mehmet Ali Eraslan' }
-    ],
-    prescriptions: [
-      { name: 'Vitamin C + Bağışıklık Desteği', freq: 'Günde 1 kez' }
-    ]
+      const patRes = await fetch(`/api/patients/me?userId=${user.id}`);
+      const patData = await patRes.json();
+      
+      if (patRes.ok) {
+        setPatient(patData);
+        setIsLoggedIn(true);
+        toast.success('Başarıyla giriş yapıldı', { description: 'Hasta portalına yönlendiriliyorsunuz.' });
+      } else {
+        throw new Error(patData.error || 'Kayıt bulunamadı');
+      }
+    } catch (err) {
+      toast.error('Giriş başarısız', { description: err.message });
+    }
   };
 
   if (!isLoggedIn) {
@@ -53,7 +51,7 @@ const ClientPortal = () => {
               <User size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input 
                 type="text" 
-                placeholder="Telefon Numaranız" 
+                placeholder="Kullanıcı Adı (Örn: merve_uysal)" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-main)', outline: 'none' }}
@@ -135,8 +133,8 @@ const ClientPortal = () => {
               <h3 style={{ margin: 0, color: 'var(--text-main)' }}>Sıradaki İşlem</h3>
             </div>
             <div style={{ background: 'rgba(238, 189, 95, 0.05)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(238, 189, 95, 0.2)' }}>
-              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '1.2rem', color: 'var(--text-main)' }}>{patient.nextVaccine.split('(')[0]}</p>
-              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Tarih: {patient.nextVaccine.split('(')[1].replace(')', '')}</p>
+              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, fontSize: '1.2rem', color: 'var(--text-main)' }}>{patient.nextVaccine ? patient.nextVaccine.split('(')[0] : 'Kayıt Yok'}</p>
+              <p style={{ margin: 0, color: 'var(--text-muted)' }}>Tarih: {patient.nextVaccine && patient.nextVaccine.includes('(') ? patient.nextVaccine.split('(')[1].replace(')', '') : '-'}</p>
             </div>
           </motion.div>
 

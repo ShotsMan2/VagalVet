@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, CheckCircle2, X, Reply, Plus, Check, AlertTriangle, Mail, FileText, BookOpen, TrendingUp, Send, Type, AlignLeft, Image as ImageIcon, Link as LinkIcon, Bold, Italic, List } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, Activity, Bell, MessageSquare, CheckCircle2, X, Reply, Plus, Check, AlertTriangle, Mail, FileText, BookOpen, TrendingUp, Send, Type, AlignLeft, Image as ImageIcon, Link as LinkIcon, Bold, Italic, List, Trash2 } from 'lucide-react';
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -14,6 +14,12 @@ const AdminDashboard = () => {
   const [patients, setPatients] = useState([]);
   const [newsletter, setNewsletter] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [stats, setStats] = useState({
+    totalPatients: 0,
+    appointmentsToday: 0,
+    activeTreatments: 0,
+    newRegistrations: 0
+  });
   
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
@@ -80,10 +86,44 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    // Load Data
+    // Load Data from Local Storage (legacy or temporary)
     setMessages(JSON.parse(localStorage.getItem('vagalvet_messages') || '[]'));
-    setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
     setNewsletter(JSON.parse(localStorage.getItem('vagalvet_newsletter') || '[]'));
+    
+    // Fetch Data from API
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error("Stats API hatası:", err));
+
+    fetch('/api/appointments')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const statusMap = { 'pending': 'Beklemede', 'approved': 'Onaylandı', 'rejected': 'Reddedildi' };
+          const mapped = data.map(a => ({ 
+            ...a, 
+            status: statusMap[a.status] || a.status,
+            petName: a.petName || a.petType,
+            reason: a.reason || a.service
+          }));
+          setAppointments(mapped);
+        } else {
+          setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
+        }
+      })
+      .catch(err => {
+        console.error("Appointments API hatası:", err);
+        setAppointments(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]'));
+      });
+      
+    fetch('/api/blog')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) setBlogs(data);
+        else setBlogs(JSON.parse(localStorage.getItem('vagalvet_blogs') || '[]'));
+      })
+      .catch(err => console.error("Blog API hatası:", err));
     
     // Load Contact Settings
     const defaultContactSettings = {
@@ -218,6 +258,19 @@ const AdminDashboard = () => {
     const updated = appointments.map(apt => apt.id === id ? { ...apt, status } : apt);
     setAppointments(updated);
     localStorage.setItem('vagalvet_appointments', JSON.stringify(updated));
+    const reverseMap = { 'Beklemede': 'pending', 'Onaylandı': 'approved', 'Reddedildi': 'rejected' };
+    fetch(`/api/appointments/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: reverseMap[status] || status })
+    }).catch(err => console.error('Status güncelleme hatası:', err));
+  };
+
+  const handleDeleteMessage = (id) => {
+    const updated = messages.filter(msg => msg.id !== id);
+    setMessages(updated);
+    localStorage.setItem('vagalvet_messages', JSON.stringify(updated));
+    toast.success('Mesaj başarıyla silindi.');
   };
 
   const handleAddPatient = (e) => {
@@ -285,21 +338,44 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleAddBlog = (e) => {
+  const handleAddBlog = async (e) => {
     e.preventDefault();
-    const blog = {
-      id: Date.now(),
-      ...newBlog
-    };
-    const updated = [blog, ...blogs];
-    setBlogs(updated);
-    localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    try {
+      const response = await fetch('/api/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newBlog)
+      });
+      if (response.ok) {
+        const savedBlog = await response.json();
+        const updated = [savedBlog, ...blogs];
+        setBlogs(updated);
+        localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+      } else {
+        // API başarısız, localStorage fallback
+        const blog = { id: Date.now(), ...newBlog };
+        const updated = [blog, ...blogs];
+        setBlogs(updated);
+        localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+      }
+    } catch (err) {
+      console.error('Blog kaydetme hatası:', err);
+      const blog = { id: Date.now(), ...newBlog };
+      const updated = [blog, ...blogs];
+      setBlogs(updated);
+      localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
+    }
     setNewBlog({ title: '', excerpt: '', content: '', image: '', category: '', date: 'Yakın Zamanda', author: 'VagalVet Ekibi' });
     setShowAddBlog(false);
   };
 
-  const handleDeleteBlog = (id) => {
+  const handleDeleteBlog = async (id) => {
     if (window.confirm('Bu blog yazısını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+      try {
+        await fetch(`/api/blog/${id}`, { method: 'DELETE' });
+      } catch (err) {
+        console.error('Blog silme API hatası:', err);
+      }
       const updated = blogs.filter(b => b.id !== id);
       setBlogs(updated);
       localStorage.setItem('vagalvet_blogs', JSON.stringify(updated));
@@ -565,10 +641,10 @@ const AdminDashboard = () => {
                     {appointments.filter(a => a.status === 'Beklemede').map(apt => (
                       <div key={apt.id} style={{ background: 'var(--bg-surface)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', cursor: 'grab', padding: '1rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petType} - {apt.ownerName}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petName} - {apt.ownerName}</span>
                           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.time}</span>
                         </div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--color-primary)', marginBottom: '1rem' }}>{apt.service}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--color-primary)', marginBottom: '1rem' }}>{apt.reason}</div>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                           <button onClick={() => handleAppointmentStatus(apt.id, 'Onaylandı')} style={{ flex: 1, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '0.4rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(16, 185, 129, 0.2)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(16, 185, 129, 0.1)'}>Onayla</button>
                           <button onClick={() => handleAppointmentStatus(apt.id, 'Reddedildi')} style={{ flex: 1, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '0.4rem', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(239, 68, 68, 0.2)'} onMouseLeave={(e)=>e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'}>İptal Et</button>
@@ -588,7 +664,7 @@ const AdminDashboard = () => {
                     {appointments.filter(a => a.status === 'Onaylandı').map(apt => (
                       <div key={apt.id} style={{ background: 'var(--bg-surface)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.3)', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', cursor: 'grab', padding: '1rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petType} - {apt.ownerName}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{apt.petName} - {apt.ownerName}</span>
                           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.date}</span>
                         </div>
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{apt.phone}</div>
@@ -610,7 +686,7 @@ const AdminDashboard = () => {
                     {appointments.filter(a => a.status === 'Reddedildi').map(apt => (
                       <div key={apt.id} style={{ background: 'rgba(255,255,255,0.02)', pading: '1rem', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-glass)', padding: '1rem', opacity: 0.7 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span style={{ fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'line-through' }}>{apt.petType}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'line-through' }}>{apt.petName}</span>
                           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{apt.date}</span>
                         </div>
                         <div style={{ fontSize: '0.85rem', color: '#ef4444' }}>Randevu İptal Edildi</div>
@@ -1064,9 +1140,14 @@ const AdminDashboard = () => {
                         </div>
                         <div style={{ textAlign: 'right' }}>
                           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{msg.date}</div>
-                          <button onClick={() => setReplyingTo(msg.id)} style={{ background: 'rgba(251, 191, 36, 0.1)', color: 'var(--color-primary)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Reply size={14} /> Yanıtla
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button onClick={() => setReplyingTo(msg.id)} style={{ background: 'rgba(251, 191, 36, 0.1)', color: 'var(--color-primary)', border: '1px solid rgba(251, 191, 36, 0.2)', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background='rgba(251, 191, 36, 0.2)'} onMouseLeave={(e) => e.currentTarget.style.background='rgba(251, 191, 36, 0.1)'}>
+                              <Reply size={14} /> Yanıtla
+                            </button>
+                            <button onClick={() => handleDeleteMessage(msg.id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background='rgba(239, 68, 68, 0.2)'} onMouseLeave={(e) => e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'}>
+                              <Trash2 size={14} /> Sil
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <p style={{ margin: 0, lineHeight: 1.6 }}>{msg.message}</p>
