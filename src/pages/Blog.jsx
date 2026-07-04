@@ -105,7 +105,7 @@ export default function Blog() {
     elements.forEach(el => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [activeArticle]);
+  }, [activeArticle, articles, loading]);
 
   useEffect(() => {
     if (activeArticle) {
