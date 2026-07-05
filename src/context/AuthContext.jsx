@@ -39,11 +39,19 @@ export function AuthProvider({ children }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
+    
+    let data;
+    const text = await res.text();
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch (err) {
+      throw new Error(text ? `Sunucu hatası: ${text.slice(0, 100)}` : 'Sunucudan boş yanıt alındı (Bağlantı hatası olabilir)');
+    }
+
     if (!res.ok) {
-      const data = await res.json();
       throw new Error(data.error || 'Giriş başarısız');
     }
-    const data = await res.json();
+    
     localStorage.setItem('vagalvet_token', data.accessToken);
     localStorage.setItem('vagalvet_refresh_token', data.refreshToken);
     setToken(data.accessToken);
