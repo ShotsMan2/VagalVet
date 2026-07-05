@@ -14,16 +14,23 @@ const DashboardOverview = () => {
 
   useEffect(() => {
     setLoading(true);
-    authFetch('/api/stats').then(res => res.json()).then(data => setStats(data)).catch(err => console.error(err)).finally(() => {
-      setTimeout(() => setLoading(false), 800);
-    });
-    setAppointmentsCount(JSON.parse(localStorage.getItem('vagalvet_appointments') || '[]').length);
-    setPatientsCount(JSON.parse(localStorage.getItem('vagalvet_patients') || '[]').length);
-    setMessagesCount(JSON.parse(localStorage.getItem('vagalvet_messages') || '[]').length);
+    authFetch('/api/v1/stats')
+      .then(res => res.json())
+      .then(data => {
+        setStats(data);
+        setAppointmentsCount(data.pendingAppointments || 0);
+        setPatientsCount(data.totalPatients || 0);
+        setMessagesCount(data.unreadMessages || 0);
+      })
+      .catch(err => console.error(err))
+      .finally(() => {
+        setTimeout(() => setLoading(false), 800);
+      });
   }, [authFetch]);
 
   const chartData = stats.chartData || [];
   const petDemographics = stats.petDemographics || [];
+  const recentActivities = stats.recentActivities || [];
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
   if (loading) {
@@ -57,8 +64,8 @@ const DashboardOverview = () => {
         {[
           { title: 'Bekleyen Randevu', value: appointmentsCount, color: 'var(--color-primary)' },
           { title: 'Toplam Hasta', value: patientsCount, color: '#10b981' },
-          { title: 'Gelen Mesaj', value: messagesCount, color: '#3b82f6' },
-          { title: 'Sistem Yükü', value: '%12', color: '#ef4444' },
+          { title: 'Okunmamış Mesaj', value: messagesCount, color: '#3b82f6' },
+          { title: 'Bülten Abonesi', value: stats.newsletterCount || 0, color: '#8b5cf6' },
         ].map((stat, i) => (
           <div key={i} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '1.5rem' }}>
             <div style={{ color: 'var(--text-muted)', marginBottom: '0.5rem', fontSize: '0.9rem' }}>{stat.title}</div>
@@ -133,13 +140,48 @@ const DashboardOverview = () => {
         <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
           <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)' }}>Son Aktiviteler</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ fontSize: '0.9rem' }}><span style={{ color: '#10b981' }}>Yeni Randevu:</span> Ayşe Yılmaz (Kedi)</div>
-            <div style={{ fontSize: '0.9rem' }}><span style={{ color: 'var(--color-primary)' }}>Mesaj Yanıtlandı:</span> Caner Demir</div>
-            <div style={{ fontSize: '0.9rem' }}><span style={{ color: '#ef4444' }}>Aşı Hatırlatması:</span> Max (Golden) için SMS gönderildi.</div>
-            <div style={{ fontSize: '0.9rem' }}><span style={{ color: '#3b82f6' }}>Sistem:</span> Günlük yedekleme başarılı.</div>
+            {recentActivities.map(activity => (
+              <div key={activity.id} style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <span style={{ color: activity.action === 'CREATE' ? '#10b981' : activity.action === 'DELETE' ? '#ef4444' : '#f59e0b', fontSize: '0.75rem', fontWeight: 600, padding: '2px 6px', background: 'var(--bg-glass)', borderRadius: '4px' }}>
+                  {activity.action}
+                </span>
+                <span>{activity.details}</span>
+              </div>
+            ))}
+            {recentActivities.length === 0 && <span style={{ color: 'var(--text-muted)' }}>Son aktivite bulunamadı.</span>}
           </div>
         </div>
       </div>
+
+      {user?.role === 'admin' && stats.systemHealth && (
+        <div style={{ marginTop: '2rem' }}>
+          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
+            <h3 style={{ marginBottom: '1.5rem', fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} />
+              Sistem Sağlığı (APM)
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
+              <div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Uptime</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text-main)' }}>{Math.floor(stats.systemHealth.uptime / 3600)}s {Math.floor((stats.systemHealth.uptime % 3600) / 60)}d</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Bellek Kullanımı</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text-main)' }}>{(stats.systemHealth.memoryUsage / 1024 / 1024).toFixed(2)} MB</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Platform</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text-main)', textTransform: 'capitalize' }}>{stats.systemHealth.platform}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Node Sürümü</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text-main)' }}>{stats.systemHealth.nodeVersion}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </motion.div>
   );
 };

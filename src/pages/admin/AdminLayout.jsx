@@ -61,6 +61,7 @@ const AdminLayout = () => {
     { id: 'settings', path: '/admin/ayarlar', label: 'Sistem Ayarları', icon: <Settings size={20} /> },
     { id: 'content', path: '/admin/icerik', label: 'İçerik Yönetimi', icon: <FileText size={20} /> },
     { id: 'blog', path: '/admin/blog', label: 'Blog Yönetimi', icon: <BookOpen size={20} /> },
+    { id: 'audit', path: '/admin/audit-logs', label: 'Sistem Logları', icon: <Activity size={20} /> },
   ];
 
   const allowedForStaff = ['dashboard', 'appointments', 'patients'];

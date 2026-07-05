@@ -1,29 +1,25 @@
 import express from 'express';
-import db from '../database.js';
 import { authMiddleware, requireRole } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { createBlogSchema } from '../validations/blog.validation.js';
+import blogService from '../services/blog.service.js';
+import expressAsyncHandler from 'express-async-handler';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  const blogs = db.prepare('SELECT * FROM blog ORDER BY id DESC').all();
+router.get('/', expressAsyncHandler(async (req, res) => {
+  const blogs = blogService.getBlogs();
   res.json(blogs);
-});
+}));
 
-router.post('/', authMiddleware, requireRole('admin'), (req, res) => {
-  const { title, excerpt, content, author, date, category, image } = req.body;
-  if (!title || !excerpt || !category || !image) {
-    return res.status(400).json({ error: 'title, excerpt, category ve image zorunludur' });
-  }
-  const result = db.prepare('INSERT INTO blog (title, excerpt, content, author, date, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)').run(title, excerpt, content || '', author || '', date || '', category, image);
-  db.prepare('INSERT INTO audit_logs (user_id, action, entity, entity_id, details) VALUES (?, ?, ?, ?, ?)').run(req.user.userId, 'CREATE', 'blog', result.lastInsertRowid, `Blog yazısı eklendi: ${title}`);
-  const newBlog = db.prepare('SELECT * FROM blog WHERE id = ?').get(result.lastInsertRowid);
-  res.json(newBlog);
-});
+router.post('/', authMiddleware, requireRole('admin'), validate(createBlogSchema), expressAsyncHandler(async (req, res) => {
+  const result = blogService.createBlog(req.body, req.user.userId);
+  res.json(result);
+}));
 
-router.delete('/:id', authMiddleware, requireRole('admin'), (req, res) => {
-  db.prepare('DELETE FROM blog WHERE id = ?').run(req.params.id);
-  db.prepare('INSERT INTO audit_logs (user_id, action, entity, entity_id, details) VALUES (?, ?, ?, ?, ?)').run(req.user.userId, 'DELETE', 'blog', req.params.id, 'Blog yazısı silindi');
-  res.json({ success: true });
-});
+router.delete('/:id', authMiddleware, requireRole('admin'), expressAsyncHandler(async (req, res) => {
+  const result = blogService.deleteBlog(req.params.id, req.user.userId);
+  res.json(result);
+}));
 
 export default router;

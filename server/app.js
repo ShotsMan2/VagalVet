@@ -17,6 +17,11 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+import hpp from 'hpp';
+app.use(hpp()); // Prevent HTTP Parameter Pollution
+
 
 // --- REQUEST LOGGING ---
 app.use((req, res, next) => {

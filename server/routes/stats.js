@@ -35,6 +35,18 @@ router.get('/', authMiddleware, (req, res) => {
     ];
   }
 
+  // Get recent activities (Audit Logs)
+  const recentActivities = db.prepare('SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 5').all();
+
+  // Get system health metrics
+  const systemHealth = {
+    uptime: process.uptime(),
+    memoryUsage: process.memoryUsage().heapUsed,
+    totalMemory: process.memoryUsage().heapTotal,
+    platform: process.platform,
+    nodeVersion: process.version
+  };
+
   res.json({ 
     totalPatients, 
     totalAppointments, 
@@ -43,7 +55,9 @@ router.get('/', authMiddleware, (req, res) => {
     totalBlogs, 
     newsletterCount,
     chartData,
-    petDemographics
+    petDemographics,
+    recentActivities,
+    systemHealth
   });
 });
 

@@ -20,9 +20,11 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
     "express-rate-limit": "^8.5.2",
     "framer-motion": "^12.42.0",
     "helmet": "^8.2.0",
+    "hpp": "^0.2.3",
     "jimp": "^1.6.1",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.21.0",
@@ -36,7 +38,9 @@
     "recharts": "^3.9.2",
     "sonner": "^2.0.7",
     "winston": "^3.19.0",
-    "ws": "^8.21.0"
+    "ws": "^8.21.0",
+    "xss-clean": "^0.1.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

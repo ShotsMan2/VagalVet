@@ -42,6 +42,47 @@ const PatientManager = () => {
     localStorage.setItem('vagalvet_patients', JSON.stringify(updated));
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Hepsi');
+  const [sortBy, setSortBy] = useState('newest');
+
+  // Advanced Filtering and Sorting
+  const filteredPatients = patients
+    .filter(pt => {
+      const matchesSearch = pt.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            pt.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            pt.ownerPhone.includes(searchQuery);
+      const matchesStatus = statusFilter === 'Hepsi' ? true : pt.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'newest') return b.id.localeCompare(a.id); // Mock sorting by ID descending
+      if (sortBy === 'oldest') return a.id.localeCompare(b.id);
+      if (sortBy === 'name_asc') return a.name.localeCompare(b.name);
+      if (sortBy === 'name_desc') return b.name.localeCompare(a.name);
+      return 0;
+    });
+
+  const exportToCSV = () => {
+    const headers = ['ID', 'Hasta Adı', 'Tür/Irk', 'Sahibi', 'Telefon', 'Durum', 'Gelecek Aşı', 'Aşı Adı'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredPatients.map(pt => 
+        `"${pt.id}","${pt.name}","${pt.type}","${pt.ownerName}","${pt.ownerPhone}","${pt.status}","${pt.nextVaccine}","${pt.vaccineName}"`
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `hastalar_export_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
@@ -51,6 +92,39 @@ const PatientManager = () => {
         <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Biyo-Kayıtlar (CRM)</h3>
         <button onClick={() => setShowAddPatient(!showAddPatient)} style={{ background: 'var(--color-primary)', color: '#000', border: 'none', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={16}/> {showAddPatient ? 'Vazgeç' : 'Yeni Hasta Ekle'}
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        <input 
+          type="text" 
+          placeholder="İsim, ID veya Telefon ile ara..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ flex: 1, minWidth: '250px', padding: '0.8rem', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', borderRadius: 'var(--radius-sm)' }} 
+        />
+        <select 
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          style={{ padding: '0.8rem', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', borderRadius: 'var(--radius-sm)' }}
+        >
+          <option value="Hepsi">Tüm Durumlar</option>
+          <option value="Sağlıklı">Sağlıklı</option>
+          <option value="Tedavi Sürecinde">Tedavi Sürecinde</option>
+          <option value="Kritik">Kritik</option>
+        </select>
+        <select 
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          style={{ padding: '0.8rem', background: 'var(--bg-dark)', border: '1px solid var(--border-glass)', color: 'var(--text-main)', borderRadius: 'var(--radius-sm)' }}
+        >
+          <option value="newest">En Yeniler İlk</option>
+          <option value="oldest">En Eskiler İlk</option>
+          <option value="name_asc">İsim (A-Z)</option>
+          <option value="name_desc">İsim (Z-A)</option>
+        </select>
+        <button onClick={exportToCSV} style={{ padding: '0.8rem 1.5rem', background: 'transparent', border: '1px solid var(--color-primary)', color: 'var(--color-primary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600 }}>
+          Dışa Aktar (CSV)
         </button>
       </div>
 
@@ -85,7 +159,7 @@ const PatientManager = () => {
           </tr>
         </thead>
         <tbody>
-          {patients.map((pt) => (
+          {filteredPatients.map((pt) => (
             <tr key={pt.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <td style={{ padding: '1rem', color: 'var(--color-primary)' }}>{pt.id}</td>
               <td style={{ padding: '1rem', fontWeight: 600 }}>{pt.name}</td>
@@ -104,6 +178,11 @@ const PatientManager = () => {
               </td>
             </tr>
           ))}
+          {filteredPatients.length === 0 && (
+            <tr>
+              <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>Kayıt bulunamadı.</td>
+            </tr>
+          )}
         </tbody>
       </table>
 

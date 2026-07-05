@@ -131,6 +131,8 @@ function initDb() {
     CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
     CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(date);
     CREATE INDEX IF NOT EXISTS idx_patients_user_id ON patients(user_id);
+    CREATE INDEX IF NOT EXISTS idx_visits_patient_id ON visits(patient_id);
+    CREATE INDEX IF NOT EXISTS idx_prescriptions_patient_id ON prescriptions(patient_id);
     CREATE INDEX IF NOT EXISTS idx_messages_is_read ON messages(is_read);
     CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
     CREATE INDEX IF NOT EXISTS idx_newsletter_email ON newsletter(email);

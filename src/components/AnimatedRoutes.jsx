@@ -26,6 +26,7 @@ import NewsletterManager from '../pages/admin/NewsletterManager';
 import SettingsManager from '../pages/admin/SettingsManager';
 import ContentManager from '../pages/admin/ContentManager';
 import BlogManager from '../pages/admin/BlogManager';
+import AuditLogManager from '../pages/admin/AuditLogManager';
 
 import ProtectedRoute from './ProtectedRoute';
 
@@ -51,11 +52,41 @@ const PageWrapper = ({ children }) => (
   </motion.div>
 );
 
+// Top Bar Progress Indicator
+const TopBarProgress = () => {
+  const location = useLocation();
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    setProgress(0);
+    const timer = setTimeout(() => setProgress(100), 100);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  return (
+    <motion.div
+      initial={{ width: 0, opacity: 1 }}
+      animate={{ width: `${progress}%`, opacity: progress === 100 ? 0 : 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '3px',
+        background: 'linear-gradient(90deg, var(--color-primary), var(--color-secondary))',
+        zIndex: 9999,
+        pointerEvents: 'none'
+      }}
+    />
+  );
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
     <Suspense fallback={<LoadingScreen />}>
+      <TopBarProgress />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
@@ -85,6 +116,7 @@ const AnimatedRoutes = () => {
             <Route path="ayarlar" element={<SettingsManager />} />
             <Route path="icerik" element={<ContentManager />} />
             <Route path="blog" element={<BlogManager />} />
+            <Route path="audit-logs" element={<AuditLogManager />} />
           </Route>
         </Routes>
       </AnimatePresence>

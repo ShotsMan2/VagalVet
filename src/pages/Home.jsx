@@ -7,7 +7,7 @@ import {
   ArrowRight, Award, Heart, Shield, Star, Quote
 } from 'lucide-react';
 
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/SEO';
 
 const Counter = ({ end, label, suffix = '' }) => {
   const [count, setCount] = useState(0);
@@ -103,13 +103,10 @@ const Home = () => {
 
   return (
     <div style={{ opacity: mounted ? 1 : 0, transition: 'opacity 0.5s ease' }}>
-      <Helmet>
-        <title>VagalVet | Konya Veteriner Kliniği</title>
-        <meta name="description" content="Konya'da profesyonel veteriner hizmetleri. Dostlarınızın sağlığı için modern teşhis ve tedavi yöntemleri." />
-        <meta property="og:title" content="VagalVet | Konya Veteriner Kliniği" />
-        <meta property="og:description" content="Konya'da profesyonel veteriner hizmetleri. Dostlarınızın sağlığı için modern teşhis ve tedavi yöntemleri." />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEO 
+        title="Konya Veteriner Kliniği" 
+        description="Konya'da profesyonel veteriner hizmetleri. Dostlarınızın sağlığı için modern teşhis ve tedavi yöntemleri."
+      />
       
       {/* Hero Section */}
       <section className="bg-gradient-premium" style={{

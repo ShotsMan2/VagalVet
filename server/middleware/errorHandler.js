@@ -1,21 +1,17 @@
 import logger from '../utils/logger.js';
+import { AppError } from '../utils/AppError.js';
 
 export function errorHandler(err, req, res, next) {
   logger.error(`[Error] ${err.name}: ${err.message}\n${err.stack}`);
-  
-  // Custom Application Errors
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({
-      success: false,
-      error: 'Geçersiz veri gönderimi',
-      details: err.details || err.message
-    });
-  }
 
-  if (err.name === 'UnauthorizedError') {
-    return res.status(401).json({
+  let error = { ...err };
+  error.message = err.message;
+
+  // Custom AppError
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
       success: false,
-      error: 'Bu işlem için yetkiniz yok'
+      error: err.message
     });
   }
 
@@ -24,6 +20,21 @@ export function errorHandler(err, req, res, next) {
     return res.status(409).json({
       success: false,
       error: 'Bu kayıt zaten mevcut'
+    });
+  }
+
+  // JWT Errors
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Geçersiz token. Lütfen tekrar giriş yapın.'
+    });
+  }
+
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Oturum süresi doldu. Lütfen tekrar giriş yapın.'
     });
   }
 
