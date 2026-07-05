@@ -102,6 +102,7 @@ const Navbar = () => {
             </Link>
             <button 
               onClick={toggleTheme} 
+              aria-label={theme === 'dark' ? "Açık temaya geç" : "Koyu temaya geç"}
               style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem' }}
             >
               {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
@@ -109,13 +110,15 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Toggle */}
-          <div 
+          <button 
             className="mobile-toggle" 
-            style={{ display: 'block', cursor: 'pointer', padding: '0.5rem' }} 
+            aria-label={isMobileMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+            aria-expanded={isMobileMenuOpen}
+            style={{ display: 'block', cursor: 'pointer', padding: '0.5rem', background: 'transparent', border: 'none' }} 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={28} color="var(--color-secondary)" /> : <Menu size={28} color="var(--color-secondary)" />}
-          </div>
+          </button>
         </div>
       </nav>
 

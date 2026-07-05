@@ -53,6 +53,8 @@ export default function Chatbot() {
       {/* Chatbot Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Sohbeti kapat" : "Sohbeti aç"}
+        aria-expanded={isOpen}
         style={{
           position: 'fixed',
           bottom: '30px',
@@ -180,6 +182,7 @@ export default function Chatbot() {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="Mesajınızı yazın..."
+              aria-label="Mesaj yazın"
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
@@ -194,6 +197,7 @@ export default function Chatbot() {
             <button
               type="submit"
               disabled={!inputText.trim()}
+              aria-label="Mesaj gönder"
               style={{
                 backgroundColor: inputText.trim() ? 'var(--color-primary)' : 'var(--bg-soft)',
                 color: inputText.trim() ? '#000' : 'var(--text-muted)',

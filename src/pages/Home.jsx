@@ -7,6 +7,8 @@ import {
   ArrowRight, Award, Heart, Shield, Star, Quote
 } from 'lucide-react';
 
+import { Helmet } from 'react-helmet-async';
+
 const Counter = ({ end, label, suffix = '' }) => {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -101,6 +103,13 @@ const Home = () => {
 
   return (
     <div style={{ opacity: mounted ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+      <Helmet>
+        <title>VagalVet | Konya Veteriner Kliniği</title>
+        <meta name="description" content="Konya'da profesyonel veteriner hizmetleri. Dostlarınızın sağlığı için modern teşhis ve tedavi yöntemleri." />
+        <meta property="og:title" content="VagalVet | Konya Veteriner Kliniği" />
+        <meta property="og:description" content="Konya'da profesyonel veteriner hizmetleri. Dostlarınızın sağlığı için modern teşhis ve tedavi yöntemleri." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       
       {/* Hero Section */}
       <section className="bg-gradient-premium" style={{
@@ -234,8 +243,8 @@ const Home = () => {
             </p>
           </div>
           <div style={{ flex: '1 1 400px', display: 'flex', gap: '1rem' }}>
-            <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=500&fit=crop" alt="Kliniğimiz" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover' }} />
-            <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=500&fit=crop" alt="Muayene" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover', transform: 'translateY(2rem)' }} />
+            <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=500&fit=crop" alt="Kliniğimiz" loading="lazy" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover' }} />
+            <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=500&fit=crop" alt="Muayene" loading="lazy" style={{ width: '50%', borderRadius: '1rem', objectFit: 'cover', transform: 'translateY(2rem)' }} />
           </div>
         </div>
       </section>
@@ -436,16 +445,16 @@ const Home = () => {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
             <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', aspectRatio: '1/1' }}>
-              <img src="/images/1.png" alt="Sevimli Hastamız 1" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
+              <img src="/images/1.png" alt="Sevimli Hastamız 1" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
             </div>
             <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', aspectRatio: '1/1' }}>
-              <img src="/images/2.png" alt="Sevimli Hastamız 2" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
+              <img src="/images/2.png" alt="Sevimli Hastamız 2" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
             </div>
             <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', aspectRatio: '1/1' }}>
-              <img src="/images/3.png" alt="Sevimli Hastamız 3" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
+              <img src="/images/3.png" alt="Sevimli Hastamız 3" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
             </div>
             <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', aspectRatio: '1/1' }}>
-              <img src="/images/4.jpg" alt="Sevimli Hastamız 4" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
+              <img src="/images/4.jpg" alt="Sevimli Hastamız 4" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)', transition: 'transform var(--transition-slow)' }} onMouseEnter={(e)=>e.currentTarget.style.transform='scale(1.2)'} onMouseLeave={(e)=>e.currentTarget.style.transform='scale(1.15)'} />
             </div>
           </div>
         </div>

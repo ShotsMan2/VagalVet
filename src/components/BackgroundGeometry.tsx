@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BackgroundGeometry = () => {
+const BackgroundGeometry: React.FC = () => {
   return (
     <div className="bg-geometry-container">
       <div className="geo-shape primary"></div>
