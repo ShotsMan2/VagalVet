@@ -1,10 +1,26 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-const AuthContext = createContext(null);
+// Define Types
+export interface User {
+  id: number;
+  username: string;
+  role: 'admin' | 'client' | 'staff';
+}
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('vagalvet_token'));
+interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  isLoading: boolean;
+  login: (username: string, password: string) => Promise<any>;
+  logout: () => void;
+  authFetch: (url: string, options?: RequestInit) => Promise<Response>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('vagalvet_token'));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +33,7 @@ export function AuthProvider({ children }) {
           if (!res.ok) throw new Error('Invalid token');
           return res.json();
         })
-        .then(data => {
+        .then((data: User) => {
           setUser(data);
           setIsLoading(false);
         })
@@ -33,7 +49,7 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
-  const login = async (username, password) => {
+  const login = async (username: string, password: string) => {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,8 +83,12 @@ export function AuthProvider({ children }) {
   };
 
   // Helper for authenticated API calls
-  const authFetch = async (url, options = {}) => {
-    const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+  const authFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
+    const headers: Record<string, string> = { 
+      ...(options.headers as Record<string, string>), 
+      'Authorization': `Bearer ${token}` 
+    };
+    
     let res = await fetch(url, { ...options, headers });
     
     if (res.status === 401) {

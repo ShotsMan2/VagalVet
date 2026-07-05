@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { to: '/hizmetler', label: 'Hizmetlerimiz' },
@@ -123,50 +124,56 @@ const Navbar = () => {
       </nav>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div style={{
-          position: 'fixed',
-          top: '80px',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'var(--bg-surface)',
-          zIndex: 999,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '2rem',
-          gap: '0.5rem',
-          animation: 'fadeIn 0.2s ease'
-        }}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            style={{
+            position: 'fixed',
+            top: '80px',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'var(--bg-surface)',
+            zIndex: 999,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '2rem',
+            gap: '0.5rem'
+          }}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  color: location.pathname === link.to ? 'var(--color-primary)' : 'var(--text-main)',
+                  textDecoration: 'none',
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-heading)',
+                  padding: '1rem 0',
+                  borderBottom: '1px solid var(--border-color)',
+                  transition: 'color var(--transition-fast)'
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link 
+              to="/iletisim" 
               onClick={() => setIsMobileMenuOpen(false)}
-              style={{
-                color: location.pathname === link.to ? 'var(--color-primary)' : 'var(--text-main)',
-                textDecoration: 'none',
-                fontSize: '1.5rem',
-                fontWeight: 600,
-                fontFamily: 'var(--font-heading)',
-                padding: '1rem 0',
-                borderBottom: '1px solid var(--border-color)',
-                transition: 'color var(--transition-fast)'
-              }}
+              className="btn btn-primary" 
+              style={{ marginTop: '1.5rem', textAlign: 'center', textDecoration: 'none', fontSize: '1.1rem', padding: '1rem' }}
             >
-              {link.label}
+              Randevu Al
             </Link>
-          ))}
-          <Link 
-            to="/iletisim" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="btn btn-primary" 
-            style={{ marginTop: '1.5rem', textAlign: 'center', textDecoration: 'none', fontSize: '1.1rem', padding: '1rem' }}
-          >
-            Randevu Al
-          </Link>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         @media (min-width: 768px) {
