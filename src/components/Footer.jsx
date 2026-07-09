@@ -68,6 +68,7 @@ const Footer = () => {
             <input 
               type="email" 
               placeholder="E-Posta Adresiniz"
+              aria-label="E-Posta Adresiniz"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

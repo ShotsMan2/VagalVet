@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, User, ArrowRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 // Hardcoded fallback blog verileri — API ve localStorage başarısız olursa kullanılır
 const fallbackBlogs = [
@@ -122,6 +123,13 @@ export default function Blog() {
 
   return (
     <main style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
+      <Helmet>
+        <title>Blog | VagalVet Veteriner Kliniği</title>
+        <meta name="description" content="Evcil hayvan sağlığı, bakımı ve beslenmesi hakkında güncel bilgiler, makaleler ve ipuçları." />
+        <meta property="og:title" content="Blog | VagalVet Veteriner Kliniği" />
+        <meta property="og:description" content="Evcil hayvan sağlığı, bakımı ve beslenmesi hakkında güncel bilgiler, makaleler ve ipuçları." />
+        <meta property="og:type" content="article" />
+      </Helmet>
       <section style={{
         paddingTop: '160px',
         paddingBottom: '80px',
